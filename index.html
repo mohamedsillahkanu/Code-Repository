@@ -96,27 +96,37 @@
 
         /* Collapsible Tab Button */
         .tab-toggle-btn {
-            background: #004499;
+            background: linear-gradient(135deg, #004499, #0066cc);
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 15px 30px;
             border-radius: 25px;
             cursor: pointer;
             font-weight: bold;
             margin-bottom: 20px;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(0, 68, 153, 0.3);
-            font-size: 1em;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+            width: 250px;
         }
 
         .tab-toggle-btn:hover {
-            background: #0066cc;
+            background: linear-gradient(135deg, #0066cc, #004499);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
         }
 
-        .tab-navigation.collapsed {
-            display: none !important;
+        .tab-toggle-btn .arrow {
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+
+        .tab-toggle-btn.collapsed .arrow {
+            transform: rotate(-90deg);
         }
 
         /* Tab Navigation */
@@ -126,6 +136,16 @@
             border-bottom: 3px solid #0066cc;
             margin-bottom: 40px;
             gap: 5px;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        .tab-navigation.expanded {
+            max-height: 200px;
+            opacity: 1;
+            margin-bottom: 40px;
         }
 
         .tab-button {
@@ -468,6 +488,7 @@
             border-radius: 15px;
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
         }
+
         .image-upload-section {
             display: flex;
             justify-content: center;
@@ -546,6 +567,7 @@
             border-radius: 15px;
             box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2);
         }
+
         @media (max-width: 768px) {
             .main-title {
                 font-size: 2.2em;
@@ -581,6 +603,12 @@
 
             .tab-button.active {
                 transform: none;
+            }
+
+            .tab-toggle-btn {
+                width: 200px;
+                padding: 12px 20px;
+                font-size: 1em;
             }
         }
     </style>
@@ -619,12 +647,19 @@
     </div>
 
     <div class="dashboard-container">
+        <!-- Tab Toggle Button -->
+        <button class="tab-toggle-btn collapsed" onclick="toggleTabs()" id="tabToggleBtn">
+            <span>📂</span>
+            <span>Show Navigation Menu</span>
+            <span class="arrow">▼</span>
+        </button>
+
         <!-- Tab Navigation -->
-        <div class="tab-navigation">
+        <div class="tab-navigation" id="tabNavigation">
             <button class="tab-button active" onclick="openTab(event, 'overview')">Overview</button>
-            <button class="tab-button" onclick="openTab(event, 'tab2')">Tab 2</button>
-            <button class="tab-button" onclick="openTab(event, 'tab3')">Tab 3</button>
-            <button class="tab-button" onclick="openTab(event, 'tab4')">Tab 4</button>
+            <button class="tab-button" onclick="openTab(event, 'tab2')">Malaria Analysis Code</button>
+            <button class="tab-button" onclick="openTab(event, 'tab3')">Data Visualization</button>
+            <button class="tab-button" onclick="openTab(event, 'tab4')">Reports & Export</button>
         </div>
 
         <!-- Tab Contents -->
@@ -873,17 +908,17 @@
 
         <!-- Tab 3 -->
         <div id="tab3" class="tab-content">
-            <div class="section-header">Tab 3 Analysis</div>
+            <div class="section-header">Data Visualization</div>
             <div class="content-text">
-                Tab 3 content will be added here for additional analysis components.
+                This tab will contain data visualization tools and charts for malaria analysis.
             </div>
         </div>
 
         <!-- Tab 4 -->
         <div id="tab4" class="tab-content">
-            <div class="section-header">Tab 4 Analysis</div>
+            <div class="section-header">Reports & Export</div>
             <div class="content-text">
-                Tab 4 content will be added here for additional analysis components.
+                This tab will contain report generation and data export functionality.
             </div>
         </div>
     </div>
@@ -913,15 +948,30 @@
             
             // Auto-collapse navigation after tab selection
             var tabNav = document.getElementById("tabNavigation");
-            if (tabNav) {
-                tabNav.classList.add("collapsed");
+            var toggleBtn = document.getElementById("tabToggleBtn");
+            if (tabNav && toggleBtn) {
+                tabNav.classList.remove("expanded");
+                toggleBtn.classList.add("collapsed");
+                toggleBtn.innerHTML = '<span>📂</span><span>Show Navigation Menu</span><span class="arrow">▼</span>';
             }
         }
 
         function toggleTabs() {
             var tabNav = document.getElementById("tabNavigation");
-            if (tabNav) {
-                tabNav.classList.toggle("collapsed");
+            var toggleBtn = document.getElementById("tabToggleBtn");
+            
+            if (tabNav && toggleBtn) {
+                if (tabNav.classList.contains("expanded")) {
+                    // Collapse the menu
+                    tabNav.classList.remove("expanded");
+                    toggleBtn.classList.add("collapsed");
+                    toggleBtn.innerHTML = '<span>📂</span><span>Show Navigation Menu</span><span class="arrow">▼</span>';
+                } else {
+                    // Expand the menu
+                    tabNav.classList.add("expanded");
+                    toggleBtn.classList.remove("collapsed");
+                    toggleBtn.innerHTML = '<span>📂</span><span>Hide Navigation Menu</span><span class="arrow">▼</span>';
+                }
             }
         }
 
@@ -1039,8 +1089,18 @@
             }
         }
 
-        // Initialize all sections as collapsed by default
+        // Initialize the page with collapsed navigation by default
         document.addEventListener('DOMContentLoaded', function() {
+            // Set navigation as collapsed by default
+            var tabNav = document.getElementById("tabNavigation");
+            var toggleBtn = document.getElementById("tabToggleBtn");
+            
+            if (tabNav && toggleBtn) {
+                tabNav.classList.remove("expanded");
+                toggleBtn.classList.add("collapsed");
+            }
+            
+            // Initialize all content sections as collapsed by default
             var sections = document.querySelectorAll('.section-content');
             var buttons = document.querySelectorAll('.section-toggle');
             
