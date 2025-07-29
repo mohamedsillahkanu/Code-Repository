@@ -8,10 +8,10 @@
 #from datetime import datetime
 ```
 
-#Step 2: Define Main Analysis Function
+# Step 2: Define Main Analysis Function
 
 ```python
-#def analyze_malaria_confirmation(data_file):
+# def analyze_malaria_confirmation(data_file):
     """
     Analyze malaria confirmation rates across districts and time periods
     
