@@ -373,6 +373,81 @@
             border-color: #10b981;
         }
 
+        /* Collapsible Section Styling */
+        .markdown-content .collapsible-section {
+            margin: 25px 0;
+            border: 2px solid rgba(0, 102, 204, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 102, 204, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .markdown-content .section-header-collapsible {
+            background: linear-gradient(135deg, #0066cc, #004499);
+            color: white;
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .markdown-content .section-header-collapsible:hover {
+            background: linear-gradient(135deg, #004499, #0066cc);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+        }
+
+        .markdown-content .section-title {
+            font-weight: 600;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .markdown-content .collapse-arrow {
+            font-size: 1.3em;
+            transition: transform 0.3s ease;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .markdown-content .section-header-collapsible.collapsed .collapse-arrow {
+            transform: rotate(-90deg);
+        }
+
+        .markdown-content .section-content {
+            padding: 20px;
+            max-height: 1000px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            opacity: 1;
+        }
+
+        .markdown-content .section-content.collapsed {
+            max-height: 0;
+            padding: 0 20px;
+            opacity: 0;
+        }
+
+        .markdown-content .subsection {
+            margin: 15px 0;
+            padding: 15px;
+            border-left: 4px solid rgba(0, 102, 204, 0.3);
+            border-radius: 0 8px 8px 0;
+            background: rgba(0, 102, 204, 0.02);
+        }
+
+        .markdown-content .subsection h4 {
+            margin-top: 0;
+            color: #0066cc;
+            font-size: 1.1em;
+        }
+
         .markdown-content pre {
             background: #1e293b;
             color: #e2e8f0;
@@ -953,9 +1028,9 @@ This template provides a comprehensive framework for analyzing malaria surveilla
 > Validate that confirmed cases ≤ tested cases
 > Verify district and facility names are standardized
 
-## Analysis Steps
+##STEP## Analysis Steps
 
-### 1. Data Loading and Preprocessing
+###SUBSTEP### 1. Data Loading and Preprocessing
 
 \`\`\`python
 import pandas as pd
@@ -974,7 +1049,19 @@ df['date'] = pd.to_datetime(df['date'])
 df['confirmation_rate'] = (df['confirmed_cases'] / df['tested_cases']) * 100
 \`\`\`
 
-### 2. Advanced Data Preprocessing
+####SUB#### Basic Data Exploration
+- Check data shape and structure
+- Identify missing values
+- Review data types and formats
+- Generate summary statistics
+
+####SUB#### Data Validation
+- Ensure date ranges are realistic
+- Validate numerical constraints
+- Check for duplicate records
+- Verify categorical values
+
+###SUBSTEP### 2. Advanced Data Preprocessing
 
 \`\`\`python
 # Data cleaning function
@@ -1014,7 +1101,17 @@ cleaned_df = clean_malaria_data(df)
 print(f"Data cleaned: {len(df)} -> {len(cleaned_df)} records")
 \`\`\`
 
-### 3. Statistical Analysis Functions
+####SUB#### Missing Value Treatment
+- Identify patterns in missing data
+- Apply appropriate imputation methods
+- Document assumptions and decisions
+
+####SUB#### Outlier Detection
+- Use statistical methods (IQR, Z-score)
+- Visual inspection with box plots
+- Domain knowledge validation
+
+###SUBSTEP### 3. Statistical Analysis Functions
 
 \`\`\`python
 def calculate_kpis(df):
@@ -1037,6 +1134,18 @@ for key, value in kpis.items():
     print(f"{key.replace('_', ' ').title()}: {value}")
 \`\`\`
 
+####SUB#### Descriptive Statistics
+- Calculate central tendencies
+- Measure variability
+- Generate frequency distributions
+
+####SUB#### Inferential Statistics
+- Hypothesis testing
+- Confidence intervals
+- Correlation analysis
+
+##STEP_END##
+
 ## Key Performance Indicators (KPIs)
 
 | **Indicator** | **Formula** | **Target** | **Interpretation** |
@@ -1046,7 +1155,9 @@ for key, value in kpis.items():
 | Test Positivity Rate | Positive tests / Total tests × 100 | 10-40% | Quality of case management |
 | District Performance | District rate vs National average | ±20% | Identifies priority areas |
 
-### Advanced Analytics
+##STEP## Advanced Analytics
+
+###SUBSTEP### Machine Learning for Trend Prediction
 
 \`\`\`python
 # Machine Learning for Trend Prediction
@@ -1103,7 +1214,17 @@ print("Feature Importance:")
 print(feature_importance)
 \`\`\`
 
-### Generate Time Series Plot
+####SUB#### Model Selection
+- Compare different algorithms
+- Cross-validation techniques
+- Hyperparameter tuning
+
+####SUB#### Feature Engineering
+- Create temporal features
+- Seasonal indicators
+- Lagged variables
+
+###SUBSTEP### Data Visualization
 
 \`\`\`python
 # Monthly trend analysis
@@ -1120,7 +1241,17 @@ plt.tight_layout()
 plt.show()
 \`\`\`
 
-### Create District Comparison Chart
+####SUB#### Time Series Plots
+- Trend analysis
+- Seasonal decomposition
+- Moving averages
+
+####SUB#### Geographic Visualization
+- Choropleth maps
+- Heat maps
+- District comparisons
+
+###SUBSTEP### District Comparison Analysis
 
 \`\`\`python
 # District comparison
@@ -1142,6 +1273,18 @@ for i, bar in enumerate(bars):
 plt.tight_layout()
 plt.show()
 \`\`\`
+
+####SUB#### Statistical Comparisons
+- ANOVA testing
+- Post-hoc analysis
+- Effect size calculations
+
+####SUB#### Performance Rankings
+- Ranking methodologies
+- Confidence intervals
+- Significance testing
+
+##STEP_END##
 
 ## Best Practices
 
