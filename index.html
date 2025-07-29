@@ -190,6 +190,11 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* Content Sections */
         .section-header {
             color: #0066cc;
@@ -918,29 +923,29 @@
                 <div class="section-content">
                     <div class="content-text">
                         <strong>Malaria Data Visualization Template</strong><br>
-                        This section automatically reads and parses your analysis_code.md file from the repository. 
+                        This section automatically reads and parses your analysis_code.md file from the repository when you open this tab. 
                         It creates collapsible sections based on markdown headers (## Step) and applies Python syntax highlighting 
                         to code blocks with unique colors for imports, functions, variables, and other Python elements.
                     </div>
                 </div>
             </div>
 
-            <!-- Load Template Button -->
-            <div style="text-align: center; margin: 30px 0;">
-                <button onclick="loadMarkdownTemplate()" style="background: linear-gradient(135deg, #0066cc, #004499); color: white; border: none; padding: 15px 30px; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 1.2em; box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3); transition: all 0.3s ease;">
-                    📂 Load Template from analysis_code.md
+            <!-- Auto-loading Messages -->
+            <div id="templateLoadingMessage" style="display: none; text-align: center; padding: 30px; color: #0066cc; background: rgba(0, 102, 204, 0.05); border-radius: 15px; margin: 20px 0;">
+                <div style="font-size: 1.4em; margin-bottom: 15px;">📂 Auto-loading template from repository...</div>
+                <div style="font-size: 1.1em; margin-bottom: 10px;">Reading analysis_code.md file</div>
+                <div style="font-size: 1em; color: #666;">Parsing markdown structure and applying syntax highlighting</div>
+                <div style="margin-top: 15px;">
+                    <div style="display: inline-block; width: 20px; height: 20px; border: 3px solid #0066cc; border-top: 3px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                </div>
+            </div>
+
+            <div id="templateErrorMessage" style="display: none; text-align: center; padding: 30px; color: #dc3545; background: rgba(220, 53, 69, 0.05); border-radius: 15px; margin: 20px 0; border: 2px solid rgba(220, 53, 69, 0.2);">
+                <div style="font-size: 1.4em; margin-bottom: 15px;">❌ Could not auto-load analysis_code.md</div>
+                <div style="font-size: 1.1em; margin-bottom: 10px;">Please ensure the file exists in the main repository directory</div>
+                <button onclick="loadMarkdownTemplate()" style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 10px;">
+                    🔄 Retry Loading
                 </button>
-            </div>
-
-            <!-- Loading and Error Messages -->
-            <div id="templateLoadingMessage" style="display: none; text-align: center; padding: 30px; color: #0066cc;">
-                <div style="font-size: 1.3em; margin-bottom: 10px;">📂 Loading template from repository...</div>
-                <div style="font-size: 1em;">Parsing markdown structure and code blocks</div>
-            </div>
-
-            <div id="templateErrorMessage" style="display: none; text-align: center; padding: 30px; color: #dc3545;">
-                <div style="font-size: 1.3em; margin-bottom: 10px;">❌ Could not load analysis_code.md</div>
-                <div style="font-size: 1em;">Please ensure the file exists in the main repository directory</div>
             </div>
 
             <!-- Dynamic Template Content -->
@@ -979,6 +984,15 @@
             }
             if (evt && evt.currentTarget) {
                 evt.currentTarget.classList.add("active");
+            }
+            
+            // Auto-load template when Data Visualization tab is opened
+            if (tabName === 'tab3') {
+                const templateContent = document.getElementById('templateContent');
+                // Only load if not already loaded
+                if (templateContent && templateContent.innerHTML.trim() === '') {
+                    loadMarkdownTemplate();
+                }
             }
             
             // Auto-collapse navigation after tab selection
