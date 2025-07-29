@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Code Repository</title>
+    <title>Malaria Program Review (MPR) - Code Repository</title>
     <style>
         * {
             margin: 0;
@@ -94,7 +94,7 @@
             border: 1px solid rgba(0, 102, 204, 0.2);
         }
 
-        /* Tab Toggle Button */
+        /* Collapsible Tab Button */
         .tab-toggle-btn {
             background: linear-gradient(135deg, #004499, #0066cc);
             color: white;
@@ -203,318 +203,239 @@
             border-left: 5px solid #0066cc;
         }
 
-        /* Markdown Upload Section */
-        .markdown-upload-section {
-            margin-bottom: 30px;
-            border: 2px solid rgba(0, 102, 204, 0.2);
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.1);
-        }
-
-        .upload-header {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            padding: 20px;
-            font-size: 1.3em;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .upload-area {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
+        /* Loading Animation */
+        .loading-indicator {
+            display: none;
             text-align: center;
-            border: 2px dashed #10b981;
-            margin: 20px;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            padding: 40px;
+            color: #0066cc;
         }
 
-        .upload-area:hover {
-            background: rgba(16, 185, 129, 0.05);
-            border-color: #059669;
+        .loading-spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #0066cc;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px auto;
         }
 
-        .upload-area.dragover {
-            background: rgba(16, 185, 129, 0.1);
-            border-color: #059669;
-            transform: scale(1.02);
-        }
-
-        .upload-icon {
-            font-size: 3em;
-            color: #10b981;
-            margin-bottom: 15px;
-        }
-
-        .upload-text {
-            font-size: 1.2em;
-            color: #10b981;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .upload-subtext {
-            color: #6b7280;
-            font-size: 0.9em;
-        }
-
-        /* Collapsible Sections */
-        .collapsible-section {
-            margin-bottom: 30px;
-            border: 2px solid rgba(0, 102, 204, 0.2);
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.1);
-        }
-
-        .section-toggle {
-            background: linear-gradient(135deg, #0066cc, #004499);
-            color: white;
-            border: none;
-            padding: 20px;
-            width: 100%;
-            text-align: left;
-            cursor: pointer;
-            font-size: 1.3em;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .section-toggle:hover {
-            background: linear-gradient(135deg, #004499, #0066cc);
-        }
-
-        .section-toggle::after {
-            content: '▼';
-            font-size: 1.2em;
-            transition: transform 0.3s ease;
-        }
-
-        .section-toggle.collapsed::after {
-            transform: rotate(-90deg);
-        }
-
-        .section-content {
-            background: rgba(255, 255, 255, 0.95);
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.5s ease;
-            padding: 0;
-        }
-
-        .section-content.expanded {
-            max-height: none;
-            padding: 20px;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* Markdown Content Styling */
         .markdown-content {
-            background: #1a1a1a;
-            border-radius: 15px;
-            padding: 25px;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 14px;
-            line-height: 1.6;
-            color: #e5e7eb;
-            overflow-x: auto;
-            border: 2px solid rgba(59, 130, 246, 0.3);
-            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.1);
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 30px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            color: #374151;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            max-height: 70vh;
+            overflow-y: auto;
         }
 
-        /* Enhanced Syntax Highlighting */
-        .md-keyword {
-            color: #c792ea;
+        .markdown-content h1 {
+            color: #0066cc;
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #0066cc;
+        }
+
+        .markdown-content h2 {
+            color: #004499;
+            font-size: 1.8em;
             font-weight: 600;
+            margin: 30px 0 15px 0;
+            padding-left: 15px;
+            border-left: 4px solid #0066cc;
         }
 
-        .md-function {
-            color: #82aaff;
+        .markdown-content h3 {
+            color: #0066cc;
+            font-size: 1.4em;
             font-weight: 600;
+            margin: 25px 0 12px 0;
         }
 
-        .md-string {
-            color: #c3e88d;
-        }
-
-        .md-comment {
-            color: #546e7a;
-            font-style: italic;
-        }
-
-        .md-variable {
-            color: #ffcb6b;
-        }
-
-        .md-number {
-            color: #f78c6c;
-        }
-
-        .md-operator {
-            color: #89ddff;
-        }
-
-        .md-class {
-            color: #ffcb6b;
+        .markdown-content h4, .markdown-content h5, .markdown-content h6 {
+            color: #004499;
             font-weight: 600;
-        }
-
-        .md-import {
-            color: #c792ea;
-            font-weight: 600;
-        }
-
-        .md-decorator {
-            color: #ff9cac;
-        }
-
-        .md-header {
-            color: #82aaff;
-            font-weight: bold;
-            font-size: 1.2em;
             margin: 20px 0 10px 0;
         }
 
-        .md-bold {
-            color: #ffffff;
-            font-weight: bold;
+        .markdown-content p {
+            margin-bottom: 16px;
+            text-align: justify;
         }
 
-        .md-italic {
-            color: #b2ccd6;
+        .markdown-content ul, .markdown-content ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+
+        .markdown-content li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .markdown-content blockquote {
+            background: rgba(0, 102, 204, 0.05);
+            border-left: 4px solid #0066cc;
+            margin: 20px 0;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
             font-style: italic;
+            color: #004499;
         }
 
-        .md-code-inline {
-            background: rgba(255, 255, 255, 0.1);
-            color: #c3e88d;
+        .markdown-content code {
+            background: rgba(59, 130, 246, 0.1);
+            color: #1e40af;
             padding: 2px 6px;
             border-radius: 4px;
-        }
-
-        /* Code Section Styling */
-        .code-section {
-            margin: 30px 0;
-            border: 2px solid rgba(59, 130, 246, 0.3);
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.1);
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-        }
-
-        .code-header {
-            background: linear-gradient(135deg, #3b82f6, #1e40af);
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .code-title {
-            font-weight: 600;
-            font-size: 1.1em;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .copy-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9em;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .copy-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .copy-btn.copied {
-            background: #10b981;
-            border-color: #10b981;
-        }
-
-        .code-container {
-            background: #1e293b;
-            padding: 0;
-            position: relative;
-            overflow-x: auto;
-        }
-
-        .code-content {
-            padding: 25px;
             font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 14px;
-            line-height: 1.6;
+            font-size: 0.9em;
+        }
+
+        .markdown-content pre {
+            background: #1e293b;
             color: #e2e8f0;
-            white-space: pre;
+            padding: 20px;
+            border-radius: 8px;
             overflow-x: auto;
+            margin: 20px 0;
+            border: 1px solid rgba(59, 130, 246, 0.3);
         }
 
-        /* Enhanced Python Syntax highlighting */
-        .keyword {
-            color: #c792ea;
+        .markdown-content pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        .markdown-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .markdown-content th {
+            background: #0066cc;
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
             font-weight: 600;
         }
 
-        .function {
-            color: #82aaff;
-            font-weight: 600;
+        .markdown-content td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
         }
 
-        .string {
-            color: #c3e88d;
+        .markdown-content tr:nth-child(even) {
+            background: rgba(0, 102, 204, 0.02);
         }
 
-        .comment {
-            color: #546e7a;
+        .markdown-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .markdown-content a {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .markdown-content a:hover {
+            color: #004499;
+            border-bottom-color: #004499;
+        }
+
+        .markdown-content strong {
+            color: #004499;
+            font-weight: 700;
+        }
+
+        .markdown-content em {
+            color: #0066cc;
             font-style: italic;
         }
 
-        .variable {
-            color: #ffcb6b;
+        /* File Path Input */
+        .file-input-section {
+            background: rgba(0, 102, 204, 0.05);
+            border: 2px solid rgba(0, 102, 204, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
         }
 
-        .number {
-            color: #f78c6c;
+        .file-input-section h3 {
+            color: #0066cc;
+            margin-bottom: 15px;
+            font-size: 1.3em;
         }
 
-        .operator {
-            color: #89ddff;
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
         }
 
-        .class {
-            color: #ffcb6b;
+        .file-path-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .file-path-input:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .load-btn {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
             font-weight: 600;
+            transition: all 0.3s ease;
         }
 
-        .import {
-            color: #c792ea;
-            font-weight: 600;
+        .load-btn:hover {
+            background: #004499;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
         }
 
-        .decorator {
-            color: #ff9cac;
+        .example-text {
+            font-size: 0.9em;
+            color: #6b7280;
+            font-style: italic;
         }
 
         .content-text {
@@ -526,101 +447,6 @@
             background: rgba(255, 255, 255, 0.7);
             border-radius: 10px;
             border-left: 4px solid #0066cc;
-        }
-
-        /* Step Description */
-        .step-description {
-            background: rgba(0, 102, 204, 0.05);
-            border-left: 4px solid #0066cc;
-            padding: 15px 20px;
-            margin-bottom: 20px;
-            border-radius: 0 10px 10px 0;
-            color: #004499;
-            font-size: 1em;
-            line-height: 1.5;
-            font-weight: 500;
-        }
-
-        /* Result Image Section */
-        .result-image-section {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .result-image-frame {
-            width: 100%;
-            max-width: 1000px;
-            min-height: 500px;
-            border: 3px solid #10b981;
-            border-radius: 20px;
-            overflow: hidden;
-            background: linear-gradient(145deg, #ffffff, #f0fff4);
-            box-shadow: 
-                0 20px 40px rgba(16, 185, 129, 0.15),
-                inset 0 2px 4px rgba(255, 255, 255, 0.9),
-                inset 0 -2px 4px rgba(16, 185, 129, 0.1);
-            position: relative;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .result-image-frame:hover {
-            transform: translateY(-5px);
-            box-shadow: 
-                0 25px 50px rgba(16, 185, 129, 0.2),
-                inset 0 2px 4px rgba(255, 255, 255, 0.9),
-                inset 0 -2px 4px rgba(16, 185, 129, 0.1);
-        }
-
-        .result-image-placeholder {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 500px;
-            text-align: center;
-            padding: 40px;
-            color: #10b981;
-            border: 2px dashed #10b981;
-            border-radius: 15px;
-            margin: 10px;
-            background: rgba(255, 255, 255, 0.5);
-            transition: all 0.3s ease;
-        }
-
-        .result-image-placeholder:hover {
-            background: rgba(16, 185, 129, 0.05);
-            border-color: #059669;
-        }
-
-        .uploaded-result-image {
-            width: 100%;
-            height: auto;
-            max-height: 90vh;
-            display: block;
-            object-fit: contain;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-        }
-
-        .placeholder-icon {
-            font-size: 4em;
-            margin-bottom: 20px;
-            opacity: 0.7;
-        }
-
-        .placeholder-text {
-            font-size: 1.3em;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .placeholder-subtext {
-            font-size: 1em;
-            opacity: 0.7;
-            font-style: italic;
         }
 
         @media (max-width: 768px) {
@@ -665,6 +491,10 @@
                 padding: 12px 20px;
                 font-size: 1em;
             }
+
+            .input-group {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -686,14 +516,14 @@
                 </div>
 
                 <div class="logo-container">
-                    <img src="ICF-SL.jpg" alt="ICF-SL Logo" class="logo-image">
+                    <img src="ICF-SL.png" alt="ICF-SL Logo" class="logo-image">
                 </div>
             </div>
             
             <!-- Title Section -->
             <div class="title-section">
                 <h1 class="main-title">Malaria Program Review (MPR)</h1>
-                <h2 class="subtitle">Enhanced Code Repository and Analysis System</h2>
+                <h2 class="subtitle">Code Repository and Analysis System</h2>
                 <h3 class="subtitle">by</h3>
                 <h2 class="subtitle">Informatics Consultancy Firm Sierra Leone (ICF-SL)</h2>
                 <h2 class="subtitle"><em>A local firm with international standards</em></h2>
@@ -711,142 +541,98 @@
 
         <!-- Tab Navigation -->
         <div class="tab-navigation" id="tabNavigation">
-            <button class="tab-button active" onclick="openTab(event, 'overview')">Overview</button>
-            <button class="tab-button" onclick="openTab(event, 'tab2')">Malaria Analysis Code</button>
-            <button class="tab-button" onclick="openTab(event, 'tab3')">Markdown Viewer</button>
-            <button class="tab-button" onclick="openTab(event, 'tab4')">Data Visualization</button>
-            <button class="tab-button" onclick="openTab(event, 'tab5')">Reports & Export</button>
+            <button class="tab-button active" onclick="openTab(event, 'overview')">🏠 Overview</button>
+            <button class="tab-button" onclick="openTab(event, 'data-analysis')">📊 Data Analysis</button>
+            <button class="tab-button" onclick="openTab(event, 'code-repository')">💻 Code Repository</button>
+            <button class="tab-button" onclick="openTab(event, 'markdown-reader')">📄 Markdown Reader</button>
+            <button class="tab-button" onclick="openTab(event, 'visualization')">📈 Data Visualization</button>
+            <button class="tab-button" onclick="openTab(event, 'reports')">📋 Reports & Export</button>
+            <button class="tab-button" onclick="openTab(event, 'settings')">⚙️ Settings</button>
         </div>
 
         <!-- Tab Contents -->
+        <!-- Tab 1: Overview -->
         <div id="overview" class="tab-content active">
-            <div class="section-header">Enhanced Code Repository</div>
-            
-            <!-- Code Repository Introduction -->
-            <div class="collapsible-section">
-                <button class="section-toggle collapsed" onclick="toggleSection(this)">
-                    💻 Enhanced Code Repository Overview
-                </button>
-                <div class="section-content">
-                    <div class="content-text">
-                        <strong>Enhanced Malaria Data Analysis Code Repository</strong><br>
-                        This system provides a comprehensive collection of Python scripts and analysis tools designed specifically for the National Malaria Control Programme (NMCP) in Sierra Leone. 
-                        The enhanced repository now includes:
-                        <br><br>
-                        • <strong>Markdown File Support:</strong> Upload and view .md files with full syntax highlighting<br>
-                        • <strong>Enhanced Code Display:</strong> Improved syntax highlighting for Python, R, SQL, and other languages<br>
-                        • <strong>Collapsible Sections:</strong> Organized content with expandable sections for better navigation<br>
-                        • <strong>Interactive Features:</strong> Copy code functionality, drag-and-drop file uploads<br>
-                        • <strong>Professional Styling:</strong> Dark theme code blocks with proper color coding
-                    </div>
-                </div>
+            <div class="section-header">Code Repository</div>
+            <div class="content-text">
+                <strong>Malaria Data Analysis Code Repository</strong><br>
+                This system provides a comprehensive collection of Python scripts and analysis tools designed specifically for the National Malaria Control Programme (NMCP) in Sierra Leone. 
+                The code repository contains standardized functions for processing malaria surveillance data, calculating key indicators, and generating analytical reports that support evidence-based decision making.
             </div>
         </div>
 
-        <!-- Tab 2 -->
-        <div id="tab2" class="tab-content">
-            <div class="section-header">Malaria Analysis Code</div>
+        <!-- Tab 2: Data Analysis with Markdown Template -->
+        <div id="data-analysis" class="tab-content">
+            <div class="section-header">Data Analysis Template</div>
             
-            <!-- Dynamic Content from Markdown Files -->
-            <div class="collapsible-section">
-                <button class="section-toggle collapsed" onclick="toggleSection(this)">
-                    📋 Code Repository Instructions
-                </button>
-                <div class="section-content">
-                    <div class="step-description">
-                        Upload or specify markdown files (.md) containing your analysis code and documentation. All content will be dynamically loaded from your files.
-                    </div>
-                    
-                    <!-- Code File Reader -->
-                    <div style="margin: 20px 0; padding: 20px; background: linear-gradient(135deg, #f0f8ff, #e0f2fe); border-radius: 10px; border-left: 5px solid #0066cc;">
-                        <h4 style="color: #0066cc; margin-bottom: 15px;">📂 Load Code Documentation</h4>
-                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                            <input type="text" id="codeFilename" placeholder="Enter code file (e.g., malaria_code.md)" 
-                                   style="padding: 10px 15px; border: 2px solid #0066cc; border-radius: 6px; font-size: 14px; min-width: 280px; background: white; color: #333;"
-                                   oninput="autoReadCodeFile()">
-                            <button onclick="readCodeFile()" 
-                                    style="padding: 10px 20px; background: linear-gradient(135deg, #0066cc, #004499); color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
-                                📖 Load Code
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Dynamic Code Content Display -->
-                    <div id="codeContentContainer">
-                        <!-- Code content from markdown files will be displayed here -->
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tab 3 - NEW MARKDOWN VIEWER -->
-        <div id="tab3" class="tab-content">
-            <div class="section-header">Markdown File Viewer</div>
-            
-            <!-- Markdown File Reader Section -->
-            <div class="markdown-upload-section">
-                <div class="upload-header">
-                    <span>📄</span>
-                    Read Markdown Files (.md)
-                </div>
-                <div class="upload-area">
-                    <div class="upload-icon">📝</div>
-                    <div class="upload-text">Enter filename to read markdown files</div>
-                    <div class="upload-subtext">Example: analysis.md, documentation.md, README.md</div>
-                    <div style="margin-top: 20px; display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap;">
-                        <input type="text" id="markdownFilename" placeholder="Enter filename (e.g., analysis.md)" 
-                               style="padding: 12px 20px; border: 2px solid #10b981; border-radius: 8px; font-size: 16px; min-width: 300px; background: white; color: #333;"
-                               oninput="autoReadFile()">
-                        <button onclick="readMarkdownFile()" 
-                                style="padding: 12px 25px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 16px;">
-                            📖 Read File
-                        </button>
-                    </div>
-                    <div style="margin-top: 15px;">
-                        <button onclick="document.getElementById('markdownFileInput').click();" 
-                                style="padding: 10px 20px; background: rgba(16, 185, 129, 0.1); color: #10b981; border: 2px solid #10b981; border-radius: 8px; font-weight: 600; cursor: pointer;">
-                            📁 Or Upload Files
-                        </button>
-                        <input type="file" id="markdownFileInput" accept=".md,.markdown,.txt" multiple style="display: none;" onchange="handleMarkdownFiles(event)">
-                    </div>
-                </div>
+            <!-- Loading Indicator -->
+            <div id="templateLoading" class="loading-indicator">
+                <div class="loading-spinner"></div>
+                <div>Loading markdown template...</div>
             </div>
 
             <!-- Markdown Content Display -->
-            <div id="markdownContentContainer">
-                <!-- Uploaded markdown files will be displayed here -->
+            <div id="templateContent" class="markdown-content" style="display: none;">
+                <!-- Markdown content will be loaded here -->
             </div>
         </div>
 
-        <!-- Tab 4 -->
-        <div id="tab4" class="tab-content">
+        <!-- Tab 3: Code Repository -->
+        <div id="code-repository" class="tab-content">
+            <div class="section-header">Code Repository</div>
+            <div class="content-text">
+                This section contains the Python code repository for malaria data analysis.
+            </div>
+        </div>
+
+        <!-- Tab 4: Markdown Reader -->
+        <div id="markdown-reader" class="tab-content">
+            <div class="section-header">Markdown Reader</div>
+            <div class="content-text">
+                This section provides a markdown file reader and parser.
+            </div>
+        </div>
+
+        <!-- Tab 5: Data Visualization -->
+        <div id="visualization" class="tab-content">
             <div class="section-header">Data Visualization</div>
             <div class="content-text">
-                This tab contains advanced data visualization tools and interactive charts for malaria analysis.
+                This tab will contain data visualization tools and charts for malaria analysis.
             </div>
         </div>
 
-        <!-- Tab 5 -->
-        <div id="tab5" class="tab-content">
+        <!-- Tab 6: Reports & Export -->
+        <div id="reports" class="tab-content">
             <div class="section-header">Reports & Export</div>
             <div class="content-text">
-                This tab contains report generation and data export functionality.
+                This tab will contain report generation and data export functionality.
+            </div>
+        </div>
+
+        <!-- Tab 7: Settings -->
+        <div id="settings" class="tab-content">
+            <div class="section-header">Settings</div>
+            <div class="content-text">
+                This tab will contain system settings and configuration options.
             </div>
         </div>
     </div>
 
     <script>
         function openTab(evt, tabName) {
+            // Hide all tab contents
             var tabcontents = document.getElementsByClassName("tab-content");
             for (var i = 0; i < tabcontents.length; i++) {
                 tabcontents[i].classList.remove("active");
             }
             
+            // Remove active class from all tab buttons
             var tabbuttons = document.getElementsByClassName("tab-button");
             for (var i = 0; i < tabbuttons.length; i++) {
                 tabbuttons[i].classList.remove("active");
             }
             
+            // Show the selected tab content and mark button as active
             var targetTab = document.getElementById(tabName);
             if (targetTab) {
                 targetTab.classList.add("active");
@@ -855,6 +641,15 @@
                 evt.currentTarget.classList.add("active");
             }
             
+            // Special handling for data-analysis tab
+            if (tabName === 'data-analysis') {
+                // Auto-load the markdown template when tab 2 is clicked
+                setTimeout(function() {
+                    autoLoadMarkdownTemplate();
+                }, 100);
+            }
+            
+            // Auto-collapse navigation after tab selection
             var tabNav = document.getElementById("tabNavigation");
             var toggleBtn = document.getElementById("tabToggleBtn");
             if (tabNav && toggleBtn) {
@@ -870,10 +665,12 @@
             
             if (tabNav && toggleBtn) {
                 if (tabNav.classList.contains("expanded")) {
+                    // Collapse the menu
                     tabNav.classList.remove("expanded");
                     toggleBtn.classList.add("collapsed");
                     toggleBtn.innerHTML = '<span>📂</span><span>Show Navigation Menu</span><span class="arrow">▼</span>';
                 } else {
+                    // Expand the menu
                     tabNav.classList.add("expanded");
                     toggleBtn.classList.remove("collapsed");
                     toggleBtn.innerHTML = '<span>📂</span><span>Hide Navigation Menu</span><span class="arrow">▼</span>';
@@ -881,365 +678,422 @@
             }
         }
 
-        function toggleSection(button) {
-            if (!button || !button.nextElementSibling) return;
+        async function autoLoadMarkdownTemplate() {
+            const loadingDiv = document.getElementById('templateLoading');
+            const contentDiv = document.getElementById('templateContent');
             
-            var content = button.nextElementSibling;
-            var isCollapsed = content.classList.contains("expanded");
+            // Show loading indicator
+            if (loadingDiv) loadingDiv.style.display = 'block';
+            if (contentDiv) contentDiv.style.display = 'none';
             
-            if (isCollapsed) {
-                content.classList.remove("expanded");
-                button.classList.add("collapsed");
-            } else {
-                content.classList.add("expanded");
-                button.classList.remove("collapsed");
-            }
-        }
-
-        // Auto-read code file functionality
-        let autoReadCodeTimeout;
-        function autoReadCodeFile() {
-            const filename = document.getElementById('codeFilename').value.trim();
+            // List of potential template files to try
+            const templatePaths = [
+                './analysis_template.md',
+                './templates/analysis_template.md',
+                './docs/analysis_template.md',
+                './malaria_analysis_template.md',
+                'analysis_template.md'
+            ];
             
-            // Clear previous timeout
-            clearTimeout(autoReadCodeTimeout);
+            let markdownText = '';
+            let fileFound = false;
             
-            // Only auto-read if filename ends with .md, .markdown, or .txt and has reasonable length
-            if (filename && (filename.endsWith('.md') || filename.endsWith('.markdown') || filename.endsWith('.txt')) && filename.length > 3) {
-                // Debounce the auto-read to avoid too many requests
-                autoReadCodeTimeout = setTimeout(() => {
-                    readCodeFile();
-                }, 800); // Wait 800ms after user stops typing
-            }
-        }
-
-        // Read code file functionality
-        async function readCodeFile() {
-            const filename = document.getElementById('codeFilename').value.trim();
-            const container = document.getElementById('codeContentContainer');
-            
-            if (!filename) {
-                alert('Please enter a filename (e.g., malaria_code.md)');
-                return;
-            }
-            
-            try {
-                // Show loading message
-                const loadingSection = document.createElement('div');
-                loadingSection.className = 'collapsible-section';
-                loadingSection.innerHTML = `
-                    <button class="section-toggle" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
-                        ⏳ Loading ${filename}...
-                    </button>
-                `;
-                container.appendChild(loadingSection);
-                
-                // Read the file using the window.fs.readFile API
-                const content = await window.fs.readFile(filename, { encoding: 'utf8' });
-                
-                // Remove loading message
-                container.removeChild(loadingSection);
-                
-                // Display the content
-                displayMarkdownContent(filename, content, container);
-                
-                // Clear the input
-                document.getElementById('codeFilename').value = '';
-                
-            } catch (error) {
-                // Remove loading message if it exists
-                const loadingElements = container.querySelectorAll('.collapsible-section');
-                loadingElements.forEach(el => {
-                    if (el.textContent.includes('Loading')) {
-                        container.removeChild(el);
+            // Try to load from each path
+            for (const filePath of templatePaths) {
+                try {
+                    // Try file system API first
+                    try {
+                        markdownText = await window.fs.readFile(filePath, { encoding: 'utf8' });
+                        fileFound = true;
+                        console.log(`Template loaded from: ${filePath}`);
+                        break;
+                    } catch (fsError) {
+                        // Try fetch for relative paths
+                        try {
+                            const response = await fetch(filePath);
+                            if (response.ok) {
+                                markdownText = await response.text();
+                                fileFound = true;
+                                console.log(`Template loaded from: ${filePath}`);
+                                break;
+                            }
+                        } catch (fetchError) {
+                            // Continue to next path
+                            continue;
+                        }
                     }
-                });
-                
-                // Show error message
-                const errorSection = document.createElement('div');
-                errorSection.className = 'collapsible-section';
-                errorSection.innerHTML = `
-                    <button class="section-toggle" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
-                        ❌ Error reading ${filename}
-                    </button>
-                    <div class="section-content" style="max-height: none; padding: 20px;">
-                        <div style="background: #fee2e2; border: 1px solid #ef4444; border-radius: 8px; padding: 15px; color: #dc2626;">
-                            <strong>File not found:</strong> ${filename}<br>
-                            <small>Make sure the file exists and the filename is correct (including .md extension)</small>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(errorSection);
-                
-                console.error('Error reading code file:', error);
-            }
-        }
-
-        // Enhanced Markdown handling - Read files directly
-        async function readMarkdownFile() {
-            const filename = document.getElementById('markdownFilename').value.trim();
-            const container = document.getElementById('markdownContentContainer');
-            
-            if (!filename) {
-                alert('Please enter a filename (e.g., analysis.md)');
-                return;
-            }
-            
-            try {
-                // Show loading message
-                const loadingSection = document.createElement('div');
-                loadingSection.className = 'collapsible-section';
-                loadingSection.innerHTML = `
-                    <button class="section-toggle" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
-                        ⏳ Loading ${filename}...
-                    </button>
-                `;
-                container.appendChild(loadingSection);
-                
-                // Read the file using the window.fs.readFile API
-                const content = await window.fs.readFile(filename, { encoding: 'utf8' });
-                
-                // Remove loading message
-                container.removeChild(loadingSection);
-                
-                // Display the content
-                displayMarkdownContent(filename, content, container);
-                
-                // Clear the input
-                document.getElementById('markdownFilename').value = '';
-                
-            } catch (error) {
-                // Remove loading message if it exists
-                const loadingElements = container.querySelectorAll('.collapsible-section');
-                loadingElements.forEach(el => {
-                    if (el.textContent.includes('Loading')) {
-                        container.removeChild(el);
-                    }
-                });
-                
-                // Show error message
-                const errorSection = document.createElement('div');
-                errorSection.className = 'collapsible-section';
-                errorSection.innerHTML = `
-                    <button class="section-toggle" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
-                        ❌ Error reading ${filename}
-                    </button>
-                    <div class="section-content" style="max-height: none; padding: 20px;">
-                        <div style="background: #fee2e2; border: 1px solid #ef4444; border-radius: 8px; padding: 15px; color: #dc2626;">
-                            <strong>File not found:</strong> ${filename}<br>
-                            <small>Make sure the file exists and the filename is correct (including .md extension)</small>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(errorSection);
-                
-                console.error('Error reading markdown file:', error);
-            }
-        }
-
-        // Handle Enter key press in filename input
-        document.addEventListener('DOMContentLoaded', function() {
-            const filenameInput = document.getElementById('markdownFilename');
-            if (filenameInput) {
-                filenameInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        readMarkdownFile();
-                    }
-                });
-            }
-        });
-
-        function handleMarkdownFiles(event) {
-            const files = event.target.files;
-            const container = document.getElementById('markdownContentContainer');
-            
-            for (let file of files) {
-                if (file.type === 'text/markdown' || file.name.endsWith('.md') || file.name.endsWith('.markdown') || file.type === 'text/plain') {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const content = e.target.result;
-                        displayMarkdownContent(file.name, content, container);
-                    };
-                    reader.readAsText(file);
+                } catch (error) {
+                    // Continue to next path
+                    continue;
                 }
             }
-        }
-
-        function displayMarkdownContent(filename, content, container) {
-            const section = document.createElement('div');
-            section.className = 'collapsible-section';
             
-            const toggle = document.createElement('button');
-            toggle.className = 'section-toggle collapsed';
-            toggle.onclick = function() { toggleSection(this); };
-            toggle.innerHTML = `📄 ${filename}`;
+            // If no file found, use default template
+            if (!fileFound) {
+                markdownText = getDefaultTemplate();
+                console.log('Using default template');
+            }
             
-            const sectionContent = document.createElement('div');
-            sectionContent.className = 'section-content';
-            
-            const copyBtn = document.createElement('button');
-            copyBtn.className = 'copy-btn';
-            copyBtn.style.margin = '10px 0';
-            copyBtn.innerHTML = '<span>📋</span> Copy Content';
-            copyBtn.onclick = function() {
-                navigator.clipboard.writeText(content).then(function() {
-                    copyBtn.innerHTML = '<span>✅</span> Copied!';
-                    copyBtn.classList.add('copied');
-                    setTimeout(function() {
-                        copyBtn.innerHTML = '<span>📋</span> Copy Content';
-                        copyBtn.classList.remove('copied');
-                    }, 2000);
-                });
-            };
-            
-            const markdownDiv = document.createElement('div');
-            markdownDiv.className = 'content-text';
-            markdownDiv.style.maxHeight = 'none';
-            markdownDiv.style.overflow = 'visible';
-            markdownDiv.innerHTML = parseMarkdownToHTML(content);
-            
-            sectionContent.appendChild(copyBtn);
-            sectionContent.appendChild(markdownDiv);
-            section.appendChild(toggle);
-            section.appendChild(sectionContent);
-            container.appendChild(section);
-        }
-
-        function parseMarkdownToHTML(content) {
-            // Parse markdown content to HTML with enhanced color scheme
-            let html = content
-                // Escape HTML first
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
+            try {
+                // Parse and display the markdown content
+                const htmlContent = parseMarkdown(markdownText);
                 
-                // Headers with enhanced styling
-                .replace(/^### (.*$)/gm, '<h3 style="color: #059669; font-size: 1.4em; font-weight: 600; margin: 25px 0 15px 0; padding: 12px 20px; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-left: 5px solid #059669; border-radius: 8px; box-shadow: 0 2px 8px rgba(5, 150, 105, 0.1);">🔹 $1</h3>')
-                .replace(/^## (.*$)/gm, '<h2 style="color: #0066cc; font-size: 1.6em; font-weight: 700; margin: 30px 0 20px 0; padding: 15px 25px; background: linear-gradient(135deg, #eff6ff, #dbeafe); border-left: 6px solid #0066cc; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 102, 204, 0.15);">📊 $1</h2>')
-                .replace(/^# (.*$)/gm, '<h1 style="color: #004499; font-size: 1.8em; font-weight: 700; margin: 40px 0 25px 0; padding: 20px 30px; background: linear-gradient(135deg, #f0f8ff, #e0f2fe); border: 2px solid #004499; border-radius: 12px; text-align: center; box-shadow: 0 6px 20px rgba(0, 68, 153, 0.2);">🎯 $1</h1>')
-                
-                // Enhanced section separators
-                .replace(/^---$/gm, '<hr style="margin: 30px 0; border: none; height: 3px; background: linear-gradient(to right, #0066cc, #10b981, #0066cc); border-radius: 3px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">')
-                
-                // Bold text with color
-                .replace(/\*\*(.*?)\*\*/g, '<strong style="color: #004499; font-weight: 700; background: linear-gradient(135deg, #f0f8ff, transparent); padding: 2px 4px; border-radius: 4px;">$1</strong>')
-                .replace(/__(.*?)__/g, '<strong style="color: #004499; font-weight: 700; background: linear-gradient(135deg, #f0f8ff, transparent); padding: 2px 4px; border-radius: 4px;">$1</strong>')
-                
-                // Italic text with subtle styling
-                .replace(/\*(.*?)\*/g, '<em style="color: #059669; font-style: italic; font-weight: 500;">$1</em>')
-                .replace(/_(.*?)_/g, '<em style="color: #059669; font-style: italic; font-weight: 500;">$1</em>')
-                
-                // Enhanced inline code
-                .replace(/`([^`]+)`/g, '<code style="background: linear-gradient(135deg, #f0fdf4, #dcfce7); color: #059669; padding: 4px 8px; border-radius: 6px; font-family: monospace; font-size: 0.9em; border: 1px solid #bbf7d0; font-weight: 600;">$1</code>')
-                
-                // Enhanced links
-                .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color: #0066cc; text-decoration: none; font-weight: 600; padding: 2px 6px; border-radius: 4px; background: linear-gradient(135deg, #eff6ff, transparent); border-bottom: 2px solid #0066cc; transition: all 0.3s ease;">🔗 $1</a>')
-                
-                // Enhanced lists with icons and colors
-                .replace(/^\s*[-*+]\s+(.+)$/gm, function(match, content) {
-                    if (content.includes('**')) {
-                        return '<li style="margin: 8px 0; color: #004499; font-weight: 600; padding: 8px 12px; background: linear-gradient(135deg, #f0f8ff, #ffffff); border-left: 4px solid #0066cc; border-radius: 6px;">🔸 ' + content + '</li>';
-                    } else {
-                        return '<li style="margin: 6px 0; color: #374151; padding: 6px 10px; background: linear-gradient(135deg, #f9fafb, #ffffff); border-left: 3px solid #10b981; border-radius: 4px;">• ' + content + '</li>';
+                if (contentDiv) {
+                    let finalContent = htmlContent;
+                    
+                    // Add a note if using default template
+                    if (!fileFound) {
+                        finalContent = `
+                            <div style="background: rgba(59, 130, 246, 0.1); border-left: 4px solid #3b82f6; padding: 15px; margin-bottom: 20px; border-radius: 8px;">
+                                <strong style="color: #1e40af;">ℹ️ Auto-Loaded Template:</strong> Using built-in malaria data analysis template. Place your custom template at <code>./analysis_template.md</code> to override.
+                            </div>
+                            ${htmlContent}
+                        `;
                     }
-                })
+                    
+                    contentDiv.innerHTML = finalContent;
+                    contentDiv.style.display = 'block';
+                }
                 
-                // Enhanced ordered lists
-                .replace(/^\s*(\d+)\.\s+(.+)$/gm, '<li style="margin: 8px 0; color: #374151; padding: 8px 12px; background: linear-gradient(135deg, #fef3c7, #ffffff); border-left: 4px solid #f59e0b; border-radius: 6px; list-style-type: none;"><span style="color: #f59e0b; font-weight: 700; margin-right: 8px;">$1.</span>$2</li>')
+            } catch (error) {
+                console.error('Error processing markdown template:', error);
                 
-                // Enhanced code blocks
-                .replace(/```[\s\S]*?```/g, function(match) {
-                    const codeContent = match.replace(/```(\w+)?\n?/g, '').replace(/```$/g, '');
-                    return `<div style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); border: 2px solid #cbd5e1; border-radius: 12px; padding: 20px; margin: 20px 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 0.9em; color: #475569; white-space: pre-wrap; overflow-x: auto; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);"><div style="color: #0066cc; font-weight: 600; margin-bottom: 10px; font-family: sans-serif;">💻 Code Block</div>${codeContent}</div>`;
-                })
+                if (contentDiv) {
+                    contentDiv.innerHTML = `
+                        <div style="background: rgba(220, 38, 38, 0.1); border-left: 4px solid #dc2626; padding: 15px; margin-bottom: 20px; border-radius: 8px;">
+                            <strong style="color: #dc2626;">❌ Error:</strong> Could not process the template. Please check the file format.
+                        </div>
+                    `;
+                    contentDiv.style.display = 'block';
+                }
                 
-                // Line breaks and paragraphs
-                .replace(/\n\n/g, '</p><p style="margin: 18px 0; line-height: 1.7; color: #374151; text-align: justify;">')
-                .replace(/\n/g, '<br>');
+            } finally {
+                // Hide loading indicator
+                if (loadingDiv) loadingDiv.style.display = 'none';
+            }
+        }
+
+        async function loadMarkdownTemplate() {
+            const pathInput = document.getElementById('markdownTemplatePath');
+            const filePath = pathInput ? pathInput.value.trim() : './analysis_template.md';
             
-            // Wrap in paragraph tags with enhanced styling
-            html = '<p style="margin: 18px 0; line-height: 1.7; color: #374151; text-align: justify;">' + html + '</p>';
+            if (!filePath) {
+                autoLoadMarkdownTemplate();
+                return;
+            }
             
-            // Wrap lists in enhanced ul/ol tags
-            html = html.replace(/(<li[^>]*>.*?<\/li>)(?:\s*<br>\s*<li[^>]*>.*?<\/li>)*/g, function(match) {
-                if (match.includes('list-style-type: none')) {
-                    return '<ol style="margin: 20px 0; padding: 15px 20px; background: linear-gradient(135deg, #fffbeb, #fef3c7); border-radius: 10px; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1);">' + match.replace(/<br>\s*/g, '') + '</ol>';
+            const loadingDiv = document.getElementById('templateLoading');
+            const contentDiv = document.getElementById('templateContent');
+            
+            // Show loading indicator
+            if (loadingDiv) loadingDiv.style.display = 'block';
+            if (contentDiv) contentDiv.style.display = 'none';
+            
+            try {
+                let markdownText = '';
+                
+                // Check if it's a web URL or local file
+                if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
+                    // Load from web URL
+                    const response = await fetch(filePath);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    markdownText = await response.text();
                 } else {
-                    return '<ul style="margin: 20px 0; padding: 15px 20px; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-radius: 10px; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);">' + match.replace(/<br>\s*/g, '') + '</ul>';
+                    // Try to load from local file using the file system API first
+                    try {
+                        markdownText = await window.fs.readFile(filePath, { encoding: 'utf8' });
+                    } catch (fsError) {
+                        // If file system API fails, try fetch for relative paths
+                        try {
+                            const response = await fetch(filePath);
+                            if (!response.ok) {
+                                throw new Error(`Could not load file: ${filePath}`);
+                            }
+                            markdownText = await response.text();
+                        } catch (fetchError) {
+                            // If both fail, load the default template
+                            markdownText = getDefaultTemplate();
+                            console.log('Loading default template as file not found:', filePath);
+                        }
+                    }
                 }
+                
+                // Parse and display the markdown content
+                const htmlContent = parseMarkdown(markdownText);
+                
+                if (contentDiv) {
+                    contentDiv.innerHTML = htmlContent;
+                    contentDiv.style.display = 'block';
+                }
+                
+            } catch (error) {
+                console.error('Error loading markdown template:', error);
+                
+                // Load default template on error
+                const defaultTemplate = getDefaultTemplate();
+                const htmlContent = parseMarkdown(defaultTemplate);
+                
+                if (contentDiv) {
+                    contentDiv.innerHTML = `
+                        <div style="background: rgba(245, 158, 11, 0.1); border-left: 4px solid #f59e0b; padding: 15px; margin-bottom: 20px; border-radius: 8px;">
+                            <strong style="color: #d97706;">⚠️ Note:</strong> Could not load the specified template file. Loading default template instead.
+                        </div>
+                        ${htmlContent}
+                    `;
+                    contentDiv.style.display = 'block';
+                }
+                
+            } finally {
+                // Hide loading indicator
+                if (loadingDiv) loadingDiv.style.display = 'none';
+            }
+        }
+
+        function getDefaultTemplate() {
+            return `# Malaria Data Analysis Template
+
+## Overview
+This template provides a comprehensive framework for analyzing malaria surveillance data in Sierra Leone.
+
+## Data Requirements
+
+### Required Columns
+- **Date**: Date of data collection (YYYY-MM-DD format)
+- **District**: Administrative district name
+- **Facility**: Health facility name
+- **Tested Cases**: Number of suspected cases tested
+- **Confirmed Cases**: Number of confirmed malaria cases
+- **Age Group**: Patient age categories (Under 5, 5-14, 15+)
+- **Gender**: Patient gender (Male, Female)
+
+### Data Quality Checks
+- Ensure all dates are valid and in correct format
+- Check for missing values in critical columns
+- Validate that confirmed cases ≤ tested cases
+- Verify district and facility names are standardized
+
+## Analysis Steps
+
+### 1. Data Loading and Preprocessing
+
+\`\`\`python
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from datetime import datetime
+
+# Load the dataset
+df = pd.read_csv('malaria_data.csv')
+
+# Convert date column to datetime
+df['date'] = pd.to_datetime(df['date'])
+
+# Calculate confirmation rate
+df['confirmation_rate'] = (df['confirmed_cases'] / df['tested_cases']) * 100
+\`\`\`
+
+### 2. Descriptive Statistics
+
+Calculate key indicators:
+- Overall confirmation rate
+- Confirmation rate by district
+- Confirmation rate by age group
+- Seasonal trends
+- Monthly case counts
+
+### 3. Data Visualization
+
+Create the following visualizations:
+- Time series plots of cases and confirmation rates
+- District-wise comparison charts
+- Age and gender distribution plots
+- Seasonal pattern analysis
+- Heat maps for geographic distribution
+
+### 4. Statistical Analysis
+
+Perform statistical tests to identify:
+- Significant differences between districts
+- Seasonal patterns and trends
+- Age and gender-related patterns
+- Correlation analysis between variables
+
+## Key Performance Indicators (KPIs)
+
+### Primary Indicators
+1. **Overall Confirmation Rate**: (Total confirmed cases / Total tested cases) × 100
+2. **Monthly Incidence Rate**: Number of confirmed cases per 1,000 population per month
+3. **Test Positivity Rate**: Percentage of tests that are positive for malaria
+
+### Secondary Indicators
+1. **District Performance**: Comparison of confirmation rates across districts
+2. **Age-specific Rates**: Confirmation rates by age group
+3. **Seasonal Variation**: Monthly/quarterly trends in cases
+4. **Facility Performance**: Testing and confirmation rates by facility
+
+## Report Template
+
+### Executive Summary
+- Key findings and recommendations
+- Overall trends and patterns
+- Priority areas for intervention
+
+### Detailed Analysis
+- Statistical analysis results
+- Visualizations and charts
+- District-specific findings
+- Demographic analysis
+
+### Recommendations
+- Priority districts for intervention
+- Resource allocation suggestions
+- Surveillance improvements
+- Next steps and follow-up actions
+
+## Code Examples
+
+### Calculate District Statistics
+\`\`\`python
+# Group by district and calculate statistics
+district_stats = df.groupby('district').agg({
+    'confirmation_rate': ['mean', 'std', 'min', 'max'],
+    'confirmed_cases': 'sum',
+    'tested_cases': 'sum'
+})
+
+print("District Statistics:")
+print(district_stats)
+\`\`\`
+
+### Generate Time Series Plot
+\`\`\`python
+# Monthly trend analysis
+monthly_trends = df.groupby(pd.Grouper(key='date', freq='M'))['confirmation_rate'].mean()
+
+plt.figure(figsize=(12, 6))
+plt.plot(monthly_trends.index, monthly_trends.values, marker='o')
+plt.title('Monthly Malaria Confirmation Rate Trends')
+plt.xlabel('Month')
+plt.ylabel('Confirmation Rate (%)')
+plt.xticks(rotation=45)
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+\`\`\`
+
+### Create District Comparison Chart
+\`\`\`python
+# District comparison
+district_rates = df.groupby('district')['confirmation_rate'].mean().sort_values(ascending=False)
+
+plt.figure(figsize=(10, 6))
+bars = plt.bar(range(len(district_rates)), district_rates.values)
+plt.title('Malaria Confirmation Rate by District')
+plt.xlabel('District')
+plt.ylabel('Confirmation Rate (%)')
+plt.xticks(range(len(district_rates)), district_rates.index, rotation=45, ha='right')
+
+# Add value labels on bars
+for i, bar in enumerate(bars):
+    plt.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5, 
+             f'{district_rates.values[i]:.1f}%', 
+             ha='center', va='bottom')
+
+plt.tight_layout()
+plt.show()
+\`\`\`
+
+## Best Practices
+
+1. **Data Validation**: Always validate data quality before analysis
+2. **Standardization**: Use consistent naming conventions for districts and facilities
+3. **Documentation**: Document all analysis steps and assumptions
+4. **Reproducibility**: Ensure analysis can be reproduced with same data
+5. **Version Control**: Track changes to analysis code and data
+
+## Contact Information
+
+For technical support or questions about this template:
+- **Organization**: Informatics Consultancy Firm Sierra Leone (ICF-SL)
+- **Motto**: *A local firm with international standards*
+- **Email**: support@icf-sl.org
+- **Website**: www.icf-sl.org
+
+---
+
+*This template is designed to support the National Malaria Control Programme (NMCP) in Sierra Leone with standardized data analysis procedures.*`;
+        }
+
+        function parseMarkdown(markdown) {
+            let html = markdown;
+            
+            // Headers
+            html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+            html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+            html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+            
+            // Bold and Italic
+            html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            
+            // Code blocks
+            html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+            html = html.replace(/`(.*?)`/g, '<code>$1</code>');
+            
+            // Links
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+            
+            // Images
+            html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+            
+            // Blockquotes
+            html = html.replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>');
+            
+            // Horizontal rules
+            html = html.replace(/^---$/gim, '<hr>');
+            html = html.replace(/^\*\*\*$/gim, '<hr>');
+            
+            // Lists
+            html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
+            html = html.replace(/^\d+\. (.*$)/gim, '<li>$1</li>');
+            
+            // Wrap consecutive list items
+            html = html.replace(/(<li>.*?<\/li>\s*)+/g, function(match) {
+                return '<ul>' + match + '</ul>';
             });
+            
+            // Line breaks
+            html = html.replace(/\n\n/g, '</p><p>');
+            html = '<p>' + html + '</p>';
+            
+            // Clean up empty paragraphs and fix nesting
+            html = html.replace(/<p><\/p>/g, '');
+            html = html.replace(/<p>(<h[1-6]>)/g, '$1');
+            html = html.replace(/(<\/h[1-6]>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<blockquote>)/g, '$1');
+            html = html.replace(/(<\/blockquote>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<hr>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<ul>)/g, '$1');
+            html = html.replace(/(<\/ul>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<pre>)/g, '$1');
+            html = html.replace(/(<\/pre>)<\/p>/g, '$1');
             
             return html;
         }
 
-        // Auto-read file functionality with debouncing
-        let autoReadTimeout;
-        function autoReadFile() {
-            const filename = document.getElementById('markdownFilename').value.trim();
-            
-            // Clear previous timeout
-            clearTimeout(autoReadTimeout);
-            
-            // Only auto-read if filename ends with .md, .markdown, or .txt and has reasonable length
-            if (filename && (filename.endsWith('.md') || filename.endsWith('.markdown') || filename.endsWith('.txt')) && filename.length > 3) {
-                // Debounce the auto-read to avoid too many requests
-                autoReadTimeout = setTimeout(() => {
-                    readMarkdownFile();
-                }, 800); // Wait 800ms after user stops typing
-            }
-        }
-
-        // Drag and drop functionality for file upload (optional)
+        // Initialize the page with collapsed navigation by default
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize collapsed navigation
+            // Set navigation as collapsed by default
             var tabNav = document.getElementById("tabNavigation");
             var toggleBtn = document.getElementById("tabToggleBtn");
             
             if (tabNav && toggleBtn) {
                 tabNav.classList.remove("expanded");
                 toggleBtn.classList.add("collapsed");
-            }
-            
-            // Initialize all content sections as collapsed
-            var sections = document.querySelectorAll('.section-content');
-            var buttons = document.querySelectorAll('.section-toggle');
-            
-            sections.forEach(function(section) {
-                if (section) section.classList.remove('expanded');
-            });
-            
-            buttons.forEach(function(button) {
-                if (button) button.classList.add('collapsed');
-            });
-
-            // Add Enter key handlers for both markdown inputs
-            const filenameInput = document.getElementById('markdownFilename');
-            const codeFilenameInput = document.getElementById('codeFilename');
-            
-            if (filenameInput) {
-                filenameInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        readMarkdownFile();
-                    }
-                });
-                
-                // Focus on the input field when tab is opened
-                if (document.getElementById('tab3').classList.contains('active')) {
-                    filenameInput.focus();
-                }
-            }
-            
-            if (codeFilenameInput) {
-                codeFilenameInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        readCodeFile();
-                    }
-                });
-                
-                // Focus on the input field when tab is opened
-                if (document.getElementById('tab2').classList.contains('active')) {
-                    codeFilenameInput.focus();
-                }
             }
         });
     </script>
