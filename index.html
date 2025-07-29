@@ -930,13 +930,12 @@
             if (loadingDiv) loadingDiv.style.display = 'block';
             if (contentDiv) contentDiv.style.display = 'none';
             
-            // Auto-load from analysis_template.md
-            const filePath = './analysis_template.md';
+            const filePath = 'analysis_template.md';
             
             try {
                 let markdownText = '';
                 
-                // Try to load from the specified file
+                // Try to load from the main directory only
                 try {
                     markdownText = await window.fs.readFile(filePath, { encoding: 'utf8' });
                     console.log(`Template loaded from: ${filePath}`);
@@ -946,7 +945,7 @@
                         const response = await fetch(filePath);
                         if (response.ok) {
                             markdownText = await response.text();
-                            console.log(`Template loaded from: ${filePath}`);
+                            console.log(`Template loaded via fetch from: ${filePath}`);
                         } else {
                             throw new Error(`File not found: ${filePath}`);
                         }
@@ -968,17 +967,17 @@
                 
                 if (contentDiv) {
                     contentDiv.innerHTML = `
-                        <div style="background: rgba(245, 158, 11, 0.1); border-left: 4px solid #f59e0b; padding: 15px; margin-bottom: 20px; border-radius: 8px;">
+                        <div style="background: rgba(245, 158, 11, 0.1); border-left: 4px solid #f59e0b; padding: 20px; margin-bottom: 20px; border-radius: 8px;">
                             <strong style="color: #d97706;">📄 File Not Found:</strong> Please create <code>analysis_template.md</code> in the same folder as this HTML file.
                         </div>
-                        <div style="background: rgba(59, 130, 246, 0.1); border-left: 4px solid #3b82f6; padding: 15px; margin-top: 15px; border-radius: 8px;">
+                        <div style="background: rgba(59, 130, 246, 0.1); border-left: 4px solid #3b82f6; padding: 20px; border-radius: 8px;">
                             <strong style="color: #1e40af;">💡 Instructions:</strong> 
-                            <br>1. Create a file named <code>analysis_template.md</code>
-                            <br>2. Add your markdown content with collapsible sections using:
-                            <br>&nbsp;&nbsp;• <code>##STEP##</code> for main sections
-                            <br>&nbsp;&nbsp;• <code>###SUBSTEP###</code> for sub-sections  
-                            <br>&nbsp;&nbsp;• <code>####SUB####</code> for categories
-                            <br>3. Refresh this tab to load your template
+                            <ol style="margin: 15px 0; padding-left: 25px; line-height: 1.8;">
+                                <li>Create a file named <code>analysis_template.md</code></li>
+                                <li>Place it in the same folder as this HTML file</li>
+                                <li>Add your markdown content</li>
+                                <li>Refresh this tab to load your template</li>
+                            </ol>
                         </div>
                     `;
                     contentDiv.style.display = 'block';
