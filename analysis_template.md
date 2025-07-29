@@ -1,5 +1,5 @@
-```python
 # Step 1: Import required libraries
+```python
 import matplotlib.pyplot as plt
 import pandas as pd
 ```
