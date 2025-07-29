@@ -917,113 +917,35 @@
                 </button>
                 <div class="section-content">
                     <div class="content-text">
-                        <strong>Malaria Data Visualization Tools</strong><br>
-                        This section loads and displays visualization code from the analysis_code.md file in the repository. 
-                        The code provides comprehensive visualization scripts for malaria surveillance data including 
-                        interactive charts, maps, and dashboards to support visual analysis of malaria trends and patterns.
+                        <strong>Malaria Data Visualization Template</strong><br>
+                        This section automatically reads and parses your analysis_code.md file from the repository. 
+                        It creates collapsible sections based on markdown headers (## Step) and applies Python syntax highlighting 
+                        to code blocks with unique colors for imports, functions, variables, and other Python elements.
                     </div>
                 </div>
             </div>
 
-            <!-- File Loading Section -->
-            <div class="collapsible-section">
-                <button class="section-toggle collapsed" onclick="toggleSection(this)">
-                    📄 Load Visualization Code from Repository
+            <!-- Load Template Button -->
+            <div style="text-align: center; margin: 30px 0;">
+                <button onclick="loadMarkdownTemplate()" style="background: linear-gradient(135deg, #0066cc, #004499); color: white; border: none; padding: 15px 30px; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 1.2em; box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3); transition: all 0.3s ease;">
+                    📂 Load Template from analysis_code.md
                 </button>
-                <div class="section-content">
-                    <div class="step-description">
-                        Load visualization code from the analysis_code.md file located in the main repository.
-                    </div>
-                    <div class="code-section">
-                        <div class="code-header">
-                            <div class="code-title">
-                                <span>💻</span>
-                                Repository File Loader
-                            </div>
-                            <button class="copy-btn" onclick="copyCode('fileLoaderCode')" id="copyBtnFileLoader">
-                                <span>📋</span>
-                                Copy Code
-                            </button>
-                        </div>
-                        <div class="code-container">
-                            <div class="code-content" id="fileLoaderCode"><span class="comment"># Load visualization code from repository file</span>
-<span class="keyword">def</span> <span class="function">load_visualization_code</span>():
-    <span class="string">"""Load visualization code from analysis_code.md in repository"""</span>
-    <span class="keyword">try</span>:
-        <span class="keyword">with</span> <span class="function">open</span>(<span class="string">'analysis_code.md'</span>, <span class="string">'r'</span>, <span class="variable">encoding</span><span class="operator">=</span><span class="string">'utf-8'</span>) <span class="keyword">as</span> <span class="variable">file</span>:
-            <span class="variable">code_content</span> <span class="operator">=</span> <span class="variable">file</span>.<span class="function">read</span>()
-        <span class="keyword">return</span> <span class="variable">code_content</span>
-    <span class="keyword">except</span> <span class="function">FileNotFoundError</span>:
-        <span class="function">print</span>(<span class="string">"analysis_code.md not found in repository"</span>)
-        <span class="keyword">return</span> <span class="keyword">None</span></div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
-            <!-- Display Code Content -->
-            <div class="collapsible-section">
-                <button class="section-toggle collapsed" onclick="toggleSection(this)" id="loadCodeBtn">
-                    📋 Display Code from analysis_code.md
-                </button>
-                <div class="section-content">
-                    <div class="step-description">
-                        Click the "Load Code" button below to read and display the visualization code from the repository file.
-                    </div>
-                    
-                    <div style="text-align: center; margin: 20px 0;">
-                        <button onclick="loadAnalysisCode()" style="background: linear-gradient(135deg, #0066cc, #004499); color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1.1em;">
-                            📂 Load Code from Repository
-                        </button>
-                    </div>
-
-                    <div class="code-section" id="loadedCodeSection" style="display: none;">
-                        <div class="code-header">
-                            <div class="code-title">
-                                <span>💻</span>
-                                Content from analysis_code.md
-                            </div>
-                            <button class="copy-btn" onclick="copyCode('loadedCodeContent')" id="copyBtnLoaded">
-                                <span>📋</span>
-                                Copy Code
-                            </button>
-                        </div>
-                        <div class="code-container">
-                            <div class="code-content" id="loadedCodeContent">
-                                <span class="comment"># Code will be loaded from analysis_code.md</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="loadingMessage" style="display: none; text-align: center; padding: 20px; color: #0066cc;">
-                        <div style="font-size: 1.2em;">📂 Loading code from repository...</div>
-                    </div>
-
-                    <div id="errorMessage" style="display: none; text-align: center; padding: 20px; color: #dc3545;">
-                        <div style="font-size: 1.2em;">❌ Could not load analysis_code.md from repository</div>
-                        <div style="font-size: 1em; margin-top: 10px;">Please ensure the file exists in the main repository directory</div>
-                    </div>
-                </div>
+            <!-- Loading and Error Messages -->
+            <div id="templateLoadingMessage" style="display: none; text-align: center; padding: 30px; color: #0066cc;">
+                <div style="font-size: 1.3em; margin-bottom: 10px;">📂 Loading template from repository...</div>
+                <div style="font-size: 1em;">Parsing markdown structure and code blocks</div>
             </div>
 
-            <!-- Execution Instructions -->
-            <div class="collapsible-section">
-                <button class="section-toggle collapsed" onclick="toggleSection(this)">
-                    ⚡ Code Execution Instructions
-                </button>
-                <div class="section-content">
-                    <div class="step-description">
-                        Instructions for executing the loaded visualization code from the repository.
-                    </div>
-                    <div class="content-text">
-                        <strong>How to use the loaded code:</strong><br>
-                        1. The code above is loaded directly from <code>analysis_code.md</code> in your repository<br>
-                        2. Copy the code using the copy button<br>
-                        3. Run it in your Python environment with your malaria dataset<br>
-                        4. The code will generate visualizations based on the repository specifications<br>
-                        5. All visualization outputs will be saved according to the code instructions
-                    </div>
-                </div>
+            <div id="templateErrorMessage" style="display: none; text-align: center; padding: 30px; color: #dc3545;">
+                <div style="font-size: 1.3em; margin-bottom: 10px;">❌ Could not load analysis_code.md</div>
+                <div style="font-size: 1em;">Please ensure the file exists in the main repository directory</div>
+            </div>
+
+            <!-- Dynamic Template Content -->
+            <div id="templateContent" style="display: none;">
+                <!-- Template sections will be dynamically generated here -->
             </div>
         </div>
 
@@ -1115,9 +1037,10 @@
             else if (elementId === 'step4Code') copyBtn = document.getElementById('copyBtn4');
             else if (elementId === 'step5Code') copyBtn = document.getElementById('copyBtn5');
             else if (elementId === 'step6Code') copyBtn = document.getElementById('copyBtn6');
-            // Visualization tab copy buttons
-            else if (elementId === 'fileLoaderCode') copyBtn = document.getElementById('copyBtnFileLoader');
-            else if (elementId === 'loadedCodeContent') copyBtn = document.getElementById('copyBtnLoaded');
+            // Dynamic template copy buttons
+            else {
+                copyBtn = document.querySelector(`[onclick="copyCode('${elementId}')"]`);
+            }
             
             if (!copyBtn) return;
             
@@ -1205,7 +1128,193 @@
             }
         }
 
-        async function loadAnalysisCode() {
+        async function loadMarkdownTemplate() {
+            const loadingMessage = document.getElementById('templateLoadingMessage');
+            const errorMessage = document.getElementById('templateErrorMessage');
+            const templateContent = document.getElementById('templateContent');
+            
+            // Hide all messages initially
+            loadingMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+            templateContent.style.display = 'none';
+            
+            // Show loading message
+            loadingMessage.style.display = 'block';
+            
+            try {
+                // Try to read the file from the repository
+                const response = await fetch('analysis_code.md');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const fileContent = await response.text();
+                
+                // Hide loading message
+                loadingMessage.style.display = 'none';
+                
+                // Parse the markdown and create template
+                const parsedTemplate = parseMarkdownTemplate(fileContent);
+                templateContent.innerHTML = parsedTemplate;
+                
+                // Show the template content
+                templateContent.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error loading analysis_code.md:', error);
+                
+                // Hide loading message and show error
+                loadingMessage.style.display = 'none';
+                errorMessage.style.display = 'block';
+            }
+        }
+
+        function parseMarkdownTemplate(content) {
+            const lines = content.split('\n');
+            let html = '';
+            let currentStep = null;
+            let currentContent = [];
+            let inCodeBlock = false;
+            let codeBlockContent = [];
+            let codeBlockLanguage = '';
+            let stepCounter = 0;
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                
+                // Check for step headers (## Step)
+                if (line.startsWith('## ') && line.toLowerCase().includes('step')) {
+                    // Save previous step if exists
+                    if (currentStep) {
+                        html += createStepSection(currentStep, currentContent, stepCounter);
+                        stepCounter++;
+                    }
+                    
+                    // Start new step
+                    currentStep = line.replace('## ', '').trim();
+                    currentContent = [];
+                    inCodeBlock = false;
+                    codeBlockContent = [];
+                }
+                // Check for code block start
+                else if (line.startsWith('```')) {
+                    if (!inCodeBlock) {
+                        // Starting code block
+                        inCodeBlock = true;
+                        codeBlockLanguage = line.replace('```', '').trim();
+                        codeBlockContent = [];
+                    } else {
+                        // Ending code block
+                        inCodeBlock = false;
+                        currentContent.push({
+                            type: 'code',
+                            language: codeBlockLanguage,
+                            content: codeBlockContent.join('\n')
+                        });
+                        codeBlockContent = [];
+                        codeBlockLanguage = '';
+                    }
+                }
+                // Inside code block
+                else if (inCodeBlock) {
+                    codeBlockContent.push(line);
+                }
+                // Regular content
+                else if (currentStep && line.trim() !== '') {
+                    currentContent.push({
+                        type: 'text',
+                        content: line
+                    });
+                }
+            }
+            
+            // Add the last step
+            if (currentStep) {
+                html += createStepSection(currentStep, currentContent, stepCounter);
+            }
+            
+            return html;
+        }
+
+        function createStepSection(stepTitle, content, stepNumber) {
+            const sectionId = `templateStep${stepNumber}`;
+            const codeId = `templateCode${stepNumber}`;
+            const copyBtnId = `templateCopyBtn${stepNumber}`;
+            
+            let html = `
+                <div class="collapsible-section">
+                    <button class="section-toggle collapsed" onclick="toggleSection(this)">
+                        📋 ${stepTitle}
+                    </button>
+                    <div class="section-content">
+            `;
+            
+            // Add text content
+            const textContent = content.filter(item => item.type === 'text');
+            if (textContent.length > 0) {
+                html += `
+                    <div class="step-description">
+                        ${textContent.map(item => item.content).join('<br>')}
+                    </div>
+                `;
+            }
+            
+            // Add code blocks
+            const codeBlocks = content.filter(item => item.type === 'code');
+            codeBlocks.forEach((codeBlock, index) => {
+                const uniqueCodeId = `${codeId}_${index}`;
+                const uniqueCopyBtnId = `${copyBtnId}_${index}`;
+                
+                html += `
+                    <div class="code-section">
+                        <div class="code-header">
+                            <div class="code-title">
+                                <span>💻</span>
+                                ${stepTitle} - ${codeBlock.language || 'Code'}
+                            </div>
+                            <button class="copy-btn" onclick="copyCode('${uniqueCodeId}')" id="${uniqueCopyBtnId}">
+                                <span>📋</span>
+                                Copy Code
+                            </button>
+                        </div>
+                        <div class="code-container">
+                            <div class="code-content" id="${uniqueCodeId}">${highlightPythonCode(codeBlock.content)}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                    </div>
+                </div>
+            `;
+            
+            return html;
+        }
+
+        function highlightPythonCode(code) {
+            // Enhanced Python syntax highlighting with unique colors
+            let highlighted = code
+                // Escape HTML first
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                
+                // Keywords (purple)
+                .replace(/\b(import|from|def|class|if|else|elif|for|while|try|except|finally|return|with|as|break|continue|pass|yield|lambda|global|nonlocal|assert|del|raise|async|await)\b/g, '<span class="keyword">$1</span>')
+                
+                // Built-in functions (blue)
+                .replace(/\b(print|len|range|enumerate|zip|map|filter|sum|max|min|abs|round|sorted|reversed|any|all|type|isinstance|hasattr|getattr|setattr|delattr|dir|vars|id|hash|repr|str|int|float|bool|list|tuple|dict|set|frozenset|open|input)\b/g, '<span class="function">$1</span>')
+                
+                // Common libraries and modules (orange)
+                .replace(/\b(pd|np|plt|sns|px|go|os|sys|re|json|csv|datetime|time|math|random|collections|itertools|functools|pathlib)\b/g, '<span class="variable">$1</span>')
+                
+                // Function calls (cyan)
+                .replace(/\b(\w+)\s*\(/g, '<span style="color: #06b6d4; font-weight: 600;">$1</span>(')
+                
+                // Strings (green)
+                .replace(/'([^'\\]|\\.)*'/g, '<span class="string">        async function loadAnalysisCode() {
             const loadingMessage = document.getElementById('loadingMessage');
             const errorMessage = document.getElementById('errorMessage');
             const codeSection = document.getElementById('loadedCodeSection');
@@ -1264,6 +1373,271 @@
                 .replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>')
                 .replace(/#.*$/gm, '<span class="comment">$&</span>')
                 .replace(/([=+\-*/%<>!&|]+)/g, '<span class="operator">$1</span>');
+            
+            return highlighted;
+        }</span>')
+                .replace(/"([^"\\]|\\.)*"/g, '<span class="string">        async function loadAnalysisCode() {
+            const loadingMessage = document.getElementById('loadingMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const codeSection = document.getElementById('loadedCodeSection');
+            const codeContent = document.getElementById('loadedCodeContent');
+            
+            // Hide all messages initially
+            loadingMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+            codeSection.style.display = 'none';
+            
+            // Show loading message
+            loadingMessage.style.display = 'block';
+            
+            try {
+                // Try to read the file from the repository
+                const response = await fetch('analysis_code.md');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const fileContent = await response.text();
+                
+                // Hide loading message
+                loadingMessage.style.display = 'none';
+                
+                // Display the content with basic syntax highlighting
+                const highlightedContent = highlightCode(fileContent);
+                codeContent.innerHTML = highlightedContent;
+                
+                // Show the code section
+                codeSection.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error loading analysis_code.md:', error);
+                
+                // Hide loading message and show error
+                loadingMessage.style.display = 'none';
+                errorMessage.style.display = 'block';
+            }
+        }
+
+        function highlightCode(content) {
+            // Basic syntax highlighting for the loaded content
+            let highlighted = content
+                // Escape HTML first
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                // Add syntax highlighting
+                .replace(/\b(import|from|def|class|if|else|elif|for|while|try|except|return|with|as)\b/g, '<span class="keyword">$1</span>')
+                .replace(/\b(pd|np|plt|sns|px|go)\b/g, '<span class="variable">$1</span>')
+                .replace(/\b(\w+)\(/g, '<span class="function">$1</span>(')
+                .replace(/'([^']*?)'/g, '<span class="string">\'$1\'</span>')
+                .replace(/"([^"]*?)"/g, '<span class="string">"$1"</span>')
+                .replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>')
+                .replace(/#.*$/gm, '<span class="comment">$&</span>')
+                .replace(/([=+\-*/%<>!&|]+)/g, '<span class="operator">$1</span>');
+            
+            return highlighted;
+        }</span>')
+                .replace(/'''[\s\S]*?'''/g, '<span class="string">        async function loadAnalysisCode() {
+            const loadingMessage = document.getElementById('loadingMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const codeSection = document.getElementById('loadedCodeSection');
+            const codeContent = document.getElementById('loadedCodeContent');
+            
+            // Hide all messages initially
+            loadingMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+            codeSection.style.display = 'none';
+            
+            // Show loading message
+            loadingMessage.style.display = 'block';
+            
+            try {
+                // Try to read the file from the repository
+                const response = await fetch('analysis_code.md');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const fileContent = await response.text();
+                
+                // Hide loading message
+                loadingMessage.style.display = 'none';
+                
+                // Display the content with basic syntax highlighting
+                const highlightedContent = highlightCode(fileContent);
+                codeContent.innerHTML = highlightedContent;
+                
+                // Show the code section
+                codeSection.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error loading analysis_code.md:', error);
+                
+                // Hide loading message and show error
+                loadingMessage.style.display = 'none';
+                errorMessage.style.display = 'block';
+            }
+        }
+
+        function highlightCode(content) {
+            // Basic syntax highlighting for the loaded content
+            let highlighted = content
+                // Escape HTML first
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                // Add syntax highlighting
+                .replace(/\b(import|from|def|class|if|else|elif|for|while|try|except|return|with|as)\b/g, '<span class="keyword">$1</span>')
+                .replace(/\b(pd|np|plt|sns|px|go)\b/g, '<span class="variable">$1</span>')
+                .replace(/\b(\w+)\(/g, '<span class="function">$1</span>(')
+                .replace(/'([^']*?)'/g, '<span class="string">\'$1\'</span>')
+                .replace(/"([^"]*?)"/g, '<span class="string">"$1"</span>')
+                .replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>')
+                .replace(/#.*$/gm, '<span class="comment">$&</span>')
+                .replace(/([=+\-*/%<>!&|]+)/g, '<span class="operator">$1</span>');
+            
+            return highlighted;
+        }</span>')
+                .replace(/"""[\s\S]*?"""/g, '<span class="string">        async function loadAnalysisCode() {
+            const loadingMessage = document.getElementById('loadingMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const codeSection = document.getElementById('loadedCodeSection');
+            const codeContent = document.getElementById('loadedCodeContent');
+            
+            // Hide all messages initially
+            loadingMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+            codeSection.style.display = 'none';
+            
+            // Show loading message
+            loadingMessage.style.display = 'block';
+            
+            try {
+                // Try to read the file from the repository
+                const response = await fetch('analysis_code.md');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const fileContent = await response.text();
+                
+                // Hide loading message
+                loadingMessage.style.display = 'none';
+                
+                // Display the content with basic syntax highlighting
+                const highlightedContent = highlightCode(fileContent);
+                codeContent.innerHTML = highlightedContent;
+                
+                // Show the code section
+                codeSection.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error loading analysis_code.md:', error);
+                
+                // Hide loading message and show error
+                loadingMessage.style.display = 'none';
+                errorMessage.style.display = 'block';
+            }
+        }
+
+        function highlightCode(content) {
+            // Basic syntax highlighting for the loaded content
+            let highlighted = content
+                // Escape HTML first
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                // Add syntax highlighting
+                .replace(/\b(import|from|def|class|if|else|elif|for|while|try|except|return|with|as)\b/g, '<span class="keyword">$1</span>')
+                .replace(/\b(pd|np|plt|sns|px|go)\b/g, '<span class="variable">$1</span>')
+                .replace(/\b(\w+)\(/g, '<span class="function">$1</span>(')
+                .replace(/'([^']*?)'/g, '<span class="string">\'$1\'</span>')
+                .replace(/"([^"]*?)"/g, '<span class="string">"$1"</span>')
+                .replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>')
+                .replace(/#.*$/gm, '<span class="comment">$&</span>')
+                .replace(/([=+\-*/%<>!&|]+)/g, '<span class="operator">$1</span>');
+            
+            return highlighted;
+        }</span>')
+                
+                // Numbers (red)
+                .replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>')
+                
+                // Comments (gray)
+                .replace(/#.*$/gm, '<span class="comment">        async function loadAnalysisCode() {
+            const loadingMessage = document.getElementById('loadingMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const codeSection = document.getElementById('loadedCodeSection');
+            const codeContent = document.getElementById('loadedCodeContent');
+            
+            // Hide all messages initially
+            loadingMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+            codeSection.style.display = 'none';
+            
+            // Show loading message
+            loadingMessage.style.display = 'block';
+            
+            try {
+                // Try to read the file from the repository
+                const response = await fetch('analysis_code.md');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const fileContent = await response.text();
+                
+                // Hide loading message
+                loadingMessage.style.display = 'none';
+                
+                // Display the content with basic syntax highlighting
+                const highlightedContent = highlightCode(fileContent);
+                codeContent.innerHTML = highlightedContent;
+                
+                // Show the code section
+                codeSection.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error loading analysis_code.md:', error);
+                
+                // Hide loading message and show error
+                loadingMessage.style.display = 'none';
+                errorMessage.style.display = 'block';
+            }
+        }
+
+        function highlightCode(content) {
+            // Basic syntax highlighting for the loaded content
+            let highlighted = content
+                // Escape HTML first
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                // Add syntax highlighting
+                .replace(/\b(import|from|def|class|if|else|elif|for|while|try|except|return|with|as)\b/g, '<span class="keyword">$1</span>')
+                .replace(/\b(pd|np|plt|sns|px|go)\b/g, '<span class="variable">$1</span>')
+                .replace(/\b(\w+)\(/g, '<span class="function">$1</span>(')
+                .replace(/'([^']*?)'/g, '<span class="string">\'$1\'</span>')
+                .replace(/"([^"]*?)"/g, '<span class="string">"$1"</span>')
+                .replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>')
+                .replace(/#.*$/gm, '<span class="comment">$&</span>')
+                .replace(/([=+\-*/%<>!&|]+)/g, '<span class="operator">$1</span>');
+            
+            return highlighted;
+        }</span>')
+                
+                // Operators (purple)
+                .replace(/([=+\-*/%<>!&|^~]+)/g, '<span class="operator">$1</span>')
+                
+                // Method calls (light blue)
+                .replace(/\.(\w+)/g, '.<span style="color: #38bdf8; font-weight: 500;">$1</span>')
+                
+                // Constants and None, True, False (pink)
+                .replace(/\b(None|True|False|self|cls)\b/g, '<span style="color: #ec4899; font-weight: 600;">$1</span>');
             
             return highlighted;
         }
