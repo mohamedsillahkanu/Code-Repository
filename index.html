@@ -656,28 +656,78 @@
         async function loadMarkdownFile() {
             const display = document.getElementById('markdownDisplay');
             
+            // Show loading state
+            display.innerHTML = `
+                <div class="loading-state">
+                    <div class="loading-icon">📄</div>
+                    <div class="loading-title">Loading content.md...</div>
+                    <div class="loading-text">Attempting to read markdown file</div>
+                </div>
+            `;
+            
             try {
+                console.log('🔍 Attempting to load content.md...');
+                
                 // Try to load content.md from the same directory
                 const response = await fetch('content.md');
+                
+                console.log('📡 Response status:', response.status);
+                console.log('📡 Response ok:', response.ok);
+                console.log('📡 Response headers:', response.headers.get('content-type'));
                 
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
                 
                 const markdownContent = await response.text();
+                console.log('📝 Content loaded, length:', markdownContent.length);
+                console.log('📝 First 100 chars:', markdownContent.substring(0, 100));
+                
+                if (markdownContent.trim().length === 0) {
+                    throw new Error('Content.md file is empty');
+                }
+                
                 renderMarkdownDisplay(markdownContent);
+                console.log('✅ Markdown rendered successfully!');
                 
             } catch (error) {
-                console.log('Could not load content.md:', error.message);
+                console.error('❌ Error loading content.md:', error);
                 
-                // Show error state with helpful message and color reference
+                // Show detailed error state with troubleshooting
                 display.innerHTML = `
                     <div class="error-state">
-                        <div class="error-icon">📄</div>
-                        <div class="error-title">Documentation File Not Found</div>
+                        <div class="error-icon">⚠️</div>
+                        <div class="error-title">Could Not Load content.md</div>
                         <div class="error-text">
-                            Please place a <strong>content.md</strong> file in the same directory as this HTML file.<br>
-                            The system will automatically read and display its contents here.
+                            <strong>Error:</strong> ${error.message}<br><br>
+                            <strong>Troubleshooting Steps:</strong>
+                        </div>
+                        <div style="margin-top: 20px; padding: 20px; background: rgba(239, 68, 68, 0.1); border-radius: 10px; text-align: left;">
+                            <h4 style="color: #ef4444; margin-bottom: 15px;">🔧 Common Solutions:</h4>
+                            <ol style="line-height: 1.8; color: #333;">
+                                <li><strong>File Location:</strong> Ensure <code>content.md</code> is in the same folder as this HTML file</li>
+                                <li><strong>File Name:</strong> Check the file is named exactly <code>content.md</code> (not <code>content.md.txt</code>)</li>
+                                <li><strong>Web Server:</strong> Open this page through a web server (not file:// protocol)</li>
+                                <li><strong>CORS Policy:</strong> Use a local server like Python's <code>python -m http.server</code></li>
+                                <li><strong>File Permissions:</strong> Ensure the file is readable</li>
+                            </ol>
+                        </div>
+                        <div style="margin-top: 20px; padding: 20px; background: rgba(0,102,204,0.1); border-radius: 10px; text-align: left;">
+                            <h4 style="color: var(--primary-blue); margin-bottom: 15px;">🚀 Quick Test Server:</h4>
+                            <p style="line-height: 1.6;">Run one of these commands in your folder:</p>
+                            <pre style="background: #1e293b; color: #e2e8f0; padding: 10px; border-radius: 5px; margin: 10px 0;">
+# Python 3
+python -m http.server 8000
+
+# Python 2  
+python -m SimpleHTTPServer 8000
+
+# Node.js (if you have it)
+npx serve
+
+# PHP (if you have it)
+php -S localhost:8000</pre>
+                            <p>Then open: <code>http://localhost:8000</code></p>
                         </div>
                         <div style="margin-top: 30px; padding: 20px; background: rgba(0,102,204,0.1); border-radius: 10px; text-align: left;">
                             <h3 style="color: var(--primary-blue); margin-bottom: 15px;">🎨 Syntax Highlighting Test:</h3>
