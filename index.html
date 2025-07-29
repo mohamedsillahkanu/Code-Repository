@@ -906,14 +906,14 @@
             </div>
         </div>
 
-        <!-- Tab 3 -->
+        <!-- Tab 3 - Data Visualization Template -->
         <div id="tab3" class="tab-content">
             <div class="section-header">Data Visualization</div>
             
             <!-- Data Visualization Introduction -->
             <div class="collapsible-section">
                 <button class="section-toggle collapsed" onclick="toggleSection(this)">
-                    📊 Data Visualization Overview
+                    📊 Data Visualization Template
                 </button>
                 <div class="section-content">
                     <div class="content-text">
@@ -1128,6 +1128,7 @@
             }
         }
 
+        // Template Loading Functions
         async function loadMarkdownTemplate() {
             const loadingMessage = document.getElementById('templateLoadingMessage');
             const errorMessage = document.getElementById('templateErrorMessage');
@@ -1314,321 +1315,16 @@
                 .replace(/\b(\w+)\s*\(/g, '<span style="color: #06b6d4; font-weight: 600;">$1</span>(')
                 
                 // Strings (green)
-                .replace(/'([^'\\]|\\.)*'/g, '<span class="string">        async function loadAnalysisCode() {
-            const loadingMessage = document.getElementById('loadingMessage');
-            const errorMessage = document.getElementById('errorMessage');
-            const codeSection = document.getElementById('loadedCodeSection');
-            const codeContent = document.getElementById('loadedCodeContent');
-            
-            // Hide all messages initially
-            loadingMessage.style.display = 'none';
-            errorMessage.style.display = 'none';
-            codeSection.style.display = 'none';
-            
-            // Show loading message
-            loadingMessage.style.display = 'block';
-            
-            try {
-                // Try to read the file from the repository
-                const response = await fetch('analysis_code.md');
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const fileContent = await response.text();
-                
-                // Hide loading message
-                loadingMessage.style.display = 'none';
-                
-                // Display the content with basic syntax highlighting
-                const highlightedContent = highlightCode(fileContent);
-                codeContent.innerHTML = highlightedContent;
-                
-                // Show the code section
-                codeSection.style.display = 'block';
-                
-            } catch (error) {
-                console.error('Error loading analysis_code.md:', error);
-                
-                // Hide loading message and show error
-                loadingMessage.style.display = 'none';
-                errorMessage.style.display = 'block';
-            }
-        }
-
-        function highlightCode(content) {
-            // Basic syntax highlighting for the loaded content
-            let highlighted = content
-                // Escape HTML first
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                // Add syntax highlighting
-                .replace(/\b(import|from|def|class|if|else|elif|for|while|try|except|return|with|as)\b/g, '<span class="keyword">$1</span>')
-                .replace(/\b(pd|np|plt|sns|px|go)\b/g, '<span class="variable">$1</span>')
-                .replace(/\b(\w+)\(/g, '<span class="function">$1</span>(')
-                .replace(/'([^']*?)'/g, '<span class="string">\'$1\'</span>')
-                .replace(/"([^"]*?)"/g, '<span class="string">"$1"</span>')
-                .replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>')
-                .replace(/#.*$/gm, '<span class="comment">$&</span>')
-                .replace(/([=+\-*/%<>!&|]+)/g, '<span class="operator">$1</span>');
-            
-            return highlighted;
-        }</span>')
-                .replace(/"([^"\\]|\\.)*"/g, '<span class="string">        async function loadAnalysisCode() {
-            const loadingMessage = document.getElementById('loadingMessage');
-            const errorMessage = document.getElementById('errorMessage');
-            const codeSection = document.getElementById('loadedCodeSection');
-            const codeContent = document.getElementById('loadedCodeContent');
-            
-            // Hide all messages initially
-            loadingMessage.style.display = 'none';
-            errorMessage.style.display = 'none';
-            codeSection.style.display = 'none';
-            
-            // Show loading message
-            loadingMessage.style.display = 'block';
-            
-            try {
-                // Try to read the file from the repository
-                const response = await fetch('analysis_code.md');
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const fileContent = await response.text();
-                
-                // Hide loading message
-                loadingMessage.style.display = 'none';
-                
-                // Display the content with basic syntax highlighting
-                const highlightedContent = highlightCode(fileContent);
-                codeContent.innerHTML = highlightedContent;
-                
-                // Show the code section
-                codeSection.style.display = 'block';
-                
-            } catch (error) {
-                console.error('Error loading analysis_code.md:', error);
-                
-                // Hide loading message and show error
-                loadingMessage.style.display = 'none';
-                errorMessage.style.display = 'block';
-            }
-        }
-
-        function highlightCode(content) {
-            // Basic syntax highlighting for the loaded content
-            let highlighted = content
-                // Escape HTML first
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                // Add syntax highlighting
-                .replace(/\b(import|from|def|class|if|else|elif|for|while|try|except|return|with|as)\b/g, '<span class="keyword">$1</span>')
-                .replace(/\b(pd|np|plt|sns|px|go)\b/g, '<span class="variable">$1</span>')
-                .replace(/\b(\w+)\(/g, '<span class="function">$1</span>(')
-                .replace(/'([^']*?)'/g, '<span class="string">\'$1\'</span>')
-                .replace(/"([^"]*?)"/g, '<span class="string">"$1"</span>')
-                .replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>')
-                .replace(/#.*$/gm, '<span class="comment">$&</span>')
-                .replace(/([=+\-*/%<>!&|]+)/g, '<span class="operator">$1</span>');
-            
-            return highlighted;
-        }</span>')
-                .replace(/'''[\s\S]*?'''/g, '<span class="string">        async function loadAnalysisCode() {
-            const loadingMessage = document.getElementById('loadingMessage');
-            const errorMessage = document.getElementById('errorMessage');
-            const codeSection = document.getElementById('loadedCodeSection');
-            const codeContent = document.getElementById('loadedCodeContent');
-            
-            // Hide all messages initially
-            loadingMessage.style.display = 'none';
-            errorMessage.style.display = 'none';
-            codeSection.style.display = 'none';
-            
-            // Show loading message
-            loadingMessage.style.display = 'block';
-            
-            try {
-                // Try to read the file from the repository
-                const response = await fetch('analysis_code.md');
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const fileContent = await response.text();
-                
-                // Hide loading message
-                loadingMessage.style.display = 'none';
-                
-                // Display the content with basic syntax highlighting
-                const highlightedContent = highlightCode(fileContent);
-                codeContent.innerHTML = highlightedContent;
-                
-                // Show the code section
-                codeSection.style.display = 'block';
-                
-            } catch (error) {
-                console.error('Error loading analysis_code.md:', error);
-                
-                // Hide loading message and show error
-                loadingMessage.style.display = 'none';
-                errorMessage.style.display = 'block';
-            }
-        }
-
-        function highlightCode(content) {
-            // Basic syntax highlighting for the loaded content
-            let highlighted = content
-                // Escape HTML first
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                // Add syntax highlighting
-                .replace(/\b(import|from|def|class|if|else|elif|for|while|try|except|return|with|as)\b/g, '<span class="keyword">$1</span>')
-                .replace(/\b(pd|np|plt|sns|px|go)\b/g, '<span class="variable">$1</span>')
-                .replace(/\b(\w+)\(/g, '<span class="function">$1</span>(')
-                .replace(/'([^']*?)'/g, '<span class="string">\'$1\'</span>')
-                .replace(/"([^"]*?)"/g, '<span class="string">"$1"</span>')
-                .replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>')
-                .replace(/#.*$/gm, '<span class="comment">$&</span>')
-                .replace(/([=+\-*/%<>!&|]+)/g, '<span class="operator">$1</span>');
-            
-            return highlighted;
-        }</span>')
-                .replace(/"""[\s\S]*?"""/g, '<span class="string">        async function loadAnalysisCode() {
-            const loadingMessage = document.getElementById('loadingMessage');
-            const errorMessage = document.getElementById('errorMessage');
-            const codeSection = document.getElementById('loadedCodeSection');
-            const codeContent = document.getElementById('loadedCodeContent');
-            
-            // Hide all messages initially
-            loadingMessage.style.display = 'none';
-            errorMessage.style.display = 'none';
-            codeSection.style.display = 'none';
-            
-            // Show loading message
-            loadingMessage.style.display = 'block';
-            
-            try {
-                // Try to read the file from the repository
-                const response = await fetch('analysis_code.md');
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const fileContent = await response.text();
-                
-                // Hide loading message
-                loadingMessage.style.display = 'none';
-                
-                // Display the content with basic syntax highlighting
-                const highlightedContent = highlightCode(fileContent);
-                codeContent.innerHTML = highlightedContent;
-                
-                // Show the code section
-                codeSection.style.display = 'block';
-                
-            } catch (error) {
-                console.error('Error loading analysis_code.md:', error);
-                
-                // Hide loading message and show error
-                loadingMessage.style.display = 'none';
-                errorMessage.style.display = 'block';
-            }
-        }
-
-        function highlightCode(content) {
-            // Basic syntax highlighting for the loaded content
-            let highlighted = content
-                // Escape HTML first
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                // Add syntax highlighting
-                .replace(/\b(import|from|def|class|if|else|elif|for|while|try|except|return|with|as)\b/g, '<span class="keyword">$1</span>')
-                .replace(/\b(pd|np|plt|sns|px|go)\b/g, '<span class="variable">$1</span>')
-                .replace(/\b(\w+)\(/g, '<span class="function">$1</span>(')
-                .replace(/'([^']*?)'/g, '<span class="string">\'$1\'</span>')
-                .replace(/"([^"]*?)"/g, '<span class="string">"$1"</span>')
-                .replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>')
-                .replace(/#.*$/gm, '<span class="comment">$&</span>')
-                .replace(/([=+\-*/%<>!&|]+)/g, '<span class="operator">$1</span>');
-            
-            return highlighted;
-        }</span>')
+                .replace(/'([^'\\]|\\.)*'/g, '<span class="string">$&</span>')
+                .replace(/"([^"\\]|\\.)*"/g, '<span class="string">$&</span>')
+                .replace(/'''[\s\S]*?'''/g, '<span class="string">$&</span>')
+                .replace(/"""[\s\S]*?"""/g, '<span class="string">$&</span>')
                 
                 // Numbers (red)
                 .replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>')
                 
                 // Comments (gray)
-                .replace(/#.*$/gm, '<span class="comment">        async function loadAnalysisCode() {
-            const loadingMessage = document.getElementById('loadingMessage');
-            const errorMessage = document.getElementById('errorMessage');
-            const codeSection = document.getElementById('loadedCodeSection');
-            const codeContent = document.getElementById('loadedCodeContent');
-            
-            // Hide all messages initially
-            loadingMessage.style.display = 'none';
-            errorMessage.style.display = 'none';
-            codeSection.style.display = 'none';
-            
-            // Show loading message
-            loadingMessage.style.display = 'block';
-            
-            try {
-                // Try to read the file from the repository
-                const response = await fetch('analysis_code.md');
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const fileContent = await response.text();
-                
-                // Hide loading message
-                loadingMessage.style.display = 'none';
-                
-                // Display the content with basic syntax highlighting
-                const highlightedContent = highlightCode(fileContent);
-                codeContent.innerHTML = highlightedContent;
-                
-                // Show the code section
-                codeSection.style.display = 'block';
-                
-            } catch (error) {
-                console.error('Error loading analysis_code.md:', error);
-                
-                // Hide loading message and show error
-                loadingMessage.style.display = 'none';
-                errorMessage.style.display = 'block';
-            }
-        }
-
-        function highlightCode(content) {
-            // Basic syntax highlighting for the loaded content
-            let highlighted = content
-                // Escape HTML first
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                // Add syntax highlighting
-                .replace(/\b(import|from|def|class|if|else|elif|for|while|try|except|return|with|as)\b/g, '<span class="keyword">$1</span>')
-                .replace(/\b(pd|np|plt|sns|px|go)\b/g, '<span class="variable">$1</span>')
-                .replace(/\b(\w+)\(/g, '<span class="function">$1</span>(')
-                .replace(/'([^']*?)'/g, '<span class="string">\'$1\'</span>')
-                .replace(/"([^"]*?)"/g, '<span class="string">"$1"</span>')
-                .replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>')
                 .replace(/#.*$/gm, '<span class="comment">$&</span>')
-                .replace(/([=+\-*/%<>!&|]+)/g, '<span class="operator">$1</span>');
-            
-            return highlighted;
-        }</span>')
                 
                 // Operators (purple)
                 .replace(/([=+\-*/%<>!&|^~]+)/g, '<span class="operator">$1</span>')
