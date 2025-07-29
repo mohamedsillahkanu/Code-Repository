@@ -680,8 +680,21 @@
                             The system will automatically read and display its contents here.
                         </div>
                         <div style="margin-top: 30px; padding: 20px; background: rgba(0,102,204,0.1); border-radius: 10px; text-align: left;">
-                            <h3 style="color: var(--primary-blue); margin-bottom: 15px;">🎨 Syntax Highlighting Colors:</h3>
+                            <h3 style="color: var(--primary-blue); margin-bottom: 15px;">🎨 Syntax Highlighting Test:</h3>
+                            <div style="background: var(--code-bg); padding: 15px; border-radius: 8px; margin: 10px 0;">
+                                <pre style="margin: 0; color: var(--code-text); font-family: monospace;"><code><span class="comment"># Sample Python code with syntax highlighting</span>
+<span class="keyword">import</span> <span class="function">pandas</span> <span class="keyword">as</span> <span class="variable">pd</span>
+<span class="keyword">import</span> <span class="function">numpy</span> <span class="keyword">as</span> <span class="variable">np</span>
+
+<span class="keyword">def</span> <span class="function">analyze_data</span>(<span class="variable">filename</span>):
+    <span class="string">"""Load and analyze malaria data"""</span>
+    <span class="variable">df</span> <span class="operator">=</span> <span class="variable">pd</span><span class="operator">.</span><span class="function">read_csv</span>(<span class="variable">filename</span>)
+    <span class="variable">result</span> <span class="operator">=</span> <span class="variable">df</span><span class="operator">.</span><span class="function">mean</span>()
+    <span class="builtin">print</span>(<span class="string">f"Average: </span><span class="operator">{</span><span class="variable">result</span><span class="operator">}</span><span class="string">"</span>)
+    <span class="keyword">return</span> <span class="variable">result</span></code></pre>
+                            </div>
                             <div style="font-family: monospace; line-height: 1.8;">
+                                <strong>Color Reference:</strong><br>
                                 <span class="keyword">Keywords:</span> <code style="color: var(--keyword-purple);">#7c3aed</code> (import, def, return)<br>
                                 <span class="function">Functions:</span> <code style="color: var(--function-blue);">#3b82f6</code> (pandas, numpy)<br>
                                 <span class="string">Strings:</span> <code style="color: var(--string-green);">#10b981</code> ("text")<br>
@@ -701,16 +714,33 @@
             const display = document.getElementById('markdownDisplay');
             if (!display) return;
             
-            // Enhanced markdown to HTML conversion
+            // Enhanced markdown to HTML conversion with syntax highlighting
             let html = markdownText
                 // Headers
                 .replace(/^### (.*$)/gim, '<h3>$1</h3>')
                 .replace(/^## (.*$)/gim, '<h2>$1</h2>')
                 .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-                // Code blocks with language support
-                .replace(/```(\w+)?\n([\s\S]*?)\n```/g, '<pre><code>$2</code></pre>')
-                // Inline code
+                
+                // Code blocks with syntax highlighting
+                .replace(/```(python|py)?\n([\s\S]*?)\n```/g, function(match, language, code) {
+                    const highlightedCode = applySyntaxHighlighting(code.trim());
+                    return `<pre><code>${highlightedCode}</code></pre>`;
+                })
+                
+                // Generic code blocks (without language specified)
+                .replace(/```\n([\s\S]*?)\n```/g, function(match, code) {
+                    // Try to detect if it's Python code
+                    if (code.includes('import ') || code.includes('def ') || code.includes('print(') || code.includes('pd.') || code.includes('np.')) {
+                        const highlightedCode = applySyntaxHighlighting(code.trim());
+                        return `<pre><code>${highlightedCode}</code></pre>`;
+                    } else {
+                        return `<pre><code>${code.trim()}</code></pre>`;
+                    }
+                })
+                
+                // Inline code (don't highlight, just style)
                 .replace(/`([^`]+)`/g, '<code>$1</code>')
+                
                 // Bold
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                 // Italic
@@ -756,6 +786,9 @@
             html = '<div class="markdown-display"><p>' + html + '</p></div>';
             
             display.innerHTML = html;
+            
+            // Show success message
+            console.log('✅ Markdown loaded and syntax highlighting applied!');
         }
 
         // Initialize the page
