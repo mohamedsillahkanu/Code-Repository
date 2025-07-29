@@ -4,6 +4,8 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 ```
+
+# Step 2
 ```python
 # Step 2: Create dummy data
 data = {
