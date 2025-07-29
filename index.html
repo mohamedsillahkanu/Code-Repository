@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code Repository</title>
+    <title>Malaria Program Review (MPR) - Code Repository</title>
     <style>
         * {
             margin: 0;
@@ -203,56 +203,239 @@
             border-left: 5px solid #0066cc;
         }
 
-        /* Collapsible Sections */
-        .collapsible-section {
-            margin-bottom: 30px;
+        /* Loading Animation */
+        .loading-indicator {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            color: #0066cc;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #0066cc;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Markdown Content Styling */
+        .markdown-content {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 30px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            color: #374151;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .markdown-content h1 {
+            color: #0066cc;
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #0066cc;
+        }
+
+        .markdown-content h2 {
+            color: #004499;
+            font-size: 1.8em;
+            font-weight: 600;
+            margin: 30px 0 15px 0;
+            padding-left: 15px;
+            border-left: 4px solid #0066cc;
+        }
+
+        .markdown-content h3 {
+            color: #0066cc;
+            font-size: 1.4em;
+            font-weight: 600;
+            margin: 25px 0 12px 0;
+        }
+
+        .markdown-content h4, .markdown-content h5, .markdown-content h6 {
+            color: #004499;
+            font-weight: 600;
+            margin: 20px 0 10px 0;
+        }
+
+        .markdown-content p {
+            margin-bottom: 16px;
+            text-align: justify;
+        }
+
+        .markdown-content ul, .markdown-content ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+
+        .markdown-content li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .markdown-content blockquote {
+            background: rgba(0, 102, 204, 0.05);
+            border-left: 4px solid #0066cc;
+            margin: 20px 0;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            color: #004499;
+        }
+
+        .markdown-content code {
+            background: rgba(59, 130, 246, 0.1);
+            color: #1e40af;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+
+        .markdown-content pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .markdown-content pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        .markdown-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .markdown-content th {
+            background: #0066cc;
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .markdown-content td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .markdown-content tr:nth-child(even) {
+            background: rgba(0, 102, 204, 0.02);
+        }
+
+        .markdown-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .markdown-content a {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .markdown-content a:hover {
+            color: #004499;
+            border-bottom-color: #004499;
+        }
+
+        .markdown-content strong {
+            color: #004499;
+            font-weight: 700;
+        }
+
+        .markdown-content em {
+            color: #0066cc;
+            font-style: italic;
+        }
+
+        /* File Path Input */
+        .file-input-section {
+            background: rgba(0, 102, 204, 0.05);
             border: 2px solid rgba(0, 102, 204, 0.2);
             border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
         }
 
-        .section-toggle {
-            background: linear-gradient(135deg, #0066cc, #004499);
+        .file-input-section h3 {
+            color: #0066cc;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .file-path-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .file-path-input:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .load-btn {
+            background: #0066cc;
             color: white;
             border: none;
-            padding: 20px;
-            width: 100%;
-            text-align: left;
+            padding: 12px 25px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 1.3em;
             font-weight: 600;
             transition: all 0.3s ease;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
-        .section-toggle:hover {
-            background: linear-gradient(135deg, #004499, #0066cc);
+        .load-btn:hover {
+            background: #004499;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
         }
 
-        .section-toggle::after {
-            content: '▼';
-            font-size: 1.2em;
-            transition: transform 0.3s ease;
-        }
-
-        .section-toggle.collapsed::after {
-            transform: rotate(-90deg);
-        }
-
-        .section-content {
-            background: rgba(255, 255, 255, 0.95);
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.5s ease;
-            padding: 0;
-        }
-
-        .section-content.expanded {
-            max-height: none;
-            padding: 20px;
+        .example-text {
+            font-size: 0.9em;
+            color: #6b7280;
+            font-style: italic;
         }
 
         .content-text {
@@ -264,211 +447,6 @@
             background: rgba(255, 255, 255, 0.7);
             border-radius: 10px;
             border-left: 4px solid #0066cc;
-        }
-
-        /* Markdown Display Styling */
-        .markdown-display {
-            background: rgba(255, 255, 255, 0.95);
-            border: 2px solid rgba(0, 102, 204, 0.2);
-            border-radius: 15px;
-            padding: 30px;
-            margin: 20px 0;
-            box-shadow: 0 8px 25px rgba(0, 102, 204, 0.15);
-            overflow-y: auto;
-            max-height: 800px;
-        }
-
-        .markdown-display h1, .markdown-display h2, .markdown-display h3 {
-            color: #0066cc;
-            margin-top: 25px;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #0066cc;
-            padding-bottom: 8px;
-        }
-
-        .markdown-display h1 {
-            font-size: 2.2em;
-        }
-
-        .markdown-display h2 {
-            font-size: 1.8em;
-        }
-
-        .markdown-display h3 {
-            font-size: 1.5em;
-        }
-
-        .markdown-display p {
-            line-height: 1.6;
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        .markdown-display pre {
-            background: #1e293b;
-            color: #e2e8f0;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 15px 0;
-            overflow-x: auto;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .markdown-display code {
-            background: #f1f5f9;
-            color: #0066cc;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 0.9em;
-        }
-
-        .markdown-display pre code {
-            background: transparent;
-            color: inherit;
-            padding: 0;
-        }
-
-        .markdown-display ul, .markdown-display ol {
-            margin-left: 20px;
-            margin-bottom: 15px;
-        }
-
-        .markdown-display li {
-            margin-bottom: 8px;
-            line-height: 1.6;
-        }
-
-        .markdown-display blockquote {
-            border-left: 4px solid #0066cc;
-            padding-left: 20px;
-            margin: 15px 0;
-            background: rgba(0, 102, 204, 0.05);
-            padding: 15px 20px;
-            border-radius: 0 8px 8px 0;
-            font-style: italic;
-            color: #004499;
-        }
-
-        /* File Input Styling */
-        .file-input-section {
-            background: rgba(0, 102, 204, 0.05);
-            border: 2px dashed #0066cc;
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
-            margin: 20px 0;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .file-input-section:hover {
-            background: rgba(0, 102, 204, 0.1);
-            border-color: #004499;
-        }
-
-        .file-input-section input[type="file"] {
-            display: none;
-        }
-
-        .file-input-label {
-            color: #0066cc;
-            font-size: 1.2em;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .file-icon {
-            font-size: 3em;
-            opacity: 0.7;
-        }
-
-        /* Result Image Section */
-        .result-image-section {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .result-image-frame {
-            width: 100%;
-            max-width: 1000px;
-            min-height: 500px;
-            border: 3px solid #10b981;
-            border-radius: 20px;
-            overflow: hidden;
-            background: linear-gradient(145deg, #ffffff, #f0fff4);
-            box-shadow: 
-                0 20px 40px rgba(16, 185, 129, 0.15),
-                inset 0 2px 4px rgba(255, 255, 255, 0.9),
-                inset 0 -2px 4px rgba(16, 185, 129, 0.1);
-            position: relative;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .result-image-frame:hover {
-            transform: translateY(-5px);
-            box-shadow: 
-                0 25px 50px rgba(16, 185, 129, 0.2),
-                inset 0 2px 4px rgba(255, 255, 255, 0.9),
-                inset 0 -2px 4px rgba(16, 185, 129, 0.1);
-        }
-
-        .result-image-placeholder {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 500px;
-            text-align: center;
-            padding: 40px;
-            color: #10b981;
-            border: 2px dashed #10b981;
-            border-radius: 15px;
-            margin: 10px;
-            background: rgba(255, 255, 255, 0.5);
-            transition: all 0.3s ease;
-        }
-
-        .result-image-placeholder:hover {
-            background: rgba(16, 185, 129, 0.05);
-            border-color: #059669;
-        }
-
-        .uploaded-result-image {
-            width: 100%;
-            height: auto;
-            max-height: 90vh;
-            display: block;
-            object-fit: contain;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-        }
-
-        .placeholder-icon {
-            font-size: 4em;
-            margin-bottom: 20px;
-            opacity: 0.7;
-        }
-
-        .placeholder-text {
-            font-size: 1.3em;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .placeholder-subtext {
-            font-size: 1em;
-            opacity: 0.7;
-            font-style: italic;
         }
 
         @media (max-width: 768px) {
@@ -513,6 +491,10 @@
                 padding: 12px 20px;
                 font-size: 1em;
             }
+
+            .input-group {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -534,13 +516,13 @@
                 </div>
 
                 <div class="logo-container">
-                    <img src="ICF-SL.jpg" alt="ICF-SL Logo" class="logo-image">
+                    <img src="ICF-SL.png" alt="ICF-SL Logo" class="logo-image">
                 </div>
             </div>
             
             <!-- Title Section -->
             <div class="title-section">
-                <h1 class="main-title">Code Repository</h1>
+                <h1 class="main-title">Malaria Program Review (MPR)</h1>
                 <h2 class="subtitle">Code Repository and Analysis System</h2>
                 <h3 class="subtitle">by</h3>
                 <h2 class="subtitle">Informatics Consultancy Firm Sierra Leone (ICF-SL)</h2>
@@ -559,253 +541,84 @@
 
         <!-- Tab Navigation -->
         <div class="tab-navigation" id="tabNavigation">
-            <button class="tab-button active" onclick="openTab(event, 'overview')">Overview</button>
-            <button class="tab-button" onclick="openTab(event, 'tab2')">Malaria Analysis Code</button>
-            <button class="tab-button" onclick="openTab(event, 'tab3')">Data Visualization</button>
-            <button class="tab-button" onclick="openTab(event, 'tab4')">Reports & Export</button>
+            <button class="tab-button active" onclick="openTab(event, 'overview')">🏠 Overview</button>
+            <button class="tab-button" onclick="openTab(event, 'data-analysis')">📊 Data Analysis</button>
+            <button class="tab-button" onclick="openTab(event, 'code-repository')">💻 Code Repository</button>
+            <button class="tab-button" onclick="openTab(event, 'markdown-reader')">📄 Markdown Reader</button>
+            <button class="tab-button" onclick="openTab(event, 'visualization')">📈 Data Visualization</button>
+            <button class="tab-button" onclick="openTab(event, 'reports')">📋 Reports & Export</button>
+            <button class="tab-button" onclick="openTab(event, 'settings')">⚙️ Settings</button>
         </div>
 
         <!-- Tab Contents -->
+        <!-- Tab 1: Overview -->
         <div id="overview" class="tab-content active">
             <div class="section-header">Code Repository</div>
-            
-            <!-- Code Repository Introduction -->
-            <div class="collapsible-section">
-                <button class="section-toggle collapsed" onclick="toggleSection(this)">
-                    💻 Code Repository Overview
-                </button>
-                <div class="section-content">
-                    <div class="content-text">
-                        <strong>Malaria Data Analysis Code Repository</strong><br>
-                        This system provides a comprehensive collection of Python scripts and analysis tools designed specifically for the National Malaria Control Programme (NMCP) in Sierra Leone. 
-                        The code repository contains standardized functions for processing malaria surveillance data, calculating key indicators, and generating analytical reports that support evidence-based decision making.
-                    </div>
-                </div>
+            <div class="content-text">
+                <strong>Malaria Data Analysis Code Repository</strong><br>
+                This system provides a comprehensive collection of Python scripts and analysis tools designed specifically for the National Malaria Control Programme (NMCP) in Sierra Leone. 
+                The code repository contains standardized functions for processing malaria surveillance data, calculating key indicators, and generating analytical reports that support evidence-based decision making.
             </div>
         </div>
 
-        <!-- Tab 2 -->
-        <div id="tab2" class="tab-content">
-            <div class="section-header">Malaria Data Analysis Code</div>
+        <!-- Tab 2: Data Analysis with Markdown Template -->
+        <div id="data-analysis" class="tab-content">
+            <div class="section-header">Data Analysis Template</div>
             
-            <!-- File Upload Section -->
-            <div class="collapsible-section">
-                <button class="section-toggle" onclick="toggleSection(this)">
-                    📁 Load Malaria Analysis Code (Markdown)
-                </button>
-                <div class="section-content expanded">
-                    <div class="file-input-section" onclick="document.getElementById('markdownFileInput').click();">
-                        <input type="file" id="markdownFileInput" accept=".md,.txt" onchange="loadMarkdownFile(event)">
-                        <label class="file-input-label">
-                            <div class="file-icon">📄</div>
-                            <div>Click to upload malaria_analysis.md file</div>
-                            <div style="font-size: 0.9em; opacity: 0.7;">Supports .md and .txt files</div>
-                        </label>
-                    </div>
-                    
-                    <!-- Auto-load default markdown if no file is selected -->
-                    <div class="markdown-display" id="markdownDisplay">
-                        <!-- Default content will be loaded here -->
-                    </div>
-                </div>
+            <!-- Loading Indicator -->
+            <div id="templateLoading" class="loading-indicator">
+                <div class="loading-spinner"></div>
+                <div>Loading markdown template...</div>
             </div>
 
-            <!-- Sample Output Results -->
-            <div class="collapsible-section">
-                <button class="section-toggle collapsed" onclick="toggleSection(this)">
-                    📊 Sample Output Results
-                </button>
-                <div class="section-content">
-                    <div class="result-image-section">
-                        <div class="result-image-frame">
-                            <input type="file" id="resultImageUpload" accept="image/*" onchange="displayResultImage(event)" style="display: none;">
-                            <div class="result-image-placeholder" id="resultImagePlaceholder" onclick="document.getElementById('resultImageUpload').click();">
-                                <div class="placeholder-icon">📊</div>
-                                <div class="placeholder-text">Click to upload results.png</div>
-                                <div class="placeholder-subtext">Upload your analysis output image</div>
-                            </div>
-                            <img id="uploadedResultImage" class="uploaded-result-image" style="display: none;" onclick="document.getElementById('resultImageUpload').click();">
-                        </div>
-                    </div>
-                </div>
+            <!-- Markdown Content Display -->
+            <div id="templateContent" class="markdown-content" style="display: none;">
+                <!-- Markdown content will be loaded here -->
             </div>
         </div>
 
-        <!-- Tab 3 -->
-        <div id="tab3" class="tab-content">
+        <!-- Tab 3: Code Repository -->
+        <div id="code-repository" class="tab-content">
+            <div class="section-header">Code Repository</div>
+            <div class="content-text">
+                This section contains the Python code repository for malaria data analysis.
+            </div>
+        </div>
+
+        <!-- Tab 4: Markdown Reader -->
+        <div id="markdown-reader" class="tab-content">
+            <div class="section-header">Markdown Reader</div>
+            <div class="content-text">
+                This section provides a markdown file reader and parser.
+            </div>
+        </div>
+
+        <!-- Tab 5: Data Visualization -->
+        <div id="visualization" class="tab-content">
             <div class="section-header">Data Visualization</div>
             <div class="content-text">
                 This tab will contain data visualization tools and charts for malaria analysis.
             </div>
         </div>
 
-        <!-- Tab 4 -->
-        <div id="tab4" class="tab-content">
+        <!-- Tab 6: Reports & Export -->
+        <div id="reports" class="tab-content">
             <div class="section-header">Reports & Export</div>
             <div class="content-text">
                 This tab will contain report generation and data export functionality.
             </div>
         </div>
+
+        <!-- Tab 7: Settings -->
+        <div id="settings" class="tab-content">
+            <div class="section-header">Settings</div>
+            <div class="content-text">
+                This tab will contain system settings and configuration options.
+            </div>
+        </div>
     </div>
 
     <script>
-        // Default markdown content
-        const defaultMarkdownContent = `# Malaria Data Analysis Code
-
-## Overview
-This repository contains Python code for analyzing malaria confirmation data across districts and time periods for the National Malaria Control Programme (NMCP) in Sierra Leone.
-
-## Step 1: Import Required Libraries
-
-\`\`\`python
-# Import necessary libraries
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from datetime import datetime
-\`\`\`
-
-## Step 2: Define Main Analysis Function
-
-\`\`\`python
-def analyze_malaria_confirmation(data_file):
-    """
-    Analyze malaria confirmation rates across districts and time periods
-    
-    Parameters:
-    data_file (str): Path to the malaria data CSV file
-    
-    Returns:
-    dict: Analysis results including trends and statistics
-    """
-\`\`\`
-
-## Step 3: Load and Process Data
-
-\`\`\`python
-    # Load the dataset
-    df = pd.read_csv(data_file)
-    
-    # Convert date column to datetime
-    df['date'] = pd.to_datetime(df['date'])
-    
-    # Calculate confirmation rate
-    df['confirmation_rate'] = (df['confirmed_cases'] / df['tested_cases']) * 100
-\`\`\`
-
-## Step 4: Calculate District Statistics
-
-\`\`\`python
-    # Group by district and calculate statistics
-    district_stats = df.groupby('district').agg({
-        'confirmation_rate': ['mean', 'std', 'min', 'max'],
-        'confirmed_cases': 'sum',
-        'tested_cases': 'sum'
-    })
-\`\`\`
-
-## Step 5: Monthly Trend Analysis
-
-\`\`\`python
-    # Calculate trend analysis
-    monthly_trends = df.groupby([pd.Grouper(key='date', freq='M'), 'district'])['confirmation_rate'].mean().reset_index()
-\`\`\`
-
-## Step 6: Return Analysis Results
-
-\`\`\`python
-    return {
-        'district_statistics': district_stats,
-        'monthly_trends': monthly_trends,
-        'overall_rate': df['confirmation_rate'].mean()
-    }
-
-# Example usage
-results = analyze_malaria_confirmation('malaria_data_2024.csv')
-print(f"Overall confirmation rate: {results['overall_rate']:.2f}%")
-\`\`\`
-
-## Additional Analysis Functions
-
-### Generate Summary Report
-
-\`\`\`python
-def generate_summary_report(results):
-    """
-    Generate a summary report from analysis results
-    """
-    report = []
-    report.append("=== MALARIA CONFIRMATION ANALYSIS REPORT ===\\n")
-    report.append(f"Overall Confirmation Rate: {results['overall_rate']:.2f}%\\n")
-    report.append("District Statistics:")
-    report.append(results['district_statistics'].to_string())
-    
-    return "\\n".join(report)
-\`\`\`
-
-### Create Visualizations
-
-\`\`\`python
-def create_visualizations(results):
-    """
-    Create visualizations for the analysis results
-    """
-    # Set up the plotting style
-    plt.style.use('seaborn-v0_8')
-    fig, axes = plt.subplots(2, 2, figsize=(15, 10))
-    
-    # District confirmation rates
-    district_means = results['district_statistics']['confirmation_rate']['mean']
-    axes[0,0].bar(district_means.index, district_means.values)
-    axes[0,0].set_title('Average Confirmation Rate by District')
-    axes[0,0].set_ylabel('Confirmation Rate (%)')
-    axes[0,0].tick_params(axis='x', rotation=45)
-    
-    # Monthly trends
-    monthly_data = results['monthly_trends']
-    for district in monthly_data['district'].unique():
-        district_data = monthly_data[monthly_data['district'] == district]
-        axes[0,1].plot(district_data['date'], district_data['confirmation_rate'], 
-                      marker='o', label=district)
-    
-    axes[0,1].set_title('Monthly Confirmation Rate Trends')
-    axes[0,1].set_ylabel('Confirmation Rate (%)')
-    axes[0,1].legend()
-    axes[0,1].tick_params(axis='x', rotation=45)
-    
-    plt.tight_layout()
-    plt.savefig('malaria_analysis_results.png', dpi=300, bbox_inches='tight')
-    plt.show()
-\`\`\`
-
-## Usage Instructions
-
-1. **Prepare your data**: Ensure your CSV file contains columns for 'date', 'district', 'confirmed_cases', and 'tested_cases'
-2. **Run the analysis**: Call \`analyze_malaria_confirmation('your_data.csv')\`
-3. **Generate reports**: Use \`generate_summary_report(results)\` for text output
-4. **Create visualizations**: Use \`create_visualizations(results)\` for charts
-
-## Data Requirements
-
-Your CSV file should have the following structure:
-
-| date | district | confirmed_cases | tested_cases |
-|------|----------|----------------|--------------|
-| 2024-01-01 | Freetown | 45 | 120 |
-| 2024-01-01 | Bo | 23 | 89 |
-| ... | ... | ... | ... |
-
-## Output Interpretation
-
-- **Overall Rate**: Average confirmation rate across all districts and time periods
-- **District Statistics**: Mean, standard deviation, minimum, and maximum confirmation rates for each district
-- **Monthly Trends**: Time series data showing how confirmation rates change over time by district
-
----
-
-*This code is developed by ICF-SL for the National Malaria Control Programme (NMCP) Sierra Leone*`;
-
         function openTab(evt, tabName) {
             // Hide all tab contents
             var tabcontents = document.getElementsByClassName("tab-content");
@@ -826,6 +639,14 @@ Your CSV file should have the following structure:
             }
             if (evt && evt.currentTarget) {
                 evt.currentTarget.classList.add("active");
+            }
+            
+            // Special handling for data-analysis tab
+            if (tabName === 'data-analysis') {
+                // Auto-load the markdown template when tab 2 is clicked
+                setTimeout(function() {
+                    autoLoadMarkdownTemplate();
+                }, 100);
             }
             
             // Auto-collapse navigation after tab selection
@@ -857,94 +678,414 @@ Your CSV file should have the following structure:
             }
         }
 
-        function toggleSection(button) {
-            if (!button || !button.nextElementSibling) return;
+        async function autoLoadMarkdownTemplate() {
+            const loadingDiv = document.getElementById('templateLoading');
+            const contentDiv = document.getElementById('templateContent');
             
-            var content = button.nextElementSibling;
-            var isCollapsed = content.classList.contains("expanded");
+            // Show loading indicator
+            if (loadingDiv) loadingDiv.style.display = 'block';
+            if (contentDiv) contentDiv.style.display = 'none';
             
-            if (isCollapsed) {
-                content.classList.remove("expanded");
-                button.classList.add("collapsed");
-            } else {
-                content.classList.add("expanded");
-                button.classList.remove("collapsed");
+            // List of potential template files to try
+            const templatePaths = [
+                './analysis_template.md',
+                './templates/analysis_template.md',
+                './docs/analysis_template.md',
+                './malaria_analysis_template.md',
+                'analysis_template.md'
+            ];
+            
+            let markdownText = '';
+            let fileFound = false;
+            
+            // Try to load from each path
+            for (const filePath of templatePaths) {
+                try {
+                    // Try file system API first
+                    try {
+                        markdownText = await window.fs.readFile(filePath, { encoding: 'utf8' });
+                        fileFound = true;
+                        console.log(`Template loaded from: ${filePath}`);
+                        break;
+                    } catch (fsError) {
+                        // Try fetch for relative paths
+                        try {
+                            const response = await fetch(filePath);
+                            if (response.ok) {
+                                markdownText = await response.text();
+                                fileFound = true;
+                                console.log(`Template loaded from: ${filePath}`);
+                                break;
+                            }
+                        } catch (fetchError) {
+                            // Continue to next path
+                            continue;
+                        }
+                    }
+                } catch (error) {
+                    // Continue to next path
+                    continue;
+                }
+            }
+            
+            // If no file found, use default template
+            if (!fileFound) {
+                markdownText = getDefaultTemplate();
+                console.log('Using default template');
+            }
+            
+            try {
+                // Parse and display the markdown content
+                const htmlContent = parseMarkdown(markdownText);
+                
+                if (contentDiv) {
+                    let finalContent = htmlContent;
+                    
+                    // Add a note if using default template
+                    if (!fileFound) {
+                        finalContent = `
+                            <div style="background: rgba(59, 130, 246, 0.1); border-left: 4px solid #3b82f6; padding: 15px; margin-bottom: 20px; border-radius: 8px;">
+                                <strong style="color: #1e40af;">ℹ️ Auto-Loaded Template:</strong> Using built-in malaria data analysis template. Place your custom template at <code>./analysis_template.md</code> to override.
+                            </div>
+                            ${htmlContent}
+                        `;
+                    }
+                    
+                    contentDiv.innerHTML = finalContent;
+                    contentDiv.style.display = 'block';
+                }
+                
+            } catch (error) {
+                console.error('Error processing markdown template:', error);
+                
+                if (contentDiv) {
+                    contentDiv.innerHTML = `
+                        <div style="background: rgba(220, 38, 38, 0.1); border-left: 4px solid #dc2626; padding: 15px; margin-bottom: 20px; border-radius: 8px;">
+                            <strong style="color: #dc2626;">❌ Error:</strong> Could not process the template. Please check the file format.
+                        </div>
+                    `;
+                    contentDiv.style.display = 'block';
+                }
+                
+            } finally {
+                // Hide loading indicator
+                if (loadingDiv) loadingDiv.style.display = 'none';
             }
         }
 
-        function loadMarkdownFile(event) {
-            const file = event.target.files[0];
-            if (file && (file.type === 'text/markdown' || file.type === 'text/plain' || file.name.endsWith('.md'))) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const markdownContent = e.target.result;
-                    renderMarkdown(markdownContent);
-                };
-                reader.readAsText(file);
-            } else {
-                alert('Please select a valid markdown (.md) or text (.txt) file.');
+        async function loadMarkdownTemplate() {
+            const pathInput = document.getElementById('markdownTemplatePath');
+            const filePath = pathInput ? pathInput.value.trim() : './analysis_template.md';
+            
+            if (!filePath) {
+                autoLoadMarkdownTemplate();
+                return;
+            }
+            
+            const loadingDiv = document.getElementById('templateLoading');
+            const contentDiv = document.getElementById('templateContent');
+            
+            // Show loading indicator
+            if (loadingDiv) loadingDiv.style.display = 'block';
+            if (contentDiv) contentDiv.style.display = 'none';
+            
+            try {
+                let markdownText = '';
+                
+                // Check if it's a web URL or local file
+                if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
+                    // Load from web URL
+                    const response = await fetch(filePath);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    markdownText = await response.text();
+                } else {
+                    // Try to load from local file using the file system API first
+                    try {
+                        markdownText = await window.fs.readFile(filePath, { encoding: 'utf8' });
+                    } catch (fsError) {
+                        // If file system API fails, try fetch for relative paths
+                        try {
+                            const response = await fetch(filePath);
+                            if (!response.ok) {
+                                throw new Error(`Could not load file: ${filePath}`);
+                            }
+                            markdownText = await response.text();
+                        } catch (fetchError) {
+                            // If both fail, load the default template
+                            markdownText = getDefaultTemplate();
+                            console.log('Loading default template as file not found:', filePath);
+                        }
+                    }
+                }
+                
+                // Parse and display the markdown content
+                const htmlContent = parseMarkdown(markdownText);
+                
+                if (contentDiv) {
+                    contentDiv.innerHTML = htmlContent;
+                    contentDiv.style.display = 'block';
+                }
+                
+            } catch (error) {
+                console.error('Error loading markdown template:', error);
+                
+                // Load default template on error
+                const defaultTemplate = getDefaultTemplate();
+                const htmlContent = parseMarkdown(defaultTemplate);
+                
+                if (contentDiv) {
+                    contentDiv.innerHTML = `
+                        <div style="background: rgba(245, 158, 11, 0.1); border-left: 4px solid #f59e0b; padding: 15px; margin-bottom: 20px; border-radius: 8px;">
+                            <strong style="color: #d97706;">⚠️ Note:</strong> Could not load the specified template file. Loading default template instead.
+                        </div>
+                        ${htmlContent}
+                    `;
+                    contentDiv.style.display = 'block';
+                }
+                
+            } finally {
+                // Hide loading indicator
+                if (loadingDiv) loadingDiv.style.display = 'none';
             }
         }
 
-        function renderMarkdown(markdownText) {
-            const display = document.getElementById('markdownDisplay');
-            if (!display) return;
+        function getDefaultTemplate() {
+            return `# Malaria Data Analysis Template
+
+## Overview
+This template provides a comprehensive framework for analyzing malaria surveillance data in Sierra Leone.
+
+## Data Requirements
+
+### Required Columns
+- **Date**: Date of data collection (YYYY-MM-DD format)
+- **District**: Administrative district name
+- **Facility**: Health facility name
+- **Tested Cases**: Number of suspected cases tested
+- **Confirmed Cases**: Number of confirmed malaria cases
+- **Age Group**: Patient age categories (Under 5, 5-14, 15+)
+- **Gender**: Patient gender (Male, Female)
+
+### Data Quality Checks
+- Ensure all dates are valid and in correct format
+- Check for missing values in critical columns
+- Validate that confirmed cases ≤ tested cases
+- Verify district and facility names are standardized
+
+## Analysis Steps
+
+### 1. Data Loading and Preprocessing
+
+\`\`\`python
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from datetime import datetime
+
+# Load the dataset
+df = pd.read_csv('malaria_data.csv')
+
+# Convert date column to datetime
+df['date'] = pd.to_datetime(df['date'])
+
+# Calculate confirmation rate
+df['confirmation_rate'] = (df['confirmed_cases'] / df['tested_cases']) * 100
+\`\`\`
+
+### 2. Descriptive Statistics
+
+Calculate key indicators:
+- Overall confirmation rate
+- Confirmation rate by district
+- Confirmation rate by age group
+- Seasonal trends
+- Monthly case counts
+
+### 3. Data Visualization
+
+Create the following visualizations:
+- Time series plots of cases and confirmation rates
+- District-wise comparison charts
+- Age and gender distribution plots
+- Seasonal pattern analysis
+- Heat maps for geographic distribution
+
+### 4. Statistical Analysis
+
+Perform statistical tests to identify:
+- Significant differences between districts
+- Seasonal patterns and trends
+- Age and gender-related patterns
+- Correlation analysis between variables
+
+## Key Performance Indicators (KPIs)
+
+### Primary Indicators
+1. **Overall Confirmation Rate**: (Total confirmed cases / Total tested cases) × 100
+2. **Monthly Incidence Rate**: Number of confirmed cases per 1,000 population per month
+3. **Test Positivity Rate**: Percentage of tests that are positive for malaria
+
+### Secondary Indicators
+1. **District Performance**: Comparison of confirmation rates across districts
+2. **Age-specific Rates**: Confirmation rates by age group
+3. **Seasonal Variation**: Monthly/quarterly trends in cases
+4. **Facility Performance**: Testing and confirmation rates by facility
+
+## Report Template
+
+### Executive Summary
+- Key findings and recommendations
+- Overall trends and patterns
+- Priority areas for intervention
+
+### Detailed Analysis
+- Statistical analysis results
+- Visualizations and charts
+- District-specific findings
+- Demographic analysis
+
+### Recommendations
+- Priority districts for intervention
+- Resource allocation suggestions
+- Surveillance improvements
+- Next steps and follow-up actions
+
+## Code Examples
+
+### Calculate District Statistics
+\`\`\`python
+# Group by district and calculate statistics
+district_stats = df.groupby('district').agg({
+    'confirmation_rate': ['mean', 'std', 'min', 'max'],
+    'confirmed_cases': 'sum',
+    'tested_cases': 'sum'
+})
+
+print("District Statistics:")
+print(district_stats)
+\`\`\`
+
+### Generate Time Series Plot
+\`\`\`python
+# Monthly trend analysis
+monthly_trends = df.groupby(pd.Grouper(key='date', freq='M'))['confirmation_rate'].mean()
+
+plt.figure(figsize=(12, 6))
+plt.plot(monthly_trends.index, monthly_trends.values, marker='o')
+plt.title('Monthly Malaria Confirmation Rate Trends')
+plt.xlabel('Month')
+plt.ylabel('Confirmation Rate (%)')
+plt.xticks(rotation=45)
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+\`\`\`
+
+### Create District Comparison Chart
+\`\`\`python
+# District comparison
+district_rates = df.groupby('district')['confirmation_rate'].mean().sort_values(ascending=False)
+
+plt.figure(figsize=(10, 6))
+bars = plt.bar(range(len(district_rates)), district_rates.values)
+plt.title('Malaria Confirmation Rate by District')
+plt.xlabel('District')
+plt.ylabel('Confirmation Rate (%)')
+plt.xticks(range(len(district_rates)), district_rates.index, rotation=45, ha='right')
+
+# Add value labels on bars
+for i, bar in enumerate(bars):
+    plt.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5, 
+             f'{district_rates.values[i]:.1f}%', 
+             ha='center', va='bottom')
+
+plt.tight_layout()
+plt.show()
+\`\`\`
+
+## Best Practices
+
+1. **Data Validation**: Always validate data quality before analysis
+2. **Standardization**: Use consistent naming conventions for districts and facilities
+3. **Documentation**: Document all analysis steps and assumptions
+4. **Reproducibility**: Ensure analysis can be reproduced with same data
+5. **Version Control**: Track changes to analysis code and data
+
+## Contact Information
+
+For technical support or questions about this template:
+- **Organization**: Informatics Consultancy Firm Sierra Leone (ICF-SL)
+- **Motto**: *A local firm with international standards*
+- **Email**: support@icf-sl.org
+- **Website**: www.icf-sl.org
+
+---
+
+*This template is designed to support the National Malaria Control Programme (NMCP) in Sierra Leone with standardized data analysis procedures.*`;
+        }
+
+        function parseMarkdown(markdown) {
+            let html = markdown;
             
-            // Simple markdown to HTML conversion
-            let html = markdownText
-                // Headers
-                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-                .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-                .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-                // Code blocks
-                .replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
-                // Inline code
-                .replace(/`([^`]+)`/g, '<code>$1</code>')
-                // Bold
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                // Italic
-                .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                // Line breaks
-                .replace(/\n\n/g, '</p><p>')
-                .replace(/\n/g, '<br>')
-                // Tables (basic support)
-                .replace(/\|(.+)\|/g, function(match, content) {
-                    const cells = content.split('|').map(cell => cell.trim());
-                    return '<tr>' + cells.map(cell => `<td>${cell}</td>`).join('') + '</tr>';
-                });
+            // Headers
+            html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+            html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+            html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
             
-            // Wrap paragraphs
+            // Bold and Italic
+            html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            
+            // Code blocks
+            html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+            html = html.replace(/`(.*?)`/g, '<code>$1</code>');
+            
+            // Links
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+            
+            // Images
+            html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+            
+            // Blockquotes
+            html = html.replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>');
+            
+            // Horizontal rules
+            html = html.replace(/^---$/gim, '<hr>');
+            html = html.replace(/^\*\*\*$/gim, '<hr>');
+            
+            // Lists
+            html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
+            html = html.replace(/^\d+\. (.*$)/gim, '<li>$1</li>');
+            
+            // Wrap consecutive list items
+            html = html.replace(/(<li>.*?<\/li>\s*)+/g, function(match) {
+                return '<ul>' + match + '</ul>';
+            });
+            
+            // Line breaks
+            html = html.replace(/\n\n/g, '</p><p>');
             html = '<p>' + html + '</p>';
             
-            display.innerHTML = html;
+            // Clean up empty paragraphs and fix nesting
+            html = html.replace(/<p><\/p>/g, '');
+            html = html.replace(/<p>(<h[1-6]>)/g, '$1');
+            html = html.replace(/(<\/h[1-6]>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<blockquote>)/g, '$1');
+            html = html.replace(/(<\/blockquote>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<hr>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<ul>)/g, '$1');
+            html = html.replace(/(<\/ul>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<pre>)/g, '$1');
+            html = html.replace(/(<\/pre>)<\/p>/g, '$1');
+            
+            return html;
         }
 
-        function displayResultImage(event) {
-            const file = event.target.files[0];
-            if (file && file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const placeholder = document.getElementById('resultImagePlaceholder');
-                    const uploadedImage = document.getElementById('uploadedResultImage');
-                    
-                    if (placeholder && uploadedImage) {
-                        // Hide placeholder and show image
-                        placeholder.style.display = 'none';
-                        uploadedImage.src = e.target.result;
-                        uploadedImage.style.display = 'block';
-                        
-                        // Optional: Add click handler to uploaded image to change it
-                        uploadedImage.onclick = function() {
-                            const upload = document.getElementById('resultImageUpload');
-                            if (upload) upload.click();
-                        };
-                    }
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // Initialize the page
+        // Initialize the page with collapsed navigation by default
         document.addEventListener('DOMContentLoaded', function() {
             // Set navigation as collapsed by default
             var tabNav = document.getElementById("tabNavigation");
@@ -954,31 +1095,6 @@ Your CSV file should have the following structure:
                 tabNav.classList.remove("expanded");
                 toggleBtn.classList.add("collapsed");
             }
-            
-            // Initialize all content sections as collapsed by default except the markdown section
-            var sections = document.querySelectorAll('.section-content');
-            var buttons = document.querySelectorAll('.section-toggle');
-            
-            sections.forEach(function(section, index) {
-                if (section && section.closest('#tab2') && index === 0) {
-                    // Keep the first section in tab2 (markdown section) expanded
-                    section.classList.add('expanded');
-                } else if (section) {
-                    section.classList.remove('expanded');
-                }
-            });
-            
-            buttons.forEach(function(button, index) {
-                if (button && button.closest('#tab2') && index === 0) {
-                    // Keep the first button in tab2 not collapsed
-                    button.classList.remove('collapsed');
-                } else if (button) {
-                    button.classList.add('collapsed');
-                }
-            });
-            
-            // Load default markdown content
-            renderMarkdown(defaultMarkdownContent);
         });
     </script>
 </body>
