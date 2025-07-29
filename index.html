@@ -797,6 +797,18 @@
         <div id="data-analysis" class="tab-content">
             <div class="section-header">Data Analysis Template</div>
             
+            <!-- File Path Input Section -->
+            <div class="file-input-section">
+                <h3>📄 Load Custom Markdown Template</h3>
+                <div class="input-group">
+                    <input type="text" id="markdownTemplatePath" class="file-path-input" 
+                           placeholder="Enter file path (e.g., ./my_template.md)" 
+                           value="./analysis_template.md">
+                    <button class="load-btn" onclick="loadMarkdownTemplate()">Load Template</button>
+                </div>
+                <p class="example-text">Leave empty to use the built-in template, or specify a custom markdown file path.</p>
+            </div>
+            
             <!-- Loading Indicator -->
             <div id="templateLoading" class="loading-indicator">
                 <div class="loading-spinner"></div>
@@ -1008,6 +1020,309 @@
         function getDefaultTemplate() {
             return `# Malaria Data Analysis Template
 
+## Overview
+This template provides a comprehensive framework for analyzing malaria surveillance data in Sierra Leone.
+
+## Data Requirements
+
+### Required Columns
+- **Date**: Date of data collection (YYYY-MM-DD format)
+- **District**: Administrative district name
+- **Facility**: Health facility name
+- **Tested Cases**: Number of suspected cases tested
+- **Confirmed Cases**: Number of confirmed malaria cases
+- **Age Group**: Patient age categories (Under 5, 5-14, 15+)
+- **Gender**: Patient gender (Male, Female)
+
+### Data Quality Checks
+> **Important**: Ensure all dates are valid and in correct format
+> Check for missing values in critical columns
+> Validate that confirmed cases ≤ tested cases
+> Verify district and facility names are standardized
+
+##STEP## Analysis Steps
+
+###SUBSTEP### 1. Data Loading and Preprocessing
+
+\`\`\`python
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from datetime import datetime
+
+# Load the dataset
+df = pd.read_csv('malaria_data.csv')
+
+# Convert date column to datetime
+df['date'] = pd.to_datetime(df['date'])
+
+# Calculate confirmation rate
+df['confirmation_rate'] = (df['confirmed_cases'] / df['tested_cases']) * 100
+\`\`\`
+
+####SUB#### Basic Data Exploration
+- Check data shape and structure
+- Identify missing values
+- Review data types and formats
+- Generate summary statistics
+
+####SUB#### Data Validation
+- Ensure date ranges are realistic
+- Validate numerical constraints
+- Check for duplicate records
+- Verify categorical values
+
+###SUBSTEP### 2. Advanced Data Preprocessing
+
+\`\`\`python
+# Data cleaning function
+def clean_malaria_data(df):
+    """
+    Clean and validate malaria surveillance data
+    
+    Parameters:
+    df (DataFrame): Raw malaria data
+    
+    Returns:
+    DataFrame: Cleaned data
+    """
+    # Remove duplicate records
+    df = df.drop_duplicates()
+    
+    # Handle missing values
+    df['tested_cases'] = df['tested_cases'].fillna(0)
+    df['confirmed_cases'] = df['confirmed_cases'].fillna(0)
+    
+    # Validate data consistency
+    df = df[df['confirmed_cases'] <= df['tested_cases']]
+    
+    # Standardize district names
+    district_mapping = {
+        'Western Area Urban': 'Western Urban',
+        'Western Area Rural': 'Western Rural',
+        'Bo District': 'Bo',
+        'Kenema District': 'Kenema'
+    }
+    df['district'] = df['district'].replace(district_mapping)
+    
+    return df
+
+# Apply cleaning function
+cleaned_df = clean_malaria_data(df)
+print(f"Data cleaned: {len(df)} -> {len(cleaned_df)} records")
+\`\`\`
+
+####SUB#### Missing Value Treatment
+- Identify patterns in missing data
+- Apply appropriate imputation methods
+- Document assumptions and decisions
+
+####SUB#### Outlier Detection
+- Use statistical methods (IQR, Z-score)
+- Visual inspection with box plots
+- Domain knowledge validation
+
+###SUBSTEP### 3. Statistical Analysis Functions
+
+\`\`\`python
+def calculate_kpis(df):
+    """Calculate key performance indicators"""
+    
+    kpis = {
+        'total_tested': df['tested_cases'].sum(),
+        'total_confirmed': df['confirmed_cases'].sum(),
+        'overall_confirmation_rate': (df['confirmed_cases'].sum() / df['tested_cases'].sum()) * 100,
+        'districts_analyzed': df['district'].nunique(),
+        'facilities_analyzed': df['facility'].nunique(),
+        'date_range': f"{df['date'].min().strftime('%Y-%m-%d')} to {df['date'].max().strftime('%Y-%m-%d')}"
+    }
+    
+    return kpis
+
+# Calculate KPIs
+kpis = calculate_kpis(cleaned_df)
+for key, value in kpis.items():
+    print(f"{key.replace('_', ' ').title()}: {value}")
+\`\`\`
+
+####SUB#### Descriptive Statistics
+- Calculate central tendencies
+- Measure variability
+- Generate frequency distributions
+
+####SUB#### Inferential Statistics
+- Hypothesis testing
+- Confidence intervals
+- Correlation analysis
+
+##STEP_END##
+
+## Key Performance Indicators (KPIs)
+
+| **Indicator** | **Formula** | **Target** | **Interpretation** |
+|---------------|-------------|------------|-------------------|
+| Overall Confirmation Rate | (Total confirmed / Total tested) × 100 | 10-40% | Higher rates may indicate outbreak |
+| Monthly Incidence Rate | Confirmed cases / Population × 1,000 | <5 per 1,000 | Seasonal variation expected |
+| Test Positivity Rate | Positive tests / Total tests × 100 | 10-40% | Quality of case management |
+| District Performance | District rate vs National average | ±20% | Identifies priority areas |
+
+##STEP## Advanced Analytics
+
+###SUBSTEP### Machine Learning for Trend Prediction
+
+\`\`\`python
+# Machine Learning for Trend Prediction
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_absolute_error, r2_score
+
+def predict_malaria_trends(df):
+    """
+    Use machine learning to predict malaria trends
+    """
+    # Feature engineering
+    df['month'] = df['date'].dt.month
+    df['year'] = df['date'].dt.year
+    df['quarter'] = df['date'].dt.quarter
+    df['is_rainy_season'] = df['month'].isin([5, 6, 7, 8, 9, 10])
+    
+    # Prepare features
+    feature_cols = ['month', 'year', 'quarter', 'is_rainy_season', 'tested_cases']
+    X = df[feature_cols]
+    y = df['confirmed_cases']
+    
+    # Split data
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
+    
+    # Train model
+    model = RandomForestRegressor(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
+    
+    # Make predictions
+    y_pred = model.predict(X_test)
+    
+    # Evaluate model
+    mae = mean_absolute_error(y_test, y_pred)
+    r2 = r2_score(y_test, y_pred)
+    
+    print(f"Model Performance:")
+    print(f"Mean Absolute Error: {mae:.2f}")
+    print(f"R² Score: {r2:.3f}")
+    
+    # Feature importance
+    importance_df = pd.DataFrame({
+        'feature': feature_cols,
+        'importance': model.feature_importances_
+    }).sort_values('importance', ascending=False)
+    
+    return model, importance_df
+
+# Run prediction model
+model, feature_importance = predict_malaria_trends(cleaned_df)
+print("Feature Importance:")
+print(feature_importance)
+\`\`\`
+
+####SUB#### Model Selection
+- Compare different algorithms
+- Cross-validation techniques
+- Hyperparameter tuning
+
+####SUB#### Feature Engineering
+- Create temporal features
+- Seasonal indicators
+- Lagged variables
+
+###SUBSTEP### Data Visualization
+
+\`\`\`python
+# Monthly trend analysis
+monthly_trends = df.groupby(pd.Grouper(key='date', freq='M'))['confirmation_rate'].mean()
+
+plt.figure(figsize=(12, 6))
+plt.plot(monthly_trends.index, monthly_trends.values, marker='o')
+plt.title('Monthly Malaria Confirmation Rate Trends')
+plt.xlabel('Month')
+plt.ylabel('Confirmation Rate (%)')
+plt.xticks(rotation=45)
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+\`\`\`
+
+####SUB#### Time Series Plots
+- Trend analysis
+- Seasonal decomposition
+- Moving averages
+
+####SUB#### Geographic Visualization
+- Choropleth maps
+- Heat maps
+- District comparisons
+
+###SUBSTEP### District Comparison Analysis
+
+\`\`\`python
+# District comparison
+district_rates = df.groupby('district')['confirmation_rate'].mean().sort_values(ascending=False)
+
+plt.figure(figsize=(10, 6))
+bars = plt.bar(range(len(district_rates)), district_rates.values)
+plt.title('Malaria Confirmation Rate by District')
+plt.xlabel('District')
+plt.ylabel('Confirmation Rate (%)')
+plt.xticks(range(len(district_rates)), district_rates.index, rotation=45, ha='right')
+
+# Add value labels on bars
+for i, bar in enumerate(bars):
+    plt.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5, 
+             f'{district_rates.values[i]:.1f}%', 
+             ha='center', va='bottom')
+
+plt.tight_layout()
+plt.show()
+\`\`\`
+
+####SUB#### Statistical Comparisons
+- ANOVA testing
+- Post-hoc analysis
+- Effect size calculations
+
+####SUB#### Performance Rankings
+- Ranking methodologies
+- Confidence intervals
+- Significance testing
+
+##STEP_END##
+
+## Best Practices
+
+1. **Data Validation**: Always validate data quality before analysis
+2. **Standardization**: Use consistent naming conventions for districts and facilities
+3. **Documentation**: Document all analysis steps and assumptions
+4. **Reproducibility**: Ensure analysis can be reproduced with same data
+5. **Version Control**: Track changes to analysis code and data
+
+### Quality Assurance Checklist
+
+- [ ] Data completeness check (missing values < 5%)
+- [ ] Data consistency validation (confirmed ≤ tested)
+- [ ] Outlier detection and handling
+- [ ] Statistical significance testing
+- [ ] Cross-validation of results
+- [ ] Peer review of analysis code
+
+## Contact Information
+
+For technical support or questions about this template:
+
+**Organization**: Informatics Consultancy Firm Sierra Leone (ICF-SL)  
+**Motto**: *A local firm with international standards*  
+**Email**: support@icf-sl.org  
+**Website**: www.icf-sl.org
 
 ---
 
@@ -1065,6 +1380,52 @@
                             </button>
                         </div>
                         <pre><code id="${codeId}">${code}</code></pre>
+                    </div>
+                `;
+            });
+
+            // Process collapsible step sections
+            html = html.replace(/##STEP##\s*(.*?)\s*##STEP_END##/gs, function(match, content) {
+                const sectionId = 'section_' + Math.random().toString(36).substr(2, 9);
+                const lines = content.trim().split('\n');
+                const title = lines[0].trim();
+                const sectionContent = lines.slice(1).join('\n');
+                
+                return `
+                    <div class="collapsible-section">
+                        <div class="section-header-collapsible" onclick="toggleSection('${sectionId}')">
+                            <div class="section-title">
+                                <span>📋</span>
+                                <span>${title}</span>
+                            </div>
+                            <span class="collapse-arrow">▼</span>
+                        </div>
+                        <div class="section-content" id="${sectionId}">
+                            ${parseNestedContent(sectionContent)}
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Process simple step sections (without STEP_END)
+            html = html.replace(/##STEP##\s*(.*?)(?=##STEP##|$)/gs, function(match, content) {
+                const sectionId = 'section_' + Math.random().toString(36).substr(2, 9);
+                const lines = content.trim().split('\n');
+                const title = lines[0].trim();
+                const sectionContent = lines.slice(1).join('\n');
+                
+                return `
+                    <div class="collapsible-section">
+                        <div class="section-header-collapsible" onclick="toggleSection('${sectionId}')">
+                            <div class="section-title">
+                                <span>📋</span>
+                                <span>${title}</span>
+                            </div>
+                            <span class="collapse-arrow">▼</span>
+                        </div>
+                        <div class="section-content" id="${sectionId}">
+                            ${parseNestedContent(sectionContent)}
+                        </div>
                     </div>
                 `;
             });
@@ -1228,6 +1589,160 @@
                     }, 2000);
                 });
             }
+        }
+
+        // Toggle collapsible sections
+        function toggleSection(sectionId) {
+            const content = document.getElementById(sectionId);
+            const header = content.previousElementSibling;
+            
+            if (content && header) {
+                if (content.classList.contains('collapsed')) {
+                    // Expand
+                    content.classList.remove('collapsed');
+                    header.classList.remove('collapsed');
+                } else {
+                    // Collapse
+                    content.classList.add('collapsed');
+                    header.classList.add('collapsed');
+                }
+            }
+        }
+
+        // Parse nested content for subsections
+        function parseNestedContent(content) {
+            let html = content;
+            
+            // Process substeps
+            html = html.replace(/###SUBSTEP###\s*(.*?)(?=###SUBSTEP###|####SUB####|$)/gs, function(match, substepContent) {
+                const substepId = 'substep_' + Math.random().toString(36).substr(2, 9);
+                const lines = substepContent.trim().split('\n');
+                const title = lines[0].trim();
+                const substepBody = lines.slice(1).join('\n');
+                
+                return `
+                    <div class="collapsible-section" style="margin: 15px 0; border-color: rgba(59, 130, 246, 0.2);">
+                        <div class="section-header-collapsible" onclick="toggleSection('${substepId}')" style="background: linear-gradient(135deg, #3b82f6, #1e40af);">
+                            <div class="section-title">
+                                <span>🔧</span>
+                                <span>${title}</span>
+                            </div>
+                            <span class="collapse-arrow">▼</span>
+                        </div>
+                        <div class="section-content" id="${substepId}">
+                            ${parseSubContent(substepBody)}
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Process remaining content through regular markdown parsing
+            return parseMarkdownBasic(html);
+        }
+
+        // Parse sub-content for subsections
+        function parseSubContent(content) {
+            let html = content;
+            
+            // Process sub-sections
+            html = html.replace(/####SUB####\s*(.*?)(?=####SUB####|$)/gs, function(match, subContent) {
+                const lines = subContent.trim().split('\n');
+                const title = lines[0].trim();
+                const subBody = lines.slice(1).join('\n').trim();
+                
+                return `
+                    <div class="subsection">
+                        <h4>${title}</h4>
+                        ${subBody ? parseMarkdownBasic(subBody) : ''}
+                    </div>
+                `;
+            });
+
+            return parseMarkdownBasic(html);
+        }
+
+        // Basic markdown parsing for nested content
+        function parseMarkdownBasic(markdown) {
+            let html = markdown;
+            
+            // Headers (only h4 and below in nested content)
+            html = html.replace(/^##### (.*$)/gim, '<h5>$1</h5>');
+            html = html.replace(/^#### (.*$)/gim, '<h4>$1</h4>');
+            
+            // Bold and Italic
+            html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            
+            // Code blocks
+            html = html.replace(/```python\n([\s\S]*?)```/g, function(match, code) {
+                const codeId = 'code_' + Math.random().toString(36).substr(2, 9);
+                return `
+                    <div class="code-section">
+                        <div class="code-header">
+                            <div class="code-title">
+                                <span>🐍</span>
+                                <span>Python Code</span>
+                            </div>
+                            <button class="copy-btn" onclick="copyCode('${codeId}')">
+                                <span>📋</span>
+                                <span>Copy</span>
+                            </button>
+                        </div>
+                        <pre><code id="${codeId}">${highlightPythonCode(code)}</code></pre>
+                    </div>
+                `;
+            });
+            
+            html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, function(match, lang, code) {
+                const codeId = 'code_' + Math.random().toString(36).substr(2, 9);
+                const language = lang || 'text';
+                return `
+                    <div class="code-section">
+                        <div class="code-header">
+                            <div class="code-title">
+                                <span>💻</span>
+                                <span>${language.toUpperCase()}</span>
+                            </div>
+                            <button class="copy-btn" onclick="copyCode('${codeId}')">
+                                <span>📋</span>
+                                <span>Copy</span>
+                            </button>
+                        </div>
+                        <pre><code id="${codeId}">${code}</code></pre>
+                    </div>
+                `;
+            });
+            
+            // Inline code
+            html = html.replace(/`(.*?)`/g, '<code>$1</code>');
+            
+            // Lists
+            html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
+            html = html.replace(/^\d+\. (.*$)/gim, '<li>$1</li>');
+            html = html.replace(/^- (.*$)/gim, '<li>$1</li>');
+            
+            // Wrap consecutive list items
+            html = html.replace(/(<li>.*?<\/li>\s*)+/g, function(match) {
+                return '<ul>' + match + '</ul>';
+            });
+            
+            // Line breaks
+            html = html.replace(/\n\n/g, '</p><p>');
+            html = '<p>' + html + '</p>';
+            
+            // Clean up
+            html = html.replace(/<p><\/p>/g, '');
+            html = html.replace(/<p>(<h[4-6]>)/g, '$1');
+            html = html.replace(/(<\/h[4-6]>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<ul>)/g, '$1');
+            html = html.replace(/(<\/ul>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<div class="code-section">)/g, '$1');
+            html = html.replace(/(<\/div>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<div class="subsection">)/g, '$1');
+            html = html.replace(/(<\/div>)<\/p>/g, '$1');
+            
+            return html;
         }
 
         // Initialize the page with collapsed navigation by default
