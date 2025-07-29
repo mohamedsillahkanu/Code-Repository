@@ -286,14 +286,27 @@
             line-height: 1.6;
         }
 
+        /* Enhanced blockquotes */
         .markdown-content blockquote {
-            background: rgba(0, 102, 204, 0.05);
+            background: linear-gradient(135deg, rgba(0, 102, 204, 0.05), rgba(0, 102, 204, 0.02));
             border-left: 4px solid #0066cc;
             margin: 20px 0;
-            padding: 15px 20px;
-            border-radius: 0 8px 8px 0;
+            padding: 20px 25px;
+            border-radius: 0 12px 12px 0;
             font-style: italic;
             color: #004499;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 102, 204, 0.1);
+        }
+
+        .markdown-content blockquote::before {
+            content: '"';
+            font-size: 4em;
+            color: rgba(0, 102, 204, 0.2);
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            font-family: serif;
         }
 
         .markdown-content code {
@@ -305,14 +318,70 @@
             font-size: 0.9em;
         }
 
+        /* Enhanced Code Section Styling for Markdown */
+        .markdown-content .code-section {
+            margin: 30px 0;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .markdown-content .code-header {
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .markdown-content .code-title {
+            font-weight: 600;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .markdown-content .copy-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .markdown-content .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .markdown-content .copy-btn.copied {
+            background: #10b981;
+            border-color: #10b981;
+        }
+
         .markdown-content pre {
             background: #1e293b;
             color: #e2e8f0;
             padding: 20px;
             border-radius: 8px;
             overflow-x: auto;
-            margin: 20px 0;
+            margin: 0;
             border: 1px solid rgba(59, 130, 246, 0.3);
+            position: relative;
         }
 
         .markdown-content pre code {
@@ -320,32 +389,86 @@
             color: inherit;
             padding: 0;
             border-radius: 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
         }
 
+        /* Enhanced Syntax Highlighting for Code */
+        .markdown-content .keyword {
+            color: #c792ea;
+            font-weight: 600;
+        }
+
+        .markdown-content .function {
+            color: #82aaff;
+            font-weight: 600;
+        }
+
+        .markdown-content .string {
+            color: #c3e88d;
+        }
+
+        .markdown-content .comment {
+            color: #546e7a;
+            font-style: italic;
+        }
+
+        .markdown-content .variable {
+            color: #ffcb6b;
+        }
+
+        .markdown-content .number {
+            color: #f78c6c;
+        }
+
+        .markdown-content .operator {
+            color: #89ddff;
+        }
+
+        .markdown-content .builtin {
+            color: #ff5370;
+        }
+
+        .markdown-content .method {
+            color: #82aaff;
+        }
+
+        /* Enhanced table styling */
         .markdown-content table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
             border: 1px solid #e2e8f0;
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         .markdown-content th {
-            background: #0066cc;
+            background: linear-gradient(135deg, #0066cc, #004499);
             color: white;
-            padding: 12px 15px;
+            padding: 15px;
             text-align: left;
             font-weight: 600;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .markdown-content td {
             padding: 12px 15px;
             border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
         }
 
         .markdown-content tr:nth-child(even) {
             background: rgba(0, 102, 204, 0.02);
+        }
+
+        .markdown-content tr:hover {
+            background: rgba(0, 102, 204, 0.05);
+            transition: background-color 0.2s ease;
         }
 
         .markdown-content img {
@@ -377,6 +500,20 @@
         .markdown-content em {
             color: #0066cc;
             font-style: italic;
+        }
+
+        /* Todo list styling */
+        .markdown-content .todo-item {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .markdown-content .todo-item input[type="checkbox"] {
+            margin: 0;
+            transform: scale(1.2);
         }
 
         /* File Path Input */
@@ -449,6 +586,7 @@
             border-left: 4px solid #0066cc;
         }
 
+        /* Responsive enhancements */
         @media (max-width: 768px) {
             .main-title {
                 font-size: 2.2em;
@@ -494,6 +632,25 @@
 
             .input-group {
                 flex-direction: column;
+            }
+
+            .markdown-content .code-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .markdown-content .copy-btn {
+                align-self: flex-end;
+            }
+            
+            .markdown-content table {
+                font-size: 0.9em;
+            }
+            
+            .markdown-content th,
+            .markdown-content td {
+                padding: 8px 10px;
             }
         }
     </style>
@@ -773,84 +930,6 @@
             }
         }
 
-        async function loadMarkdownTemplate() {
-            const pathInput = document.getElementById('markdownTemplatePath');
-            const filePath = pathInput ? pathInput.value.trim() : './analysis_template.md';
-            
-            if (!filePath) {
-                autoLoadMarkdownTemplate();
-                return;
-            }
-            
-            const loadingDiv = document.getElementById('templateLoading');
-            const contentDiv = document.getElementById('templateContent');
-            
-            // Show loading indicator
-            if (loadingDiv) loadingDiv.style.display = 'block';
-            if (contentDiv) contentDiv.style.display = 'none';
-            
-            try {
-                let markdownText = '';
-                
-                // Check if it's a web URL or local file
-                if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
-                    // Load from web URL
-                    const response = await fetch(filePath);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    markdownText = await response.text();
-                } else {
-                    // Try to load from local file using the file system API first
-                    try {
-                        markdownText = await window.fs.readFile(filePath, { encoding: 'utf8' });
-                    } catch (fsError) {
-                        // If file system API fails, try fetch for relative paths
-                        try {
-                            const response = await fetch(filePath);
-                            if (!response.ok) {
-                                throw new Error(`Could not load file: ${filePath}`);
-                            }
-                            markdownText = await response.text();
-                        } catch (fetchError) {
-                            // If both fail, load the default template
-                            markdownText = getDefaultTemplate();
-                            console.log('Loading default template as file not found:', filePath);
-                        }
-                    }
-                }
-                
-                // Parse and display the markdown content
-                const htmlContent = parseMarkdown(markdownText);
-                
-                if (contentDiv) {
-                    contentDiv.innerHTML = htmlContent;
-                    contentDiv.style.display = 'block';
-                }
-                
-            } catch (error) {
-                console.error('Error loading markdown template:', error);
-                
-                // Load default template on error
-                const defaultTemplate = getDefaultTemplate();
-                const htmlContent = parseMarkdown(defaultTemplate);
-                
-                if (contentDiv) {
-                    contentDiv.innerHTML = `
-                        <div style="background: rgba(245, 158, 11, 0.1); border-left: 4px solid #f59e0b; padding: 15px; margin-bottom: 20px; border-radius: 8px;">
-                            <strong style="color: #d97706;">⚠️ Note:</strong> Could not load the specified template file. Loading default template instead.
-                        </div>
-                        ${htmlContent}
-                    `;
-                    contentDiv.style.display = 'block';
-                }
-                
-            } finally {
-                // Hide loading indicator
-                if (loadingDiv) loadingDiv.style.display = 'none';
-            }
-        }
-
         function getDefaultTemplate() {
             return `# Malaria Data Analysis Template
 
@@ -869,10 +948,10 @@ This template provides a comprehensive framework for analyzing malaria surveilla
 - **Gender**: Patient gender (Male, Female)
 
 ### Data Quality Checks
-- Ensure all dates are valid and in correct format
-- Check for missing values in critical columns
-- Validate that confirmed cases ≤ tested cases
-- Verify district and facility names are standardized
+> **Important**: Ensure all dates are valid and in correct format
+> Check for missing values in critical columns
+> Validate that confirmed cases ≤ tested cases
+> Verify district and facility names are standardized
 
 ## Analysis Steps
 
@@ -895,80 +974,137 @@ df['date'] = pd.to_datetime(df['date'])
 df['confirmation_rate'] = (df['confirmed_cases'] / df['tested_cases']) * 100
 \`\`\`
 
-### 2. Descriptive Statistics
+### 2. Advanced Data Preprocessing
 
-Calculate key indicators:
-- Overall confirmation rate
-- Confirmation rate by district
-- Confirmation rate by age group
-- Seasonal trends
-- Monthly case counts
+\`\`\`python
+# Data cleaning function
+def clean_malaria_data(df):
+    """
+    Clean and validate malaria surveillance data
+    
+    Parameters:
+    df (DataFrame): Raw malaria data
+    
+    Returns:
+    DataFrame: Cleaned data
+    """
+    # Remove duplicate records
+    df = df.drop_duplicates()
+    
+    # Handle missing values
+    df['tested_cases'] = df['tested_cases'].fillna(0)
+    df['confirmed_cases'] = df['confirmed_cases'].fillna(0)
+    
+    # Validate data consistency
+    df = df[df['confirmed_cases'] <= df['tested_cases']]
+    
+    # Standardize district names
+    district_mapping = {
+        'Western Area Urban': 'Western Urban',
+        'Western Area Rural': 'Western Rural',
+        'Bo District': 'Bo',
+        'Kenema District': 'Kenema'
+    }
+    df['district'] = df['district'].replace(district_mapping)
+    
+    return df
 
-### 3. Data Visualization
+# Apply cleaning function
+cleaned_df = clean_malaria_data(df)
+print(f"Data cleaned: {len(df)} -> {len(cleaned_df)} records")
+\`\`\`
 
-Create the following visualizations:
-- Time series plots of cases and confirmation rates
-- District-wise comparison charts
-- Age and gender distribution plots
-- Seasonal pattern analysis
-- Heat maps for geographic distribution
+### 3. Statistical Analysis Functions
 
-### 4. Statistical Analysis
+\`\`\`python
+def calculate_kpis(df):
+    """Calculate key performance indicators"""
+    
+    kpis = {
+        'total_tested': df['tested_cases'].sum(),
+        'total_confirmed': df['confirmed_cases'].sum(),
+        'overall_confirmation_rate': (df['confirmed_cases'].sum() / df['tested_cases'].sum()) * 100,
+        'districts_analyzed': df['district'].nunique(),
+        'facilities_analyzed': df['facility'].nunique(),
+        'date_range': f"{df['date'].min().strftime('%Y-%m-%d')} to {df['date'].max().strftime('%Y-%m-%d')}"
+    }
+    
+    return kpis
 
-Perform statistical tests to identify:
-- Significant differences between districts
-- Seasonal patterns and trends
-- Age and gender-related patterns
-- Correlation analysis between variables
+# Calculate KPIs
+kpis = calculate_kpis(cleaned_df)
+for key, value in kpis.items():
+    print(f"{key.replace('_', ' ').title()}: {value}")
+\`\`\`
 
 ## Key Performance Indicators (KPIs)
 
-### Primary Indicators
-1. **Overall Confirmation Rate**: (Total confirmed cases / Total tested cases) × 100
-2. **Monthly Incidence Rate**: Number of confirmed cases per 1,000 population per month
-3. **Test Positivity Rate**: Percentage of tests that are positive for malaria
+| **Indicator** | **Formula** | **Target** | **Interpretation** |
+|---------------|-------------|------------|-------------------|
+| Overall Confirmation Rate | (Total confirmed / Total tested) × 100 | 10-40% | Higher rates may indicate outbreak |
+| Monthly Incidence Rate | Confirmed cases / Population × 1,000 | <5 per 1,000 | Seasonal variation expected |
+| Test Positivity Rate | Positive tests / Total tests × 100 | 10-40% | Quality of case management |
+| District Performance | District rate vs National average | ±20% | Identifies priority areas |
 
-### Secondary Indicators
-1. **District Performance**: Comparison of confirmation rates across districts
-2. **Age-specific Rates**: Confirmation rates by age group
-3. **Seasonal Variation**: Monthly/quarterly trends in cases
-4. **Facility Performance**: Testing and confirmation rates by facility
+### Advanced Analytics
 
-## Report Template
-
-### Executive Summary
-- Key findings and recommendations
-- Overall trends and patterns
-- Priority areas for intervention
-
-### Detailed Analysis
-- Statistical analysis results
-- Visualizations and charts
-- District-specific findings
-- Demographic analysis
-
-### Recommendations
-- Priority districts for intervention
-- Resource allocation suggestions
-- Surveillance improvements
-- Next steps and follow-up actions
-
-## Code Examples
-
-### Calculate District Statistics
 \`\`\`python
-# Group by district and calculate statistics
-district_stats = df.groupby('district').agg({
-    'confirmation_rate': ['mean', 'std', 'min', 'max'],
-    'confirmed_cases': 'sum',
-    'tested_cases': 'sum'
-})
+# Machine Learning for Trend Prediction
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_absolute_error, r2_score
 
-print("District Statistics:")
-print(district_stats)
+def predict_malaria_trends(df):
+    """
+    Use machine learning to predict malaria trends
+    """
+    # Feature engineering
+    df['month'] = df['date'].dt.month
+    df['year'] = df['date'].dt.year
+    df['quarter'] = df['date'].dt.quarter
+    df['is_rainy_season'] = df['month'].isin([5, 6, 7, 8, 9, 10])
+    
+    # Prepare features
+    feature_cols = ['month', 'year', 'quarter', 'is_rainy_season', 'tested_cases']
+    X = df[feature_cols]
+    y = df['confirmed_cases']
+    
+    # Split data
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
+    
+    # Train model
+    model = RandomForestRegressor(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
+    
+    # Make predictions
+    y_pred = model.predict(X_test)
+    
+    # Evaluate model
+    mae = mean_absolute_error(y_test, y_pred)
+    r2 = r2_score(y_test, y_pred)
+    
+    print(f"Model Performance:")
+    print(f"Mean Absolute Error: {mae:.2f}")
+    print(f"R² Score: {r2:.3f}")
+    
+    # Feature importance
+    importance_df = pd.DataFrame({
+        'feature': feature_cols,
+        'importance': model.feature_importances_
+    }).sort_values('importance', ascending=False)
+    
+    return model, importance_df
+
+# Run prediction model
+model, feature_importance = predict_malaria_trends(cleaned_df)
+print("Feature Importance:")
+print(feature_importance)
 \`\`\`
 
 ### Generate Time Series Plot
+
 \`\`\`python
 # Monthly trend analysis
 monthly_trends = df.groupby(pd.Grouper(key='date', freq='M'))['confirmation_rate'].mean()
@@ -985,6 +1121,7 @@ plt.show()
 \`\`\`
 
 ### Create District Comparison Chart
+
 \`\`\`python
 # District comparison
 district_rates = df.groupby('district')['confirmation_rate'].mean().sort_values(ascending=False)
@@ -1014,19 +1151,30 @@ plt.show()
 4. **Reproducibility**: Ensure analysis can be reproduced with same data
 5. **Version Control**: Track changes to analysis code and data
 
+### Quality Assurance Checklist
+
+- [ ] Data completeness check (missing values < 5%)
+- [ ] Data consistency validation (confirmed ≤ tested)
+- [ ] Outlier detection and handling
+- [ ] Statistical significance testing
+- [ ] Cross-validation of results
+- [ ] Peer review of analysis code
+
 ## Contact Information
 
 For technical support or questions about this template:
-- **Organization**: Informatics Consultancy Firm Sierra Leone (ICF-SL)
-- **Motto**: *A local firm with international standards*
-- **Email**: support@icf-sl.org
-- **Website**: www.icf-sl.org
+
+**Organization**: Informatics Consultancy Firm Sierra Leone (ICF-SL)  
+**Motto**: *A local firm with international standards*  
+**Email**: support@icf-sl.org  
+**Website**: www.icf-sl.org
 
 ---
 
 *This template is designed to support the National Malaria Control Programme (NMCP) in Sierra Leone with standardized data analysis procedures.*`;
         }
 
+        // Enhanced parseMarkdown function with better code formatting
         function parseMarkdown(markdown) {
             let html = markdown;
             
@@ -1040,8 +1188,48 @@ For technical support or questions about this template:
             html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
             
-            // Code blocks
-            html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+            // Enhanced Code blocks with syntax highlighting and copy functionality
+            html = html.replace(/```python\n([\s\S]*?)```/g, function(match, code) {
+                const codeId = 'code_' + Math.random().toString(36).substr(2, 9);
+                return `
+                    <div class="code-section">
+                        <div class="code-header">
+                            <div class="code-title">
+                                <span>🐍</span>
+                                <span>Python Code</span>
+                            </div>
+                            <button class="copy-btn" onclick="copyCode('${codeId}')">
+                                <span>📋</span>
+                                <span>Copy</span>
+                            </button>
+                        </div>
+                        <pre><code id="${codeId}">${highlightPythonCode(code)}</code></pre>
+                    </div>
+                `;
+            });
+            
+            // Regular code blocks
+            html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, function(match, lang, code) {
+                const codeId = 'code_' + Math.random().toString(36).substr(2, 9);
+                const language = lang || 'text';
+                return `
+                    <div class="code-section">
+                        <div class="code-header">
+                            <div class="code-title">
+                                <span>💻</span>
+                                <span>${language.toUpperCase()} Code</span>
+                            </div>
+                            <button class="copy-btn" onclick="copyCode('${codeId}')">
+                                <span>📋</span>
+                                <span>Copy</span>
+                            </button>
+                        </div>
+                        <pre><code id="${codeId}">${code}</code></pre>
+                    </div>
+                `;
+            });
+            
+            // Inline code
             html = html.replace(/`(.*?)`/g, '<code>$1</code>');
             
             // Links
@@ -1050,14 +1238,29 @@ For technical support or questions about this template:
             // Images
             html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
             
-            // Blockquotes
+            // Enhanced blockquotes
             html = html.replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>');
+            
+            // Tables
+            html = html.replace(/\|(.+)\|\r?\n\|[-:| ]+\|\r?\n((\|.+\|\r?\n?)*)/g, function(match, header, separator, rows) {
+                const headerCells = header.split('|').map(cell => `<th>${cell.trim()}</th>`).join('');
+                const rowsHtml = rows.split('\n').filter(row => row.trim()).map(row => {
+                    const cells = row.split('|').map(cell => `<td>${cell.trim()}</td>`).join('');
+                    return `<tr>${cells}</tr>`;
+                }).join('');
+                
+                return `<table><thead><tr>${headerCells}</tr></thead><tbody>${rowsHtml}</tbody></table>`;
+            });
             
             // Horizontal rules
             html = html.replace(/^---$/gim, '<hr>');
             html = html.replace(/^\*\*\*$/gim, '<hr>');
             
-            // Lists
+            // Lists with checkboxes
+            html = html.replace(/^- \[ \] (.*$)/gim, '<li class="todo-item"><input type="checkbox" disabled> $1</li>');
+            html = html.replace(/^- \[x\] (.*$)/gim, '<li class="todo-item"><input type="checkbox" checked disabled> $1</li>');
+            
+            // Regular lists
             html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
             html = html.replace(/^\d+\. (.*$)/gim, '<li>$1</li>');
             
@@ -1081,8 +1284,110 @@ For technical support or questions about this template:
             html = html.replace(/(<\/ul>)<\/p>/g, '$1');
             html = html.replace(/<p>(<pre>)/g, '$1');
             html = html.replace(/(<\/pre>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<table>)/g, '$1');
+            html = html.replace(/(<\/table>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<div class="code-section">)/g, '$1');
+            html = html.replace(/(<\/div>)<\/p>/g, '$1');
             
             return html;
+        }
+
+        // Enhanced Python syntax highlighting function
+        function highlightPythonCode(code) {
+            let highlighted = code;
+            
+            // Python keywords
+            const keywords = [
+                'import', 'from', 'as', 'def', 'class', 'if', 'else', 'elif', 'for', 'while', 
+                'try', 'except', 'finally', 'with', 'return', 'yield', 'break', 'continue', 
+                'pass', 'lambda', 'and', 'or', 'not', 'in', 'is', 'True', 'False', 'None'
+            ];
+            keywords.forEach(keyword => {
+                const regex = new RegExp(`\\b${keyword}\\b`, 'g');
+                highlighted = highlighted.replace(regex, `<span class="keyword">${keyword}</span>`);
+            });
+            
+            // Built-in functions
+            const builtins = [
+                'print', 'len', 'range', 'str', 'int', 'float', 'list', 'dict', 'set', 'tuple', 
+                'type', 'isinstance', 'enumerate', 'zip', 'open', 'round', 'sum', 'max', 'min', 
+                'abs', 'sorted', 'reversed', 'filter', 'map', 'any', 'all'
+            ];
+            builtins.forEach(builtin => {
+                const regex = new RegExp(`\\b${builtin}\\b(?=\\()`, 'g');
+                highlighted = highlighted.replace(regex, `<span class="builtin">${builtin}</span>`);
+            });
+            
+            // Method calls (word followed by dot and word)
+            highlighted = highlighted.replace(/(\w+)\.(\w+)/g, '$1.<span class="method">$2</span>');
+            
+            // Function definitions
+            highlighted = highlighted.replace(/def\s+(\w+)/g, 'def <span class="function">$1</span>');
+            
+            // Class definitions
+            highlighted = highlighted.replace(/class\s+(\w+)/g, 'class <span class="function">$1</span>');
+            
+            // Strings (triple quotes first, then single/double)
+            highlighted = highlighted.replace(/"""([\s\S]*?)"""/g, '<span class="string">"""$1"""</span>');
+            highlighted = highlighted.replace(/'''([\s\S]*?)'''/g, '<span class="string">\'\'\'$1\'\'\'</span>');
+            highlighted = highlighted.replace(/'([^'\\]*(\\.[^'\\]*)*)'/g, '<span class="string">\'$1\'</span>');
+            highlighted = highlighted.replace(/"([^"\\]*(\\.[^"\\]*)*)"/g, '<span class="string">"$1"</span>');
+            
+            // Numbers
+            highlighted = highlighted.replace(/\b\d+\.?\d*\b/g, '<span class="number">$&</span>');
+            
+            // Comments
+            highlighted = highlighted.replace(/#.*$/gm, '<span class="comment">$&</span>');
+            
+            // Operators
+            const operators = ['=', '\\+', '-', '\\*', '/', '%', '==', '!=', '<', '>', '<=', '>=', '\\+=', '-=', '\\*=', '/='];
+            operators.forEach(op => {
+                const regex = new RegExp(`\\s(${op})\\s`, 'g');
+                highlighted = highlighted.replace(regex, ` <span class="operator">${op.replace(/\\/g, '')}</span> `);
+            });
+            
+            return highlighted;
+        }
+
+        // Copy code functionality
+        function copyCode(codeId) {
+            const codeElement = document.getElementById(codeId);
+            const button = event.target.closest('.copy-btn');
+            
+            if (codeElement) {
+                // Get text content without HTML tags
+                const codeText = codeElement.textContent || codeElement.innerText;
+                
+                // Copy to clipboard
+                navigator.clipboard.writeText(codeText).then(() => {
+                    // Update button appearance
+                    const originalContent = button.innerHTML;
+                    button.innerHTML = '<span>✅</span><span>Copied!</span>';
+                    button.classList.add('copied');
+                    
+                    // Reset button after 2 seconds
+                    setTimeout(() => {
+                        button.innerHTML = originalContent;
+                        button.classList.remove('copied');
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy code: ', err);
+                    // Fallback for older browsers
+                    const textArea = document.createElement('textarea');
+                    textArea.value = codeText;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    
+                    button.innerHTML = '<span>✅</span><span>Copied!</span>';
+                    button.classList.add('copied');
+                    setTimeout(() => {
+                        button.innerHTML = '<span>📋</span><span>Copy</span>';
+                        button.classList.remove('copied');
+                    }, 2000);
+                });
+            }
         }
 
         // Initialize the page with collapsed navigation by default
