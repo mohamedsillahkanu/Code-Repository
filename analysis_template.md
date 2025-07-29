@@ -1,17 +1,17 @@
-##Step 1: Import Required Libraries##
+# Step 1: Import Required Libraries
 
 ```
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from datetime import datetime
+#import pandas as pd
+#import numpy as np
+#import matplotlib.pyplot as plt
+#import seaborn as sns
+#from datetime import datetime
 ```
 
-##Step 2: Define Main Analysis Function##
+#Step 2: Define Main Analysis Function
 
 ```python
-def analyze_malaria_confirmation(data_file):
+#def analyze_malaria_confirmation(data_file):
     """
     Analyze malaria confirmation rates across districts and time periods
     
