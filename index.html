@@ -670,7 +670,7 @@
             } catch (error) {
                 console.log('Could not load content.md:', error.message);
                 
-                // Show error state with helpful message
+                // Show error state with helpful message and color reference
                 display.innerHTML = `
                     <div class="error-state">
                         <div class="error-icon">📄</div>
@@ -678,6 +678,19 @@
                         <div class="error-text">
                             Please place a <strong>content.md</strong> file in the same directory as this HTML file.<br>
                             The system will automatically read and display its contents here.
+                        </div>
+                        <div style="margin-top: 30px; padding: 20px; background: rgba(0,102,204,0.1); border-radius: 10px; text-align: left;">
+                            <h3 style="color: var(--primary-blue); margin-bottom: 15px;">🎨 Syntax Highlighting Colors:</h3>
+                            <div style="font-family: monospace; line-height: 1.8;">
+                                <span class="keyword">Keywords:</span> <code style="color: var(--keyword-purple);">#7c3aed</code> (import, def, return)<br>
+                                <span class="function">Functions:</span> <code style="color: var(--function-blue);">#3b82f6</code> (pandas, numpy)<br>
+                                <span class="string">Strings:</span> <code style="color: var(--string-green);">#10b981</code> ("text")<br>
+                                <span class="comment">Comments:</span> <code style="color: var(--comment-gray);">#64748b</code> (# comments)<br>
+                                <span class="variable">Variables:</span> <code style="color: var(--variable-orange);">#f59e0b</code> (df, data)<br>
+                                <span class="number">Numbers:</span> <code style="color: var(--number-red);">#ef4444</code> (123, 45.6)<br>
+                                <span class="operator">Operators:</span> <code style="color: var(--operator-purple);">#8b5cf6</code> (=, +, -)<br>
+                                <span class="builtin">Built-ins:</span> <code style="color: #06b6d4;">#06b6d4</code> (print, len)<br>
+                            </div>
                         </div>
                     </div>
                 `;
