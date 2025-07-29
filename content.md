@@ -1,6 +1,6 @@
-## Step 1: Import Required Libraries
+# Step 1: Import Required Libraries
 
-```python
+```
 # Import necessary libraries
 import pandas as pd
 import numpy as np
@@ -9,7 +9,7 @@ import seaborn as sns
 from datetime import datetime
 ```
 
-## Step 2: Define Main Analysis Function
+# Step 2: Define Main Analysis Function
 
 ```python
 def analyze_malaria_confirmation(data_file):
@@ -24,7 +24,7 @@ def analyze_malaria_confirmation(data_file):
     """
 ```
 
-## Step 3: Load and Process Data
+# Step 3: Load and Process Data
 
 ```python
     # Load the dataset
