@@ -746,23 +746,14 @@
         }
 
         function formatCodeBlock(code, language = '') {
-            // Escape HTML first to prevent injection
-            let escaped = code
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#x27;');
-            
-            // Simple syntax highlighting for Python
-            let formatted = escaped
+            // Simple syntax highlighting for Python - don't escape HTML here since we're generating HTML
+            let formatted = code
                 .replace(/\b(import|from|as|def|class|if|else|elif|for|while|try|except|finally|with|return|yield|break|continue|pass|lambda|and|or|not|in|is|True|False|None)\b/g, '<span class="keyword">$1</span>')
                 .replace(/\b(\w+)(?=\()/g, '<span class="function">$1</span>')
                 .replace(/(#.*$)/gm, '<span class="comment">$1</span>')
                 .replace(/\b(\d+(?:\.\d+)?)\b/g, '<span class="number">$1</span>')
                 .replace(/([+\-*/%=<>!&|^~])/g, '<span class="operator">$1</span>')
-                .replace(/(&#x27;)((?:\\.|(?!&#x27;)[^\\])*?)(&#x27;)/g, '<span class="string">$1$2$3</span>')
-                .replace(/(&quot;)((?:\\.|(?!&quot;)[^\\])*?)(&quot;)/g, '<span class="string">$1$2$3</span>');
+                .replace(/(["'])((?:\\.|(?!\1)[^\\])*?)\1/g, '<span class="string">$1$2$1</span>');
             
             return formatted;
         }
@@ -779,8 +770,11 @@
                 return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
             });
 
-            // Process other markdown
+            // Process other markdown - escape HTML entities in regular content
             content = content
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                 .replace(/\*(.*?)\*/g, '<em>$1</em>')
                 .replace(/`(.*?)`/g, '<code style="background: rgba(0,102,204,0.1); padding: 2px 4px; border-radius: 3px;">$1</code>')
@@ -793,8 +787,9 @@
                 .replace(/<\/p><p><ul>/g, '<ul>')
                 .replace(/<\/ul><\/p><p>/g, '</ul>');
 
-            // Replace code blocks
+            // Replace code blocks with properly formatted HTML
             codeBlocks.forEach((block, idx) => {
+                const formattedCode = formatCodeBlock(block.code, block.language);
                 const codeHtml = `
                     <div class="code-section">
                         <div class="code-header">
@@ -808,7 +803,7 @@
                             </button>
                         </div>
                         <div class="code-container">
-                            <div class="code-content" id="${block.id}">${formatCodeBlock(block.code, block.language)}</div>
+                            <div class="code-content" id="${block.id}">${formattedCode}</div>
                         </div>
                     </div>
                 `;
