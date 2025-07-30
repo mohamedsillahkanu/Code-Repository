@@ -360,48 +360,6 @@
         .number { color: #ef4444; }
         .operator { color: #8b5cf6; }
 
-        /* File Upload Areas */
-        .file-upload-area {
-            border: 2px dashed #0066cc;
-            border-radius: 15px;
-            padding: 40px;
-            text-align: center;
-            background: rgba(0, 102, 204, 0.05);
-            margin: 20px 0;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .file-upload-area:hover {
-            background: rgba(0, 102, 204, 0.1);
-            border-color: #004499;
-        }
-
-        .file-upload-area.dragover {
-            background: rgba(0, 102, 204, 0.15);
-            border-color: #004499;
-            transform: scale(1.02);
-        }
-
-        .upload-icon {
-            font-size: 3em;
-            color: #0066cc;
-            margin-bottom: 15px;
-        }
-
-        .upload-text {
-            font-size: 1.2em;
-            font-weight: 600;
-            color: #0066cc;
-            margin-bottom: 10px;
-        }
-
-        .upload-subtext {
-            font-size: 1em;
-            color: #666;
-            font-style: italic;
-        }
-
         /* Loading indicator */
         .loading {
             display: flex;
@@ -521,8 +479,6 @@
             <button class="tab-button" onclick="openTab(event, 'tab4')">Reports & Export</button>
         </div>
 
-
-
         <!-- Tab Contents -->
         <div id="overview" class="tab-content active">
             <div class="section-header">Code Repository</div>
@@ -569,11 +525,11 @@
     </div>
 
     <script>
-        // Configuration for markdown files
+        // Configuration for markdown files - ALL IN MAIN REPO DIRECTORY
         const TAB_CONFIG = {
             'tab2': { file: 'malaria_analysis.md', title: 'Malaria Analysis Code' },
-            'tab3': { file: 'content/data-visualization.md', title: 'Data Visualization' },
-            'tab4': { file: 'content/reports-export.md', title: 'Reports & Export' }
+            'tab3': { file: 'data_visualization.md', title: 'Data Visualization' },
+            'tab4': { file: 'reports_export.md', title: 'Reports & Export' }
         };
 
         function openTab(evt, tabName) {
@@ -734,12 +690,14 @@
                     tabElement.innerHTML = header + `
                         <div class="content-text" style="color: #dc2626; border-left-color: #dc2626;">
                             <strong>Error loading content:</strong><br>
-                            Could not load ${config.file}. Please ensure the file exists in the content directory.
+                            Could not load ${config.file}. Please ensure the file exists in the main repository directory.
                             <br><br>
-                            <em>Expected file structure:</em><br>
-                            - content/malaria-analysis.md<br>
-                            - content/data-visualization.md<br>
-                            - content/reports-export.md
+                            <em>Expected files in main repo:</em><br>
+                            - malaria_analysis.md<br>
+                            - data_visualization.md<br>
+                            - reports_export.md
+                            <br><br>
+                            <em>Current attempt:</em> Trying to load "${config.file}"
                         </div>
                     `;
                 }
@@ -788,14 +746,23 @@
         }
 
         function formatCodeBlock(code, language = '') {
+            // Escape HTML first to prevent injection
+            let escaped = code
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#x27;');
+            
             // Simple syntax highlighting for Python
-            let formatted = code
+            let formatted = escaped
                 .replace(/\b(import|from|as|def|class|if|else|elif|for|while|try|except|finally|with|return|yield|break|continue|pass|lambda|and|or|not|in|is|True|False|None)\b/g, '<span class="keyword">$1</span>')
                 .replace(/\b(\w+)(?=\()/g, '<span class="function">$1</span>')
-                .replace(/(["'])((?:\\.|(?!\1)[^\\])*?)\1/g, '<span class="string">$1$2$1</span>')
                 .replace(/(#.*$)/gm, '<span class="comment">$1</span>')
                 .replace(/\b(\d+(?:\.\d+)?)\b/g, '<span class="number">$1</span>')
-                .replace(/([+\-*/%=<>!&|^~])/g, '<span class="operator">$1</span>');
+                .replace(/([+\-*/%=<>!&|^~])/g, '<span class="operator">$1</span>')
+                .replace(/(&#x27;)((?:\\.|(?!&#x27;)[^\\])*?)(&#x27;)/g, '<span class="string">$1$2$3</span>')
+                .replace(/(&quot;)((?:\\.|(?!&quot;)[^\\])*?)(&quot;)/g, '<span class="string">$1$2$3</span>');
             
             return formatted;
         }
