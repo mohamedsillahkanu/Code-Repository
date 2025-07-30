@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Repository</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0066cc 0%, #004499 50%, #ffffff 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 0;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #0066cc;
+            padding: 25px 0;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 10px rgba(0, 102, 204, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .logo-container {
+            width: 140px;
+            height: 90px;
+            border: 2px solid #0066cc;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .logo-container:hover {
+            transform: translateY(-3px);
+        }
+
+        .logo-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 8px;
+        }
+
+        .title-section {
+            text-align: center;
+        }
+
+        .main-title {
+            font-size: 3em;
+            color: #0066cc;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0, 102, 204, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.4em;
+            color: #004499;
+            font-weight: 400;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 15px 40px rgba(0, 102, 204, 0.2);
+            border: 1px solid rgba(0, 102, 204, 0.2);
+        }
+
+        /* Tab Toggle Button */
+        .tab-toggle-btn {
+            background: linear-gradient(135deg, #004499, #0066cc);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 68, 153, 0.3);
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+            width: 250px;
+        }
+
+        .tab-toggle-btn:hover {
+            background: linear-gradient(135deg, #0066cc, #004499);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+        }
+
+        .tab-toggle-btn .arrow {
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+
+        .tab-toggle-btn.collapsed .arrow {
+            transform: rotate(-90deg);
+        }
+
+        /* Tab Navigation */
+        .tab-navigation {
+            display: flex;
+            flex-wrap: wrap;
+            border-bottom: 3px solid #0066cc;
+            margin-bottom: 40px;
+            gap: 5px;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        .tab-navigation.expanded {
+            max-height: 200px;
+            opacity: 1;
+            margin-bottom: 40px;
+        }
+
+        .tab-button {
+            background: rgba(0, 102, 204, 0.1);
+            border: none;
+            padding: 15px 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            color: #004499;
+            border-radius: 10px 10px 0 0;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            margin-bottom: -3px;
+            position: relative;
+        }
+
+        .tab-button:hover {
+            background: rgba(0, 102, 204, 0.2);
+            color: #0066cc;
+        }
+
+        .tab-button.active {
+            background: #0066cc;
+            color: white;
+            border-bottom: 3px solid #0066cc;
+            transform: translateY(3px);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Content Sections */
+        .section-header {
+            color: #0066cc;
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 102, 204, 0.1);
+            border-radius: 15px;
+            border-left: 5px solid #0066cc;
+        }
+
+        /* Collapsible Sections */
+        .collapsible-section {
+            margin-bottom: 30px;
+            border: 2px solid rgba(0, 102, 204, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.1);
+        }
+
+        .section-toggle {
+            background: linear-gradient(135deg, #0066cc, #004499);
+            color: white;
+            border: none;
+            padding: 20px;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-size: 1.3em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-toggle:hover {
+            background: linear-gradient(135deg, #004499, #0066cc);
+        }
+
+        .section-toggle::after {
+            content: '▼';
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+
+        .section-toggle.collapsed::after {
+            transform: rotate(-90deg);
+        }
+
+        .section-content {
+            background: rgba(255, 255, 255, 0.95);
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            padding: 0;
+        }
+
+        .section-content.expanded {
+            max-height: none;
+            padding: 20px;
+        }
+
+        .content-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            border-left: 4px solid #0066cc;
+        }
+
+        /* Step Description */
+        .step-description {
+            background: rgba(0, 102, 204, 0.05);
+            border-left: 4px solid #0066cc;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 0 10px 10px 0;
+            color: #004499;
+            font-size: 1em;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        /* Code Section Styling */
+        .code-section {
+            margin: 30px 0;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .code-header {
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .code-title {
+            font-weight: 600;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-btn.copied {
+            background: #10b981;
+            border-color: #10b981;
+        }
+
+        .code-container {
+            background: #1e293b;
+            padding: 0;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-content {
+            padding: 25px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #e2e8f0;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #7c3aed; font-weight: 600; }
+        .function { color: #3b82f6; font-weight: 600; }
+        .string { color: #10b981; }
+        .comment { color: #64748b; font-style: italic; }
+        .variable { color: #f59e0b; }
+        .number { color: #ef4444; }
+        .operator { color: #8b5cf6; }
+
+        /* File Upload Areas */
+        .file-upload-area {
+            border: 2px dashed #0066cc;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            background: rgba(0, 102, 204, 0.05);
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .file-upload-area:hover {
+            background: rgba(0, 102, 204, 0.1);
+            border-color: #004499;
+        }
+
+        .file-upload-area.dragover {
+            background: rgba(0, 102, 204, 0.15);
+            border-color: #004499;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            color: #0066cc;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #0066cc;
+            margin-bottom: 10px;
+        }
+
+        .upload-subtext {
+            font-size: 1em;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Loading indicator */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #0066cc;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e2e8f0;
+            border-top: 2px solid #0066cc;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2.2em;
+            }
+            
+            .subtitle {
+                font-size: 1.2em;
+            }
+            
+            .logo-section {
+                justify-content: center;
+            }
+            
+            .logo-container {
+                width: 120px;
+                height: 80px;
+            }
+            
+            .dashboard-container {
+                padding: 30px;
+            }
+
+            .tab-navigation {
+                flex-direction: column;
+            }
+
+            .tab-button {
+                border-radius: 10px;
+                margin-bottom: 5px;
+                padding: 12px 20px;
+                font-size: 0.9em;
+            }
+
+            .tab-button.active {
+                transform: none;
+            }
+
+            .tab-toggle-btn {
+                width: 200px;
+                padding: 12px 20px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <!-- Logo Section for 4 logos -->
+            <div class="logo-section">
+                <div class="logo-container">
+                    <img src="NMCP.png" alt="NMCP Logo" class="logo-image">
+                </div>
+                
+                <div class="logo-container">
+                    <img src="WHO.png" alt="WHO Logo" class="logo-image">
+                </div>
+                
+                <div class="logo-container">
+                    <img src="CHAI2.png" alt="CHAI Logo" class="logo-image">
+                </div>
+
+                <div class="logo-container">
+                    <img src="ICF-SL.jpg" alt="ICF-SL Logo" class="logo-image">
+                </div>
+            </div>
+            
+            <!-- Title Section -->
+            <div class="title-section">
+                <h1 class="main-title">Malaria Program Review (MPR)</h1>
+                <h2 class="subtitle">Code Repository and Analysis System</h2>
+                <h3 class="subtitle">by</h3>
+                <h2 class="subtitle">Informatics Consultancy Firm Sierra Leone (ICF-SL)</h2>
+                <h2 class="subtitle"><em>A local firm with international standards</em></h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Tab Toggle Button -->
+        <button class="tab-toggle-btn collapsed" onclick="toggleTabs()" id="tabToggleBtn">
+            <span>📂</span>
+            <span>Show Navigation Menu</span>
+            <span class="arrow">▼</span>
+        </button>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation" id="tabNavigation">
+            <button class="tab-button active" onclick="openTab(event, 'overview')">Overview</button>
+            <button class="tab-button" onclick="openTab(event, 'tab2')">Malaria Analysis Code</button>
+            <button class="tab-button" onclick="openTab(event, 'tab3')">Data Visualization</button>
+            <button class="tab-button" onclick="openTab(event, 'tab4')">Reports & Export</button>
+        </div>
+
+
+
+        <!-- Tab Contents -->
+        <div id="overview" class="tab-content active">
+            <div class="section-header">Code Repository</div>
+            
+            <!-- Code Repository Introduction -->
+            <div class="collapsible-section">
+                <button class="section-toggle collapsed" onclick="toggleSection(this)">
+                    💻 Code Repository Overview
+                </button>
+                <div class="section-content">
+                    <div class="content-text">
+                        <strong>Malaria Data Analysis Code Repository</strong><br>
+                        This system provides a comprehensive collection of Python scripts and analysis tools designed specifically for the National Malaria Control Programme (NMCP) in Sierra Leone. 
+                        The code repository contains standardized functions for processing malaria surveillance data, calculating key indicators, and generating analytical reports that support evidence-based decision making.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dynamic Tab Contents will be populated here -->
+        <div id="tab2" class="tab-content">
+            <div class="section-header">Malaria Analysis Code</div>
+            <div class="loading" id="loading-tab2">
+                <div class="spinner"></div>
+                Loading content...
+            </div>
+        </div>
+
+        <div id="tab3" class="tab-content">
+            <div class="section-header">Data Visualization</div>
+            <div class="loading" id="loading-tab3">
+                <div class="spinner"></div>
+                Loading content...
+            </div>
+        </div>
+
+        <div id="tab4" class="tab-content">
+            <div class="section-header">Reports & Export</div>
+            <div class="loading" id="loading-tab4">
+                <div class="spinner"></div>
+                Loading content...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration for markdown files
+        const TAB_CONFIG = {
+            'tab2': { file: 'content/malaria-analysis.md', title: 'Malaria Analysis Code' },
+            'tab3': { file: 'content/data-visualization.md', title: 'Data Visualization' },
+            'tab4': { file: 'content/reports-export.md', title: 'Reports & Export' }
+        };
+
+        function openTab(evt, tabName) {
+            // Hide all tab contents
+            var tabcontents = document.getElementsByClassName("tab-content");
+            for (var i = 0; i < tabcontents.length; i++) {
+                tabcontents[i].classList.remove("active");
+            }
+            
+            // Remove active class from all tab buttons
+            var tabbuttons = document.getElementsByClassName("tab-button");
+            for (var i = 0; i < tabbuttons.length; i++) {
+                tabbuttons[i].classList.remove("active");
+            }
+            
+            // Show the selected tab content and mark button as active
+            var targetTab = document.getElementById(tabName);
+            if (targetTab) {
+                targetTab.classList.add("active");
+            }
+            if (evt && evt.currentTarget) {
+                evt.currentTarget.classList.add("active");
+            }
+            
+            // Load content if not already loaded
+            if (TAB_CONFIG[tabName] && !targetTab.dataset.loaded) {
+                loadTabContent(tabName);
+            }
+            
+            // Auto-collapse navigation after tab selection
+            var tabNav = document.getElementById("tabNavigation");
+            var toggleBtn = document.getElementById("tabToggleBtn");
+            if (tabNav && toggleBtn) {
+                tabNav.classList.remove("expanded");
+                toggleBtn.classList.add("collapsed");
+                toggleBtn.innerHTML = '<span>📂</span><span>Show Navigation Menu</span><span class="arrow">▼</span>';
+            }
+        }
+
+        function toggleTabs() {
+            var tabNav = document.getElementById("tabNavigation");
+            var toggleBtn = document.getElementById("tabToggleBtn");
+            
+            if (tabNav && toggleBtn) {
+                if (tabNav.classList.contains("expanded")) {
+                    // Collapse the menu
+                    tabNav.classList.remove("expanded");
+                    toggleBtn.classList.add("collapsed");
+                    toggleBtn.innerHTML = '<span>📂</span><span>Show Navigation Menu</span><span class="arrow">▼</span>';
+                } else {
+                    // Expand the menu
+                    tabNav.classList.add("expanded");
+                    toggleBtn.classList.remove("collapsed");
+                    toggleBtn.innerHTML = '<span>📂</span><span>Hide Navigation Menu</span><span class="arrow">▼</span>';
+                }
+            }
+        }
+
+        function toggleSection(button) {
+            if (!button || !button.nextElementSibling) return;
+            
+            var content = button.nextElementSibling;
+            var isCollapsed = content.classList.contains("expanded");
+            
+            if (isCollapsed) {
+                content.classList.remove("expanded");
+                button.classList.add("collapsed");
+            } else {
+                content.classList.add("expanded");
+                button.classList.remove("collapsed");
+            }
+        }
+
+        function copyCode(elementId) {
+            const codeContent = document.getElementById(elementId);
+            if (!codeContent) return;
+            
+            // Find the copy button (next button in the code header)
+            const codeSection = codeContent.closest('.code-section');
+            const copyBtn = codeSection ? codeSection.querySelector('.copy-btn') : null;
+            if (!copyBtn) return;
+            
+            // Get the text content without HTML tags
+            const textContent = codeContent.innerText || codeContent.textContent;
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(textContent).then(function() {
+                // Change button appearance
+                const originalHTML = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<span>✅</span> Copied!';
+                copyBtn.classList.add('copied');
+                
+                // Reset button after 2 seconds
+                setTimeout(function() {
+                    copyBtn.innerHTML = originalHTML;
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Could not copy text: ', err);
+                // Fallback for older browsers
+                const textarea = document.createElement('textarea');
+                textarea.value = textContent;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                
+                const originalHTML = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<span>✅</span> Copied!';
+                copyBtn.classList.add('copied');
+                
+                setTimeout(function() {
+                    copyBtn.innerHTML = originalHTML;
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Load markdown content from file
+        async function loadTabContent(tabName) {
+            const config = TAB_CONFIG[tabName];
+            if (!config) return;
+
+            const tabElement = document.getElementById(tabName);
+            const loadingElement = document.getElementById(`loading-${tabName}`);
+            
+            try {
+                // Show loading
+                if (loadingElement) {
+                    loadingElement.style.display = 'flex';
+                }
+
+                const response = await fetch(config.file);
+                if (!response.ok) {
+                    throw new Error(`Failed to load ${config.file}: ${response.status}`);
+                }
+                
+                const markdown = await response.text();
+                const sections = parseMarkdown(markdown);
+                
+                // Render sections
+                const renderedSections = sections.map((section, idx) => renderSection(section, idx)).join('');
+                
+                // Update tab content
+                if (tabElement) {
+                    const header = tabElement.querySelector('.section-header').outerHTML;
+                    tabElement.innerHTML = header + renderedSections;
+                }
+                
+                // Mark as loaded
+                tabElement.dataset.loaded = 'true';
+                
+            } catch (error) {
+                console.error('Error loading tab content:', error);
+                // Show error message
+                if (tabElement) {
+                    const header = tabElement.querySelector('.section-header').outerHTML;
+                    tabElement.innerHTML = header + `
+                        <div class="content-text" style="color: #dc2626; border-left-color: #dc2626;">
+                            <strong>Error loading content:</strong><br>
+                            Could not load ${config.file}. Please ensure the file exists in the content directory.
+                            <br><br>
+                            <em>Expected file structure:</em><br>
+                            - content/malaria-analysis.md<br>
+                            - content/data-visualization.md<br>
+                            - content/reports-export.md
+                        </div>
+                    `;
+                }
+            } finally {
+                // Hide loading
+                if (loadingElement) {
+                    loadingElement.style.display = 'none';
+                }
+            }
+        }
+
+        // Markdown parsing and rendering functions
+        function parseMarkdown(markdown) {
+            // Split into sections based on ## headers
+            const sections = [];
+            const lines = markdown.split('\n');
+            let currentSection = null;
+            let currentContent = [];
+
+            for (let line of lines) {
+                if (line.startsWith('## ')) {
+                    // Save previous section if exists
+                    if (currentSection) {
+                        sections.push({
+                            title: currentSection,
+                            content: currentContent.join('\n').trim()
+                        });
+                    }
+                    // Start new section
+                    currentSection = line.substring(3).trim();
+                    currentContent = [];
+                } else {
+                    currentContent.push(line);
+                }
+            }
+
+            // Add last section
+            if (currentSection) {
+                sections.push({
+                    title: currentSection,
+                    content: currentContent.join('\n').trim()
+                });
+            }
+
+            return sections;
+        }
+
+        function formatCodeBlock(code, language = '') {
+            // Simple syntax highlighting for Python
+            let formatted = code
+                .replace(/\b(import|from|as|def|class|if|else|elif|for|while|try|except|finally|with|return|yield|break|continue|pass|lambda|and|or|not|in|is|True|False|None)\b/g, '<span class="keyword">$1</span>')
+                .replace(/\b(\w+)(?=\()/g, '<span class="function">$1</span>')
+                .replace(/(["'])((?:\\.|(?!\1)[^\\])*?)\1/g, '<span class="string">$1$2$1</span>')
+                .replace(/(#.*$)/gm, '<span class="comment">$1</span>')
+                .replace(/\b(\d+(?:\.\d+)?)\b/g, '<span class="number">$1</span>')
+                .replace(/([+\-*/%=<>!&|^~])/g, '<span class="operator">$1</span>');
+            
+            return formatted;
+        }
+
+        function renderSection(section, index) {
+            const sectionId = `section_${Date.now()}_${index}`;
+            const codeBlocks = [];
+            let content = section.content;
+            
+            // Extract and replace code blocks
+            content = content.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, language, code) => {
+                const codeId = `code_${Date.now()}_${codeBlocks.length}`;
+                codeBlocks.push({ id: codeId, language: language || 'python', code: code.trim() });
+                return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
+            });
+
+            // Process other markdown
+            content = content
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`(.*?)`/g, '<code style="background: rgba(0,102,204,0.1); padding: 2px 4px; border-radius: 3px;">$1</code>')
+                .replace(/^\- (.+)$/gm, '<li>$1</li>')
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/^(.+)$/gm, '<p>$1</p>');
+
+            // Wrap lists
+            content = content.replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+                .replace(/<\/p><p><ul>/g, '<ul>')
+                .replace(/<\/ul><\/p><p>/g, '</ul>');
+
+            // Replace code blocks
+            codeBlocks.forEach((block, idx) => {
+                const codeHtml = `
+                    <div class="code-section">
+                        <div class="code-header">
+                            <div class="code-title">
+                                <span>💻</span>
+                                ${block.language.toUpperCase()} Code
+                            </div>
+                            <button class="copy-btn" onclick="copyCode('${block.id}')">
+                                <span>📋</span>
+                                Copy Code
+                            </button>
+                        </div>
+                        <div class="code-container">
+                            <div class="code-content" id="${block.id}">${formatCodeBlock(block.code, block.language)}</div>
+                        </div>
+                    </div>
+                `;
+                content = content.replace(`__CODE_BLOCK_${idx}__`, codeHtml);
+            });
+
+            return `
+                <div class="collapsible-section">
+                    <button class="section-toggle collapsed" onclick="toggleSection(this)">
+                        🔧 ${section.title}
+                    </button>
+                    <div class="section-content">
+                        <div class="content-text">
+                            ${content}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set navigation as collapsed by default
+            var tabNav = document.getElementById("tabNavigation");
+            var toggleBtn = document.getElementById("tabToggleBtn");
+            
+            if (tabNav && toggleBtn) {
+                tabNav.classList.remove("expanded");
+                toggleBtn.classList.add("collapsed");
+            }
+            
+            // Initialize all content sections as collapsed by default
+            var sections = document.querySelectorAll('.section-content');
+            var buttons = document.querySelectorAll('.section-toggle');
+            
+            sections.forEach(function(section) {
+                if (section) section.classList.remove('expanded');
+            });
+            
+            buttons.forEach(function(button) {
+                if (button) button.classList.add('collapsed');
+            });
+        });
+    </script>
+</body>
+</html>
