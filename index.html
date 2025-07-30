@@ -351,54 +351,38 @@
             overflow-x: auto;
         }
 
-        /* Enhanced Python Syntax Highlighting - Clean approach */
-        .code-content .py-keyword { 
-            color: #c678dd !important; 
-            font-weight: 700 !important; 
-        }
-        
-        .code-content .py-function { 
-            color: #61afef !important; 
-            font-weight: 600 !important; 
-        }
-        
-        .code-content .py-string { 
-            color: #98c379 !important; 
-        }
-        
-        .code-content .py-comment { 
-            color: #5c6370 !important; 
-            font-style: italic !important; 
-        }
-        
-        .code-content .py-number { 
-            color: #d19a66 !important; 
-            font-weight: 500 !important; 
-        }
-        
-        .code-content .py-operator { 
-            color: #56b6c2 !important; 
-            font-weight: 600 !important; 
-        }
-        
-        .code-content .py-builtin { 
-            color: #e06c75 !important; 
-            font-weight: 600 !important; 
-        }
-        
-        .code-content .py-decorator { 
-            color: #e5c07b !important; 
-            font-weight: 600 !important; 
+        /* Direct CSS styling for Python keywords - NO JavaScript needed */
+        .code-content {
+            padding: 25px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #e2e8f0;
+            white-space: pre;
+            overflow-x: auto;
         }
 
-        .code-content .py-package { 
-            color: #ff6b6b !important; 
-            font-weight: 600 !important; 
+        /* Color specific Python words directly */
+        .code-content:has-text("import"),
+        .code-content:contains("import") {
+            color: #c678dd;
         }
 
-        .code-content .py-alias { 
-            color: #ff6b6b !important; 
-            font-weight: 600 !important; 
+        /* Alternative approach - use data attributes */
+        .code-content[data-lang="python"] {
+            background: #1e293b;
+        }
+
+        /* Reset to clean approach - just clean monospace font */
+        .code-content {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #e2e8f0 !important;
+            white-space: pre;
+            overflow-x: auto;
+            padding: 25px;
+            background: #1e293b;
         }
 
         /* Loading indicator */
@@ -795,52 +779,59 @@
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#39;');
             
-            // Apply simple, clean highlighting
+            // Apply if-else color highlighting
             if (language === 'python' || language === 'py' || language === '') {
-                return highlightPython(escaped);
+                return applyIfElseColors(escaped);
             }
             
             return escaped;
         }
 
-        function highlightPython(code) {
-            // Very simple and clean approach - no conflicts
-            let result = code;
+        function applyIfElseColors(code) {
+            // Split code into words and apply colors using if-else logic
+            let result = '';
+            const lines = code.split('\n');
             
-            // 1. Comments - full line starting with #
-            result = result.replace(/^(\s*#.*)$/gm, '<span class="py-comment">$1</span>');
-            
-            // 2. Strings in quotes
-            result = result.replace(/(&quot;[^&quot;]*&quot;)/g, '<span class="py-string">$1</span>');
-            result = result.replace(/(&#39;[^&#39;]*&#39;)/g, '<span class="py-string">$1</span>');
-            
-            // 3. Keywords (only exact word matches)
-            const keywords = ['import', 'from', 'as', 'def', 'class', 'return', 'if', 'else', 'for', 'while'];
-            keywords.forEach(kw => {
-                result = result.replace(new RegExp('\\b' + kw + '\\b', 'g'), 
-                    '<span class="py-keyword">' + kw + '</span>');
+            lines.forEach((line, lineIndex) => {
+                const words = line.split(/(\s+)/); // Split but keep whitespace
+                
+                words.forEach(word => {
+                    // If-else color logic for each word
+                    if (word.startsWith('#')) {
+                        // If comment, make it gray italic
+                        result += `<span style="color: #5c6370; font-style: italic;">${word}</span>`;
+                    }
+                    else if (word === 'import' || word === 'from' || word === 'as' || word === 'def' || word === 'class' || word === 'return' || word === 'if' || word === 'else' || word === 'elif' || word === 'for' || word === 'while' || word === 'try' || word === 'except') {
+                        // If keyword, make it purple
+                        result += `<span style="color: #c678dd; font-weight: bold;">${word}</span>`;
+                    }
+                    else if (word === 'pandas' || word === 'pd' || word === 'numpy' || word === 'np' || word === 'matplotlib' || word === 'plt' || word === 'seaborn' || word === 'sns' || word === 'tensorflow' || word === 'tf' || word === 'sklearn' || word === 'sk' || word === 'plotly' || word === 'px' || word === 'scipy' || word === 'sp' || word === 'opencv' || word === 'cv2' || word === 'requests' || word === 'flask' || word === 'django') {
+                        // If package/alias, make it red
+                        result += `<span style="color: #ff6b6b; font-weight: bold;">${word}</span>`;
+                    }
+                    else if (word === 'True' || word === 'False' || word === 'None' || word === 'self') {
+                        // If built-in, make it orange
+                        result += `<span style="color: #e06c75; font-weight: bold;">${word}</span>`;
+                    }
+                    else if (word.startsWith('&quot;') || word.startsWith('&#39;') || (word.startsWith('&quot;') && word.endsWith('&quot;')) || (word.startsWith('&#39;') && word.endsWith('&#39;'))) {
+                        // If string, make it green
+                        result += `<span style="color: #98c379;">${word}</span>`;
+                    }
+                    else if (/^\d+$/.test(word)) {
+                        // If number, make it orange
+                        result += `<span style="color: #d19a66; font-weight: bold;">${word}</span>`;
+                    }
+                    else {
+                        // Else, keep it white/default
+                        result += word;
+                    }
+                });
+                
+                // Add line break except for last line
+                if (lineIndex < lines.length - 1) {
+                    result += '\n';
+                }
             });
-            
-            // 4. Built-ins
-            result = result.replace(/\bTrue\b/g, '<span class="py-builtin">True</span>');
-            result = result.replace(/\bFalse\b/g, '<span class="py-builtin">False</span>');
-            result = result.replace(/\bNone\b/g, '<span class="py-builtin">None</span>');
-            result = result.replace(/\bself\b/g, '<span class="py-builtin">self</span>');
-            
-            // 5. Common packages (pandas, numpy, etc)
-            result = result.replace(/\bpandas\b/g, '<span class="py-package">pandas</span>');
-            result = result.replace(/\bnumpy\b/g, '<span class="py-package">numpy</span>');
-            result = result.replace(/\bmatplotlib\b/g, '<span class="py-package">matplotlib</span>');
-            result = result.replace(/\bseaborn\b/g, '<span class="py-package">seaborn</span>');
-            
-            // 6. Common aliases (same color as packages)
-            result = result.replace(/\bpd\b/g, '<span class="py-package">pd</span>');
-            result = result.replace(/\bnp\b/g, '<span class="py-package">np</span>');
-            result = result.replace(/\bplt\b/g, '<span class="py-package">plt</span>');
-            result = result.replace(/\bsns\b/g, '<span class="py-package">sns</span>');
-            
-            // 7. Numbers
-            result = result.replace(/\b(\d+)\b/g, '<span class="py-number">$1</span>');
             
             return result;
         }
@@ -939,15 +930,15 @@
         });
 
         function applyGlobalSyntaxHighlighting() {
-            // Apply clean highlighting to all code elements
+            // Apply if-else color highlighting to all code elements
             const allCodeElements = document.querySelectorAll('.code-content');
             
             allCodeElements.forEach(element => {
-                // Only apply if not already highlighted
-                if (!element.innerHTML.includes('<span class="py-')) {
+                // Only apply if not already colored
+                if (!element.innerHTML.includes('style="color:')) {
                     const originalCode = element.textContent;
-                    const highlightedCode = formatCodeBlock(originalCode, 'python');
-                    element.innerHTML = highlightedCode;
+                    const coloredCode = formatCodeBlock(originalCode, 'python');
+                    element.innerHTML = coloredCode;
                 }
             });
         }
