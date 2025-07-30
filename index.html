@@ -351,7 +351,7 @@
             overflow-x: auto;
         }
 
-        /* Enhanced Python Syntax Highlighting - More specific selectors */
+        /* Enhanced Python Syntax Highlighting - Clean approach */
         .code-content .py-keyword { 
             color: #c678dd !important; 
             font-weight: 700 !important; 
@@ -391,8 +391,13 @@
             font-weight: 600 !important; 
         }
 
-        .code-content .py-special { 
-            color: #d19a66 !important; 
+        .code-content .py-package { 
+            color: #ff6b6b !important; 
+            font-weight: 600 !important; 
+        }
+
+        .code-content .py-alias { 
+            color: #ff6b6b !important; 
             font-weight: 600 !important; 
         }
 
@@ -799,33 +804,82 @@
         }
 
         function highlightPython(code) {
-            // Very simple and clean highlighting - no complex regex
+            // Clean highlighting without visible class names
             let highlighted = code;
             
-            // 1. Handle comments first (simple approach)
-            highlighted = highlighted.replace(/#.*$/gm, function(match) {
+            // 1. Protect and highlight comments (entire line starting with #)
+            highlighted = highlighted.replace(/(#.*$)/gm, function(match) {
                 return '<span class="py-comment">' + match + '</span>';
             });
             
-            // 2. Handle strings (simple quotes only)
-            highlighted = highlighted.replace(/(&quot;[^&]*?&quot;)/g, '<span class="py-string">$1</span>');
-            highlighted = highlighted.replace(/(&#39;[^&]*?&#39;)/g, '<span class="py-string">$1</span>');
-            
-            // 3. Handle simple keywords (one by one to avoid conflicts)
-            const simpleKeywords = ['def', 'class', 'import', 'return', 'if', 'else', 'for', 'while'];
-            simpleKeywords.forEach(keyword => {
-                const regex = new RegExp('\\b' + keyword + '\\b', 'g');
-                highlighted = highlighted.replace(regex, '<span class="py-keyword">' + keyword + '</span>');
+            // 2. Protect and highlight strings 
+            highlighted = highlighted.replace(/(&quot;.*?&quot;)/g, function(match) {
+                return '<span class="py-string">' + match + '</span>';
+            });
+            highlighted = highlighted.replace(/(&#39;.*?&#39;)/g, function(match) {
+                return '<span class="py-string">' + match + '</span>';
             });
             
-            // 4. Handle True/False/None
-            highlighted = highlighted.replace(/\bTrue\b/g, '<span class="py-builtin">True</span>');
-            highlighted = highlighted.replace(/\bFalse\b/g, '<span class="py-builtin">False</span>');
-            highlighted = highlighted.replace(/\bNone\b/g, '<span class="py-builtin">None</span>');
-            highlighted = highlighted.replace(/\bself\b/g, '<span class="py-builtin">self</span>');
+            // 3. Highlight Python packages and their aliases (same color)
+            const packages = {
+                'pandas': 'pd',
+                'numpy': 'np', 
+                'matplotlib': 'plt',
+                'seaborn': 'sns',
+                'tensorflow': 'tf',
+                'sklearn': 'sk',
+                'plotly': 'px'
+            };
             
-            // 5. Handle numbers (simple)
-            highlighted = highlighted.replace(/\b(\d+)\b/g, '<span class="py-number">$1</span>');
+            // Highlight package names and aliases
+            Object.keys(packages).forEach(pkg => {
+                const alias = packages[pkg];
+                // Highlight full package name
+                const pkgRegex = new RegExp('\\b' + pkg + '\\b', 'g');
+                highlighted = highlighted.replace(pkgRegex, function(match) {
+                    return '<span class="py-package">' + match + '</span>';
+                });
+                // Highlight alias
+                const aliasRegex = new RegExp('\\b' + alias + '\\b', 'g');
+                highlighted = highlighted.replace(aliasRegex, function(match) {
+                    return '<span class="py-alias">' + match + '</span>';
+                });
+            });
+            
+            // 4. Highlight keywords
+            const keywords = ['def', 'class', 'import', 'from', 'as', 'return', 'if', 'else', 'elif', 'for', 'while', 'try', 'except', 'with'];
+            keywords.forEach(keyword => {
+                const regex = new RegExp('\\b' + keyword + '\\b', 'g');
+                highlighted = highlighted.replace(regex, function(match) {
+                    return '<span class="py-keyword">' + match + '</span>';
+                });
+            });
+            
+            // 5. Highlight built-ins
+            const builtins = ['True', 'False', 'None', 'self', 'len', 'str', 'int', 'print'];
+            builtins.forEach(builtin => {
+                const regex = new RegExp('\\b' + builtin + '\\b', 'g');
+                highlighted = highlighted.replace(regex, function(match) {
+                    return '<span class="py-builtin">' + match + '</span>';
+                });
+            });
+            
+            // 6. Highlight function calls (words before parentheses)
+            highlighted = highlighted.replace(/\b(\w+)(?=\s*\()/g, function(match) {
+                // Skip if already highlighted
+                if (match.includes('span')) return match;
+                return '<span class="py-function">' + match + '</span>';
+            });
+            
+            // 7. Highlight numbers
+            highlighted = highlighted.replace(/\b(\d+(?:\.\d+)?)\b/g, function(match) {
+                return '<span class="py-number">' + match + '</span>';
+            });
+            
+            // 8. Highlight decorators
+            highlighted = highlighted.replace(/(@\w+)/g, function(match) {
+                return '<span class="py-decorator">' + match + '</span>';
+            });
             
             return highlighted;
         }
