@@ -811,8 +811,35 @@
                         
                         // If-else color logic for each word
                         if (word.includes('#')) {
-                            // If word contains #, make it bright blue bold (handles inline comments)
-                            result += `<span style="color: #3399ff; font-weight: bold;">${word}</span>`;
+                            // If word contains #, make it gray italic (comments)
+                            result += `<span style="color: #6a9955; font-style: italic;">${word}</span>`;
+                        }
+                        else if (word === 'print') {
+                            // If print statement, make it bright magenta
+                            result += `<span style="color: #d73a49; font-weight: bold;">${word}</span>`;
+                        }
+                        else if (word.includes('.') && !word.startsWith('.') && !word.endsWith('.')) {
+                            // If word contains dot (method calls like df.head, data.shape), split and color
+                            const parts = word.split('.');
+                            let coloredParts = [];
+                            
+                            parts.forEach((part, index) => {
+                                if (index === 0) {
+                                    // First part (object name) - check if it's a DataFrame
+                                    if (part === 'df' || part === 'data' || part === 'dataset' || part === 'dataframe' || part === 'DataFrame' || part === 'Series' || part === 'series' || part === 'matrix' || part === 'array' || part === 'Array' || part === 'ndarray' || part === 'tensor' || part === 'Tensor' || part === 'malaria_data' || part === 'cases_df' || part === 'stats_df' || part === 'results_df' || part === 'clean_data' || part === 'raw_data' || part === 'processed_data' || part === 'filtered_data' || part === 'merged_data' || part === 'grouped_data') {
+                                        coloredParts.push(`<span style="color: #0366d6; font-weight: bold;">${part}</span>`);
+                                    } else if (part === 'pandas' || part === 'pd' || part === 'numpy' || part === 'np' || part === 'matplotlib' || part === 'plt' || part === 'seaborn' || part === 'sns') {
+                                        coloredParts.push(`<span style="color: #e36209; font-weight: bold;">${part}</span>`);
+                                    } else {
+                                        coloredParts.push(part);
+                                    }
+                                } else {
+                                    // Method/attribute names after dot - make them bright purple
+                                    coloredParts.push(`<span style="color: #6f42c1; font-weight: bold;">${part}</span>`);
+                                }
+                            });
+                            
+                            result += coloredParts.join('.');
                         }
                         else if (word === 'import' || word === 'from' || word === 'as' || word === 'def' || word === 'class' || word === 'return' || word === 'if' || word === 'else' || word === 'elif' || word === 'for' || word === 'while' || word === 'try' || word === 'except' || word === 'with' || word === 'in' || word === 'and' || word === 'or' || word === 'not' || word === 'is' || word === 'lambda' || word === 'yield' || word === 'break' || word === 'continue' || word === 'pass' || word === 'raise' || word === 'assert' || word === 'del' || word === 'global' || word === 'nonlocal' || word === 'async' || word === 'await') {
                             // If keyword, make it purple
@@ -917,7 +944,7 @@
             return `
                 <div class="collapsible-section">
                     <button class="section-toggle collapsed" onclick="toggleSection(this)">
-                        🔧 ${section.title}
+                           ${section.title}
                     </button>
                     <div class="section-content">
                         <div class="content-text">
