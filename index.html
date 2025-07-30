@@ -770,11 +770,8 @@
                 return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
             });
 
-            // Process other markdown - escape HTML entities in regular content
+            // Process other markdown - don't escape HTML entities
             content = content
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                 .replace(/\*(.*?)\*/g, '<em>$1</em>')
                 .replace(/`(.*?)`/g, '<code style="background: rgba(0,102,204,0.1); padding: 2px 4px; border-radius: 3px;">$1</code>')
