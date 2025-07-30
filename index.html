@@ -793,11 +793,11 @@
             const lines = code.split('\n');
             
             lines.forEach((line, lineIndex) => {
-                // Check if entire line is a comment first
+                // Check if entire line is a comment first (any line starting with # regardless of spacing)
                 const trimmedLine = line.trim();
                 if (trimmedLine.startsWith('#')) {
-                    // If entire line is comment, make it all gray italic
-                    result += `<span style="color: #5c6370; font-style: italic;">${line}</span>`;
+                    // If entire line starts with #, make it bright blue bold
+                    result += `<span style="color: #3399ff; font-weight: bold;">${line}</span>`;
                 } else {
                     // Process line word by word for other highlighting
                     const words = line.split(/(\s+)/); // Split but keep whitespace
@@ -810,8 +810,8 @@
                         }
                         
                         // If-else color logic for each word
-                        if (word.startsWith('#')) {
-                            // If inline comment, make it gray italic
+                        if (word.includes('#')) {
+                            // If word contains #, make it bright blue bold (handles inline comments)
                             result += `<span style="color: #3399ff; font-weight: bold;">${word}</span>`;
                         }
                         else if (word === 'import' || word === 'from' || word === 'as' || word === 'def' || word === 'class' || word === 'return' || word === 'if' || word === 'else' || word === 'elif' || word === 'for' || word === 'while' || word === 'try' || word === 'except' || word === 'with' || word === 'in' || word === 'and' || word === 'or' || word === 'not' || word === 'is' || word === 'lambda' || word === 'yield' || word === 'break' || word === 'continue' || word === 'pass' || word === 'raise' || word === 'assert' || word === 'del' || word === 'global' || word === 'nonlocal' || word === 'async' || word === 'await') {
