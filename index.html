@@ -788,52 +788,70 @@
         }
 
         function applyIfElseColors(code) {
-            // Split code into words and apply colors using if-else logic
+            // Split code into lines and apply colors using if-else logic
             let result = '';
             const lines = code.split('\n');
             
             lines.forEach((line, lineIndex) => {
-                const words = line.split(/(\s+)/); // Split but keep whitespace
-                
-                words.forEach(word => {
-                    // If-else color logic for each word
-                    if (word.startsWith('#')) {
-                        // If comment, make it gray italic
-                        result += `<span style="color: #5c6370; font-style: italic;">${word}</span>`;
-                    }
-                    else if (word === 'import' || word === 'from' || word === 'as' || word === 'def' || word === 'class' || word === 'return' || word === 'if' || word === 'else' || word === 'elif' || word === 'for' || word === 'while' || word === 'try' || word === 'except') {
-                        // If keyword, make it purple
-                        result += `<span style="color: #c678dd; font-weight: bold;">${word}</span>`;
-                    }
-                    else if (word === 'pandas' || word === 'pd' || word === 'numpy' || word === 'np' || word === 'matplotlib' || word === 'plt' || word === 'seaborn' || word === 'sns' || word === 'tensorflow' || word === 'tf' || word === 'sklearn' || word === 'sk' || word === 'plotly' || word === 'px' || word === 'scipy' || word === 'sp' || word === 'opencv' || word === 'cv2' || word === 'requests' || word === 'flask' || word === 'django' || word === 'fastapi' || word === 'sqlalchemy' || word === 'pytest' || word === 'streamlit' || word === 'dash' || word === 'bokeh' || word === 'altair' || word === 'folium' || word === 'geopandas' || word === 'gpd' || word === 'xgboost' || word === 'lgb' || word === 'catboost' || word === 'statsmodels' || word === 'sm' || word === 'networkx' || word === 'nx' || word === 'beautifulsoup4' || word === 'bs4' || word === 'scrapy' || word === 'selenium' || word === 'pymongo' || word === 'redis' || word === 'psycopg2' || word === 'mysql' || word === 'sqlite3') {
-                        // If package/alias, make it red
-                        result += `<span style="color: #ff6b6b; font-weight: bold;">${word}</span>`;
-                    }
-                    else if (word === 'df' || word === 'data' || word === 'dataset' || word === 'dataframe' || word === 'DataFrame' || word === 'Series' || word === 'series' || word === 'matrix' || word === 'array' || word === 'Array' || word === 'ndarray' || word === 'tensor' || word === 'Tensor' || word === 'malaria_data' || word === 'cases_df' || word === 'stats_df' || word === 'results_df' || word === 'clean_data' || word === 'raw_data' || word === 'processed_data' || word === 'filtered_data' || word === 'merged_data' || word === 'grouped_data') {
-                        // If DataFrame/data structures, make it cyan
-                        result += `<span style="color: #56b6c2; font-weight: bold;">${word}</span>`;
-                    }
-                    else if (word === 'len' || word === 'str' || word === 'int' || word === 'float' || word === 'bool' || word === 'list' || word === 'dict' || word === 'tuple' || word === 'set' || word === 'type' || word === 'range' || word === 'enumerate' || word === 'zip' || word === 'map' || word === 'filter' || word === 'sorted' || word === 'reversed' || word === 'sum' || word === 'min' || word === 'max' || word === 'abs' || word === 'round' || word === 'pow' || word === 'divmod' || word === 'print' || word === 'input' || word === 'open' || word === 'file' || word === 'iter' || word === 'next' || word === 'all' || word === 'any' || word === 'bin' || word === 'hex' || word === 'oct' || word === 'ord' || word === 'chr' || word === 'ascii' || word === 'repr' || word === 'format' || word === 'eval' || word === 'exec' || word === 'compile' || word === 'callable' || word === 'isinstance' || word === 'issubclass' || word === 'hasattr' || word === 'getattr' || word === 'setattr' || word === 'delattr' || word === 'dir' || word === 'vars' || word === 'locals' || word === 'globals' || word === 'id' || word === 'hash' || word === 'object' || word === 'super' || word === 'property' || word === 'staticmethod' || word === 'classmethod' || word === 'slice' || word === 'memoryview' || word === 'bytearray' || word === 'bytes' || word === 'complex' || word === 'frozenset') {
-                        // If built-in functions, make it yellow
-                        result += `<span style="color: #e5c07b; font-weight: bold;">${word}</span>`;
-                    }
-                    else if (word === 'True' || word === 'False' || word === 'None' || word === 'self') {
-                        // If built-in, make it orange
-                        result += `<span style="color: #e06c75; font-weight: bold;">${word}</span>`;
-                    }
-                    else if (word.startsWith('&quot;') || word.startsWith('&#39;') || (word.startsWith('&quot;') && word.endsWith('&quot;')) || (word.startsWith('&#39;') && word.endsWith('&#39;'))) {
-                        // If string, make it green
-                        result += `<span style="color: #98c379;">${word}</span>`;
-                    }
-                    else if (/^\d+$/.test(word)) {
-                        // If number, make it orange
-                        result += `<span style="color: #d19a66; font-weight: bold;">${word}</span>`;
-                    }
-                    else {
-                        // Else, keep it white/default
-                        result += word;
-                    }
-                });
+                // Check if entire line is a comment first
+                const trimmedLine = line.trim();
+                if (trimmedLine.startsWith('#')) {
+                    // If entire line is comment, make it all gray italic
+                    result += `<span style="color: #5c6370; font-style: italic;">${line}</span>`;
+                } else {
+                    // Process line word by word for other highlighting
+                    const words = line.split(/(\s+)/); // Split but keep whitespace
+                    
+                    words.forEach(word => {
+                        // Skip empty words
+                        if (!word.trim()) {
+                            result += word;
+                            return;
+                        }
+                        
+                        // If-else color logic for each word
+                        if (word.startsWith('#')) {
+                            // If inline comment, make it gray italic
+                            result += `<span style="color: #3399ff; font-weight: bold;">${word}</span>`;
+                        }
+                        else if (word === 'import' || word === 'from' || word === 'as' || word === 'def' || word === 'class' || word === 'return' || word === 'if' || word === 'else' || word === 'elif' || word === 'for' || word === 'while' || word === 'try' || word === 'except' || word === 'with' || word === 'in' || word === 'and' || word === 'or' || word === 'not' || word === 'is' || word === 'lambda' || word === 'yield' || word === 'break' || word === 'continue' || word === 'pass' || word === 'raise' || word === 'assert' || word === 'del' || word === 'global' || word === 'nonlocal' || word === 'async' || word === 'await') {
+                            // If keyword, make it purple
+                            result += `<span style="color: #c678dd; font-weight: bold;">${word}</span>`;
+                        }
+                        else if (word === 'pandas' || word === 'pd' || word === 'numpy' || word === 'np' || word === 'matplotlib' || word === 'plt' || word === 'seaborn' || word === 'sns' || word === 'tensorflow' || word === 'tf' || word === 'sklearn' || word === 'sk' || word === 'plotly' || word === 'px' || word === 'scipy' || word === 'sp' || word === 'opencv' || word === 'cv2' || word === 'requests' || word === 'flask' || word === 'django' || word === 'fastapi' || word === 'sqlalchemy' || word === 'pytest' || word === 'streamlit' || word === 'dash' || word === 'bokeh' || word === 'altair' || word === 'folium' || word === 'geopandas' || word === 'gpd' || word === 'xgboost' || word === 'lgb' || word === 'catboost' || word === 'statsmodels' || word === 'sm' || word === 'networkx' || word === 'nx' || word === 'beautifulsoup4' || word === 'bs4' || word === 'scrapy' || word === 'selenium' || word === 'pymongo' || word === 'redis' || word === 'psycopg2' || word === 'mysql' || word === 'sqlite3') {
+                            // If package/alias, make it red
+                            result += `<span style="color: #ff6b6b; font-weight: bold;">${word}</span>`;
+                        }
+                        else if (word === 'df' || word === 'data' || word === 'dataset' || word === 'dataframe' || word === 'DataFrame' || word === 'Series' || word === 'series' || word === 'matrix' || word === 'array' || word === 'Array' || word === 'ndarray' || word === 'tensor' || word === 'Tensor' || word === 'malaria_data' || word === 'cases_df' || word === 'stats_df' || word === 'results_df' || word === 'clean_data' || word === 'raw_data' || word === 'processed_data' || word === 'filtered_data' || word === 'merged_data' || word === 'grouped_data') {
+                            // If DataFrame/data structures, make it cyan
+                            result += `<span style="color: #56b6c2; font-weight: bold;">${word}</span>`;
+                        }
+                        else if (word === 'len' || word === 'str' || word === 'int' || word === 'float' || word === 'bool' || word === 'list' || word === 'dict' || word === 'tuple' || word === 'set' || word === 'type' || word === 'range' || word === 'enumerate' || word === 'zip' || word === 'map' || word === 'filter' || word === 'sorted' || word === 'reversed' || word === 'sum' || word === 'min' || word === 'max' || word === 'abs' || word === 'round' || word === 'pow' || word === 'divmod' || word === 'print' || word === 'input' || word === 'open' || word === 'file' || word === 'iter' || word === 'next' || word === 'all' || word === 'any' || word === 'bin' || word === 'hex' || word === 'oct' || word === 'ord' || word === 'chr' || word === 'ascii' || word === 'repr' || word === 'format' || word === 'eval' || word === 'exec' || word === 'compile' || word === 'callable' || word === 'isinstance' || word === 'issubclass' || word === 'hasattr' || word === 'getattr' || word === 'setattr' || word === 'delattr' || word === 'dir' || word === 'vars' || word === 'locals' || word === 'globals' || word === 'id' || word === 'hash' || word === 'object' || word === 'super' || word === 'property' || word === 'staticmethod' || word === 'classmethod' || word === 'slice' || word === 'memoryview' || word === 'bytearray' || word === 'bytes' || word === 'complex' || word === 'frozenset') {
+                            // If built-in functions, make it yellow
+                            result += `<span style="color: #e5c07b; font-weight: bold;">${word}</span>`;
+                        }
+                        else if (word === 'True' || word === 'False' || word === 'None' || word === 'self' || word === 'cls') {
+                            // If built-in constants, make it orange
+                            result += `<span style="color: #e06c75; font-weight: bold;">${word}</span>`;
+                        }
+                        else if (word.startsWith('&quot;') || word.startsWith('&#39;') || (word.startsWith('&quot;') && word.endsWith('&quot;')) || (word.startsWith('&#39;') && word.endsWith('&#39;'))) {
+                            // If string, make it green
+                            result += `<span style="color: #98c379;">${word}</span>`;
+                        }
+                        else if (/^\d+(\.\d+)?$/.test(word)) {
+                            // If number, make it light blue
+                            result += `<span style="color: #61afef; font-weight: bold;">${word}</span>`;
+                        }
+                        else if (word === '=' || word === '+' || word === '-' || word === '*' || word === '/' || word === '%' || word === '==' || word === '!=' || word === '&lt;' || word === '&gt;' || word === '&lt;=' || word === '&gt;=') {
+                            // If operator, make it pink
+                            result += `<span style="color: #ff79c6; font-weight: bold;">${word}</span>`;
+                        }
+                        else {
+                            // Else, keep it white/default
+                            result += word;
+                        }
+                    });
+                }
                 
                 // Add line break except for last line
                 if (lineIndex < lines.length - 1) {
