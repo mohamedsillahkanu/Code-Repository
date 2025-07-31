@@ -397,3 +397,6 @@ print(f"🔢 Professional formatting with exact indicator names")
 print(f"💾 Individual high-quality PNG files ready for use")
 ```
 
+## Output
+
+![Plot](
