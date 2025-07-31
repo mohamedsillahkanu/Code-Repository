@@ -399,4 +399,4 @@ print(f"💾 Individual high-quality PNG files ready for use")
 
 ## Output
 
-![Plot](
+![Plot](https://github.com/mohamedsillahkanu/Code-Repository/raw/6cb308de87360e1a8907f7f4916675c68c11736b/subplot_all_chiefdoms_BO.png)
