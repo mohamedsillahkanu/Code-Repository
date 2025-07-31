@@ -399,5 +399,5 @@ print(f"💾 Individual high-quality PNG files ready for use")
 
 ## Output
 
-![Plot](https://github.com/mohamedsillahkanu/Code-Repository/raw/main/subplot_all_chiefdoms_BO.png)
+<img src="https://github.com/mohamedsillahkanu/Code-Repository/raw/main/subplot_all_chiefdoms_BO.png" alt="Plot" width="800"/>
 
