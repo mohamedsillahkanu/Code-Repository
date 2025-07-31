@@ -1,0 +1,51 @@
+{
+  "navigation": [
+    {
+      "id": "overview",
+      "title": "Overview",
+      "default": true
+    },
+    {
+      "id": "analysis",
+      "title": "Malaria Analysis"
+    },
+    {
+      "id": "visualization", 
+      "title": "Data Visualization"
+    },
+    {
+      "id": "reports",
+      "title": "Reports & Export"
+    },
+    {
+      "id": "statistics",
+      "title": "Statistical Analysis"
+    },
+    {
+      "id": "mapping",
+      "title": "Geographic Mapping"
+    }
+  ],
+  "tabs": {
+    "analysis": {
+      "file": "malaria_analysis.md",
+      "title": "Malaria Analysis Code"
+    },
+    "visualization": {
+      "file": "data_visualization.md", 
+      "title": "Data Visualization"
+    },
+    "reports": {
+      "file": "reports_export.md",
+      "title": "Reports & Export"
+    },
+    "statistics": {
+      "file": "statistical_analysis.md",
+      "title": "Statistical Analysis"
+    },
+    "mapping": {
+      "file": "geographic_mapping.md",
+      "title": "Geographic Mapping"
+    }
+  }
+}
