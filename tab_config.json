@@ -26,10 +26,7 @@
       "title": "Geographic Mapping"
     },
 
-     {
-      "id": "ousmane",
-      "title": "Ousmane"
-    }
+   
   ],
   "tabs": {
     "analysis": {
@@ -51,10 +48,7 @@
     "mapping": {
       "file": "geographic_mapping.md",
       "title": "Geographic Mapping"
-    },
-    "mapping": {
-      "file": "ousmane.md",
-      "title": "Ousmane Diallo"
     }
+   
   }
 }
