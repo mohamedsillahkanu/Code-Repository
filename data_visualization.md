@@ -1,398 +1,1056 @@
-# Malaria Impact Indicators Trend Analysis - Complete Tutorial
-
-## Step 1: Environment Setup and Library Import
-Import all necessary Python libraries for data visualization and analysis. These libraries provide the core functionality for creating professional trend analysis plots.
+## Full  code
 
 ```python
-# Import necessary libraries
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
+"""
+Enhanced Trend Analysis - PNG, PDF, and HTML Output with All Variables Comparison
+Creates individual PNG files, multi-page PDFs, and HTML reports with Enhanced Collapsible Navigation
+Order: National → District Subplots → Individual Districts → Chiefdom Subplots
+ALL PLOTS SHOW ALL VARIABLES WITH LEGENDS - NO INDIVIDUAL VARIABLE PLOTS
+ENHANCED NAVIGATION WITH COLLAPSIBLE MENU AND SUBMENUS
+NO TEXT LABELS ON DATA POINTS
+ALL LEGENDS ON TOP RIGHT CORNER OUTSIDE THE PLOT
+"""
+
 import os
-from matplotlib.ticker import MultipleLocator, FuncFormatter
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+import re
+from pathlib import Path
+import zipfile
+from matplotlib.backends.backend_pdf import PdfPages
+import base64
+from io import BytesIO
 
-# Create output directory for individual plots
-output_dir = "impact_indicators_complete"
-os.makedirs(output_dir, exist_ok=True)
-```
+def create_comprehensive_trend_analysis(output_base_dir='trend_plots/'):
+    """Create comprehensive trend analysis with PNG files, PDFs, and HTML with all variables comparison"""
 
-## Step 2: Data Structure Definition
-Define the complete dataset for all 8 Impact Indicators extracted from the Excel file. This includes baseline data, targets, and achieved values for comprehensive trend analysis.
+    print("🚀 Starting Comprehensive Trend Analysis - All Variables Comparison...")
+    print("=" * 70)
 
-```python
-# All 8 specific Impact Indicators data extracted from Excel file with exact names
-impact_indicators_data = [
-    {
-        'name': 'Malaria case incidence: number and rate per 1000 people per year',
-        'baseline_2021_target': 298,
-        'baseline_2021_achieved': 267,
-        'years': [2022, 2023, 2024],
-        'targets': [293, 288, 283],
-        'achieved': [239, 309, 239],
-        'step': 50,
-        'format_type': 'number',
-        'has_complete_data': True
-    },
-    {
-        'name': 'Malaria admissions: number and rate per 10,000 persons per year',
-        'baseline_2021_target': 50,
-        'baseline_2021_achieved': 42,
-        'years': [2022, 2023, 2024],
-        'targets': [49.1, 47.9, 46.5],
-        'achieved': [47, 51, 36],
-        'step': 10,
-        'format_type': 'number',
-        'has_complete_data': True
-    },
-    {
-        'name': 'Malaria test positivity rate',
-        'baseline_2021_target': 59.3,
-        'baseline_2021_achieved': 63.7,
-        'years': [2022, 2023, 2024],
-        'targets': [58.2, 56.7, 55.0],
-        'achieved': [63.2, 66.0, 64.3],
-        'step': 10,
-        'format_type': 'percentage',
-        'has_complete_data': True
-    },
-    {
-        'name': 'Proportion of admissions for malaria',
-        'baseline_2021_target': 37.7,
-        'baseline_2021_achieved': None,  # No achieved data
-        'years': [2022, 2023, 2024],
-        'targets': [37.0, 36.0, 35.0],
-        'achieved': [None, None, None],  # No achieved data for any year
-        'step': 10,
-        'format_type': 'percentage',
-        'has_complete_data': False
-    },
-    {
-        'name': 'Reported malaria cases (presumed and confirmed)',
-        'baseline_2021_target': 2.396,  # Convert to millions
-        'baseline_2021_achieved': 1.961,
-        'years': [2022, 2023, 2024],
-        'targets': [2.384, 2.372, 2.360],
-        'achieved': [1.814, 2.448, 1.954],
-        'step': 0.5,
-        'format_type': 'millions',
-        'has_complete_data': True
-    },
-    {
-        'name': 'Inpatient malaria deaths per year: rate per 100,000 persons per year',
-        'baseline_2021_target': 17.6,
-        'baseline_2021_achieved': 17.0,
-        'years': [2022, 2023, 2024],
-        'targets': [17.2, 16.8, 16.3],
-        'achieved': [18.0, 18.0, 19.0],
-        'step': 5,
-        'format_type': 'number',
-        'has_complete_data': True
-    },
-    {
-        'name': 'Malaria mortality: number and rate per 100,000 persons per year',
-        'baseline_2021_target': 35,
-        'baseline_2021_achieved': 28,
-        'years': [2022, 2023, 2024],
-        'targets': [34, 33, 32],
-        'achieved': [33, 30, 27],
-        'step': 10,
-        'format_type': 'number',
-        'has_complete_data': True
-    },
-    {
-        'name': 'Proportion of inpatient deaths due to malaria',
-        'baseline_2021_target': 37.7,
-        'baseline_2021_achieved': None,  # No achieved data
-        'years': [2022, 2023, 2024],
-        'targets': [37.0, 36.0, 35.0],
-        'achieved': [None, None, None],  # No achieved data for any year
-        'step': 10,
-        'format_type': 'percentage',
-        'has_complete_data': False
-    }
-]
-```
+    # Variables to analyze
+    variables = ['crude_incidence', 'adjusted1', 'adjusted2', 'adjusted3']
 
-## Step 3: Utility Functions for Analysis
-Create helper functions for variance calculations and formatting to ensure consistent and accurate trend analysis across all indicators.
+    # Load data once
+    print("📊 Loading data...")
+    try:
+        df = pd.read_excel("/content/2024_snt_data.xlsx")
+        print(f"✓ Data loaded: {len(df)} rows")
+        print(f"✓ Available columns: {list(df.columns)}")
+    except FileNotFoundError:
+        print("❌ Error: /content/2024_snt_data.xlsx not found")
+        return
 
-```python
-def calculate_variance(target, achieved):
-    """Calculate variance as (Achieved - Target) / Target * 100"""
-    if target == 0 or achieved is None:
-        return None
-    return ((achieved - target) / target) * 100
+    # Create main output directory and subdirectories
+    os.makedirs(output_base_dir, exist_ok=True)
+    os.makedirs(f'{output_base_dir}/png_files/', exist_ok=True)
+    os.makedirs(f'{output_base_dir}/pdf_files/', exist_ok=True)
 
-def format_millions(x, pos):
-    """Format numbers in millions"""
-    return f'{x:.0f}M'
+    # Store all figures for HTML generation
+    html_images = []
+    all_png_files = []
 
-def format_percentage(x, pos):
-    """Format as percentage"""
-    return f'{x:.0f}%'
-```
+    def save_and_track_figure(fig, filename, title, section_type, save_png=True):
+        """Save figure as PNG and track for HTML"""
+        if save_png:
+            png_path = f'{output_base_dir}/png_files/{filename}.png'
+            fig.savefig(png_path, dpi=300, bbox_inches='tight')
+            all_png_files.append(png_path)
+            print(f"   ✓ Saved PNG: {filename}.png")
 
-## Step 4: Individual Trend Plot Creation Function
-Develop the main visualization function that creates professional, publication-ready trend analysis plots for each impact indicator.
+        # Convert to base64 for HTML
+        buffer = BytesIO()
+        fig.savefig(buffer, format='png', dpi=150, bbox_inches='tight')
+        buffer.seek(0)
+        image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        buffer.close()
 
-```python
-def create_individual_trend_plot(indicator_data, indicator_index):
-    """Create individual trend analysis plot for one indicator and save as PNG"""
+        html_images.append({
+            'title': title,
+            'image': image_base64,
+            'section': section_type,
+            'filename': filename
+        })
+        return image_base64
 
-    # Extract data
-    name = indicator_data['name']
-    baseline_target = indicator_data['baseline_2021_target']
-    baseline_achieved = indicator_data['baseline_2021_achieved']
-    years = indicator_data['years']
-    targets = indicator_data['targets']
-    achieved = indicator_data['achieved']
-    step_size = indicator_data['step']
-    format_type = indicator_data['format_type']
-    has_complete_data = indicator_data['has_complete_data']
+    def get_variable_data(variable, df):
+        """Get year columns and data for a specific variable"""
+        pattern = re.compile(f'^{variable}_(\d{{4}})$')
+        year_cols = [col for col in df.columns
+                     if pattern.match(col) and 2021 <= int(pattern.match(col).group(1)) <= 2024]
+        
+        if len(year_cols) < 2:
+            return None, None
+            
+        years = [int(re.search(r'(\d{4})', col).group(1)) for col in year_cols]
+        return year_cols, years
 
-    # Create individual plot with proper margins
-    fig, ax = plt.subplots(figsize=(14, 10))
+    def calculate_global_y_limits():
+        """Calculate global y-axis limits for consistent scaling across all plots"""
+        print(f"   🔍 Calculating global y-axis limits for all variables...")
 
-    # Plot baseline (2021) and subsequent years
-    all_years = [2021] + years
-    all_targets = [baseline_target] + targets
+        all_values = []
+        districts = df['FIRST_DNAM'].dropna().unique()
 
-    # Handle missing achieved data
-    if has_complete_data:
-        all_achieved = [baseline_achieved] + achieved
-        # Calculate variances for complete data
-        baseline_variance = calculate_variance(baseline_target, baseline_achieved)
-        variances = [calculate_variance(t, a) for t, a in zip(targets, achieved)]
-        all_variances = [baseline_variance] + variances
-    else:
-        # For indicators with no achieved data, create placeholder
-        all_achieved = [None] * len(all_years)
-        all_variances = [None] * len(all_years)
+        for variable in variables:
+            year_cols, years = get_variable_data(variable, df)
+            if year_cols is None:
+                continue
 
-    # Plot target line (always available)
-    ax.plot(all_years, all_targets, 'go-', label='Target', linewidth=3, markersize=10)
+            # National averages
+            national_avg = df[year_cols].mean(axis=0)
+            all_values.extend(national_avg.dropna().values)
 
-    # Plot achieved line only if data is available
-    if has_complete_data:
-        ax.plot(all_years, all_achieved, 'bo-', label='Achieved', linewidth=3, markersize=10)
-```
+            # District averages
+            for district in districts:
+                district_data = df[df['FIRST_DNAM'] == district]
+                district_avg = district_data[year_cols].mean(axis=0)
+                all_values.extend(district_avg.dropna().values)
 
-## Step 5: Visual Enhancement and Annotations
-Add visual elements including variance arrows, color-coded annotations, and professional formatting to make the plots informative and presentation-ready.
+                # Chiefdom averages within this district
+                chiefdoms = district_data['FIRST_CHIE'].dropna().unique()
+                for chiefdom in chiefdoms:
+                    chie_data = district_data[district_data['FIRST_CHIE'] == chiefdom]
+                    chie_avg = chie_data[year_cols].mean(axis=0)
+                    all_values.extend(chie_avg.dropna().values)
 
-```python
-        # Add arrows and variance calculations
-        for i, year in enumerate(all_years):
-            target_val = all_targets[i]
-            achieved_val = all_achieved[i]
+        if len(all_values) == 0:
+            return 0, 10
 
-            # Determine arrow color based on direction
-            if achieved_val < target_val:
-                arrow_color = 'gold'  # Yellow for reduction
-            else:
-                arrow_color = 'red'   # Red for increase
+        global_min = 0
+        global_max = max(all_values) * 1.15
+        
+        print(f"   ✓ Global y-axis range for all variables: 0 to {global_max:.1f}")
+        return global_min, global_max
 
-            # Draw arrow from target to achieved
-            ax.annotate('', xy=(year, achieved_val), xytext=(year, target_val),
-                        arrowprops=dict(arrowstyle='<->', color=arrow_color, lw=4,
-                                      alpha=1.0, mutation_scale=20))
+    # Calculate global limits for all variables
+    global_y_min, global_y_max = calculate_global_y_limits()
+    districts = df['FIRST_DNAM'].dropna().unique()
 
-            # Add variance text
-            variance_val = all_variances[i]
-            if variance_val is not None:
-                variance_text = f'+{variance_val:.1f}%' if variance_val >= 0 else f'{variance_val:.1f}%'
-                mid_point = (target_val + achieved_val) / 2
+    # ==========================================
+    # CREATE COMPREHENSIVE PDF REPORT
+    # ==========================================
+    print(f"\n📄 Creating comprehensive PDF report with all variables comparison...")
+    
+    pdf_filename = f'{output_base_dir}/pdf_files/all_variables_trend_analysis.pdf'
+    
+    with PdfPages(pdf_filename) as pdf:
 
-                text_x_offset = 0.08
-                ax.text(year + text_x_offset, mid_point, variance_text,
-                        fontsize=11, color='black', weight='bold',
-                        bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.9, edgecolor='black'))
+        # ==========================================
+        # PAGE 1: NATIONAL TRENDS - ALL VARIABLES
+        # ==========================================
+        print(f"📊 Creating Page 1: National trends comparison...")
 
-            # Add achieved value - RED TEXT if above target, BLUE if below
-            text_color = 'red' if achieved_val > target_val else 'darkblue'
-            box_color = 'lightcoral' if achieved_val > target_val else 'lightblue'
+        fig, ax = plt.subplots(figsize=(12, 8))
 
-            if format_type == 'millions':
-                achieved_label = f'{achieved_val:.0f}M'
-            elif format_type == 'percentage':
-                achieved_label = f'{achieved_val:.1f}%'
-            else:
-                achieved_label = f'{achieved_val:.0f}'
+        # Get first variable to establish years
+        first_var_year_cols, years = get_variable_data(variables[0], df)
+        if first_var_year_cols is None:
+            print("❌ Error: No valid data found for any variable")
+            return
 
-            y_range = max(all_targets) - min(all_targets)
-            offset_direction = 1 if achieved_val > target_val else -1
-            ax.text(year, achieved_val + offset_direction * y_range * 0.04,
-                    achieved_label, ha='center', va='bottom' if offset_direction > 0 else 'top',
-                    fontsize=11, color=text_color, weight='bold',
-                    bbox=dict(boxstyle="round,pad=0.2", facecolor=box_color, alpha=0.7))
-    else:
-        # Add "No Data Available" annotation for incomplete indicators
-        ax.text(0.5, 0.5, 'ACHIEVED DATA NOT AVAILABLE\nOnly Target Values Shown',
-                transform=ax.transAxes, ha='center', va='center',
-                fontsize=14, color='red', weight='bold',
-                bbox=dict(boxstyle="round,pad=0.5", facecolor="lightyellow", alpha=0.8, edgecolor='red'))
-```
+        # Plot all variables on the same axis
+        for variable in variables:
+            year_cols, _ = get_variable_data(variable, df)
+            if year_cols is None:
+                continue
 
-## Step 6: Chart Formatting and Styling
-Apply professional formatting including axis labels, grid lines, legends, and appropriate scaling for publication-quality output.
+            national_avg = df[year_cols].mean(axis=0)
+            values = national_avg.values
 
-```python
-    # Add target values above green points
-    for i, year in enumerate(all_years):
-        target_val = all_targets[i]
+            if not pd.isna(values).all():
+                ax.plot(years, values, marker='o', linewidth=4, markersize=8, 
+                       label=variable.replace("_", " ").title())
 
-        if format_type == 'millions':
-            target_label = f'{target_val:.0f}M'
-        elif format_type == 'percentage':
-            target_label = f'{target_val:.1f}%'
+        ax.set_title('National Malaria Incidence Trends - All Variables Comparison (2021-2024)',
+                     fontsize=16, fontweight='bold', pad=50)
+        
+        # Place legend horizontally immediately after title
+        ax.legend(bbox_to_anchor=(0.5, 1.02), loc='lower center', ncol=4,
+                 frameon=True, fancybox=True, shadow=True, fontsize=11)
+        
+        ax.set_xlabel('Year', fontweight='bold', fontsize=14)
+        ax.set_ylabel('Cases per 1000 population', fontweight='bold', fontsize=14)
+        ax.grid(True, alpha=0.3)
+        ax.set_xticks(years)
+        ax.set_xticklabels([int(year) for year in years])
+        ax.tick_params(labelsize=12)
+        ax.set_ylim(global_y_min, global_y_max)
+
+        plt.tight_layout()
+        pdf.savefig(fig, bbox_inches='tight', pad_inches=0.3)
+        save_and_track_figure(fig, '01_national_trends_all_variables', 
+                            'National Trends - All Variables Comparison', 'national')
+        plt.close(fig)
+
+        # ==========================================
+        # PAGE 2: DISTRICTS OVERVIEW - ALL VARIABLES
+        # ==========================================
+        print(f"🏘️ Creating Page 2: Districts overview with all variables...")
+
+        n_districts = len(districts)
+        n_cols = 4  # Fixed to 4 columns as requested
+        n_rows = int(np.ceil(n_districts / n_cols))
+
+        fig, axes = plt.subplots(n_rows, n_cols, figsize=(16, 4 * n_rows))
+        fig.suptitle('District-wise Malaria Incidence Trends - All Variables Comparison (2021-2024)',
+                     fontsize=18, fontweight='bold', y=0.98)
+
+        # Add horizontal legend immediately after title
+        fig.legend([plt.Line2D([0], [0], marker='o', color=f'C{i}', linewidth=2.5, markersize=5) 
+                   for i in range(len(variables))],
+                  [var.replace("_", " ").title() for var in variables],
+                  bbox_to_anchor=(0.5, 0.93), loc='center', ncol=4,
+                  frameon=True, fancybox=True, shadow=True, fontsize=11)
+
+        # Handle different subplot configurations
+        if n_districts == 1:
+            axes = [axes]
+        elif n_rows == 1:
+            axes = axes if n_districts > 1 else [axes]
         else:
-            target_label = f'{target_val:.0f}'
+            axes = axes.flatten()
 
-        y_range = max(all_targets) - min(all_targets) if max(all_targets) != min(all_targets) else 10
-        ax.text(year, target_val + y_range * 0.04,
-                target_label, ha='center', va='bottom', fontsize=11, color='darkgreen', weight='bold',
-                bbox=dict(boxstyle="round,pad=0.2", facecolor="lightgreen", alpha=0.7))
+        for i, district in enumerate(districts):
+            if i >= len(axes):
+                break
 
-    # Formatting and title
-    ax.set_title(f'{name}\nTrend Analysis (2021-2024)', fontsize=14, weight='bold', pad=20)
-    ax.set_xlabel('Year', fontsize=12, weight='bold')
-    ax.set_ylabel('Value', fontsize=12, weight='bold')
-    ax.legend(fontsize=12)
-    ax.grid(True, alpha=0.3)
+            ax = axes[i] if isinstance(axes, list) else axes[i]
+            district_data = df[df['FIRST_DNAM'] == district]
 
-    # Set x-axis
-    ax.set_xticks(all_years)
-    ax.tick_params(axis='both', which='major', labelsize=11)
-    x_margin = 0.3
-    ax.set_xlim(min(all_years) - x_margin, max(all_years) + x_margin)
+            # Plot all variables for this district
+            for variable in variables:
+                year_cols, _ = get_variable_data(variable, df)
+                if year_cols is None:
+                    continue
 
-    # Set y-axis starting from 0 with specified step sizes
-    if has_complete_data:
-        y_max = max(all_targets + [x for x in all_achieved if x is not None])
-    else:
-        y_max = max(all_targets)
+                district_avg = district_data[year_cols].mean(axis=0)
+                values = district_avg.values
 
-    y_max_rounded = int(np.ceil(y_max / step_size) * step_size)
-    if y_max_rounded < y_max + step_size * 0.2:
-        y_max_rounded += step_size
+                if not pd.isna(values).all():
+                    ax.plot(years, values, marker='o', linewidth=2.5, markersize=5, 
+                           label=variable.replace("_", " ").title(), alpha=0.8)
 
-    ax.set_ylim(0, y_max_rounded)
-    ax.yaxis.set_major_locator(MultipleLocator(step_size))
+            ax.set_title(f'{district}', fontsize=12, fontweight='bold')
+            ax.set_ylim(global_y_min, global_y_max)
+            ax.grid(True, alpha=0.3)
+            ax.set_xticks(years)
+            ax.set_xticklabels([int(year) for year in years])
+            ax.tick_params(labelsize=10)
 
-    # Apply formatting based on indicator type
-    if format_type == 'percentage':
-        ax.yaxis.set_major_formatter(FuncFormatter(format_percentage))
-    elif format_type == 'millions':
-        ax.yaxis.set_major_formatter(FuncFormatter(format_millions))
+        # Add legend in top right corner outside the entire subplot area
+        if len(districts) > 0:
+            fig.legend([plt.Line2D([0], [0], marker='o', color=f'C{i}', linewidth=2.5, markersize=5) 
+                       for i in range(len(variables))],
+                      [var.replace("_", " ").title() for var in variables],
+                      bbox_to_anchor=(0.5, 0.93), loc='center', ncol=4,
+                      frameon=True, fancybox=True, shadow=True, fontsize=11)
+
+        # Hide unused subplots
+        if isinstance(axes, list) or hasattr(axes, 'flatten'):
+            axes_to_check = axes if isinstance(axes, list) else axes.flatten()
+            for i in range(len(districts), len(axes_to_check)):
+                axes_to_check[i].set_visible(False)
+
+        # Add common labels
+        fig.text(0.5, 0.04, 'Year', ha='center', fontweight='bold', fontsize=14)
+        fig.text(0.02, 0.5, 'Cases per 1000 population', va='center', rotation='vertical',
+                fontweight='bold', fontsize=14)
+
+        plt.tight_layout(rect=[0.03, 0.08, 1, 0.90])  # Adjusted for horizontal legend after title
+        pdf.savefig(fig, bbox_inches='tight', pad_inches=0.8)
+        save_and_track_figure(fig, '02_districts_overview_all_variables',
+                            'Districts Overview - All Variables Comparison', 'districts_overview')
+        plt.close(fig)
+
+        # ==========================================
+        # PAGES 3+: INDIVIDUAL DISTRICT PLOTS - ALL VARIABLES
+        # ==========================================
+        print(f"📈 Creating Pages 3+: Individual district plots with all variables...")
+
+        for district_idx, district in enumerate(districts, 1):
+            print(f"   Creating Page {district_idx + 2}: {district}")
+
+            fig, ax = plt.subplots(figsize=(12, 8))
+
+            district_data = df[df['FIRST_DNAM'] == district]
+
+            # Plot all variables for this district
+            for variable in variables:
+                year_cols, _ = get_variable_data(variable, df)
+                if year_cols is None:
+                    continue
+
+                district_avg = district_data[year_cols].mean(axis=0)
+                values = district_avg.values
+
+                if not pd.isna(values).all():
+                    ax.plot(years, values, marker='o', linewidth=3, markersize=8, 
+                           label=variable.replace("_", " ").title())
+
+            ax.set_title(f'Malaria Incidence Trends - {district} All Variables Comparison (2021-2024)',
+                       fontsize=16, fontweight='bold', pad=50)
+
+            # Place legend horizontally immediately after title
+            ax.legend(bbox_to_anchor=(0.5, 1.02), loc='lower center', ncol=4,
+                     frameon=True, fancybox=True, shadow=True, fontsize=11)
+            
+            ax.set_xlabel('Year', fontweight='bold', fontsize=14)
+            ax.set_ylabel('Cases per 1000 population', fontweight='bold', fontsize=14)
+            ax.grid(True, alpha=0.3)
+            ax.set_xticks(years)
+            ax.set_xticklabels([int(year) for year in years])
+            ax.set_ylim(global_y_min, global_y_max)
+
+            plt.tight_layout()
+            pdf.savefig(fig, bbox_inches='tight', pad_inches=0.8)
+
+            safe_name = "".join(c for c in district if c.isalnum() or c in (' ', '-', '_')).strip().replace(' ', '_')
+            save_and_track_figure(fig, f'03_{district_idx:02d}_{safe_name}_all_variables',
+                                f'{district} - All Variables Comparison', 'individual_districts')
+            plt.close(fig)
+
+        # ==========================================
+        # FINAL PAGES: CHIEFDOM PLOTS - ALL VARIABLES
+        # ==========================================
+        print(f"🏡 Creating final pages: Chiefdom plots with all variables...")
+
+        for district_idx, district in enumerate(districts, 1):
+            print(f"   Creating chiefdom plots for {district}")
+
+            district_data = df[df['FIRST_DNAM'] == district]
+            if len(district_data) == 0:
+                continue
+
+            chiefdoms = district_data['FIRST_CHIE'].dropna().unique()
+            if len(chiefdoms) == 0:
+                continue
+
+            # Calculate optimal grid - ALWAYS use 4 columns
+            n_cols = 4  # Fixed to 4 columns for all subplot grids
+            n_rows = int(np.ceil(len(chiefdoms) / n_cols))
+
+            fig, axes = plt.subplots(n_rows, n_cols, figsize=(18, 6 * n_rows))
+            fig.suptitle(f'Chiefdom-wise Malaria Incidence Trends - {district} All Variables Comparison',
+                        fontsize=16, fontweight='bold', y=0.98)
+
+            # Add horizontal legend immediately after title
+            fig.legend([plt.Line2D([0], [0], marker='o', color=f'C{i}', linewidth=2, markersize=4) 
+                       for i in range(len(variables))],
+                      [var.replace("_", " ").title() for var in variables],
+                      bbox_to_anchor=(0.5, 0.93), loc='center', ncol=4,
+                      frameon=True, fancybox=True, shadow=True, fontsize=10)
+
+            # Handle subplot configurations
+            if len(chiefdoms) == 1:
+                axes = [axes]
+            elif n_rows == 1:
+                axes = axes if len(chiefdoms) > 1 else [axes]
+            else:
+                axes = axes.flatten()
+
+            for i, chiefdom in enumerate(chiefdoms):
+                if n_rows > 1:
+                    ax = axes[i]
+                else:
+                    ax = axes[i] if isinstance(axes, (list, np.ndarray)) else axes
+
+                chie_data = district_data[district_data['FIRST_CHIE'] == chiefdom]
+
+                # Plot all variables for this chiefdom
+                for variable in variables:
+                    year_cols, _ = get_variable_data(variable, df)
+                    if year_cols is None:
+                        continue
+
+                    chie_avg = chie_data[year_cols].mean(axis=0)
+                    values = chie_avg.values
+
+                    if not pd.isna(values).all():
+                        ax.plot(years, values, marker='o', linewidth=2, markersize=4, 
+                               label=variable.replace("_", " ").title(), alpha=0.8)
+
+                ax.set_title(f'{chiefdom}', fontsize=11, fontweight='bold')
+                ax.set_ylim(global_y_min, global_y_max)
+                ax.grid(True, alpha=0.3)
+                ax.set_xticks(years)
+                ax.set_xticklabels([int(year) for year in years])
+                ax.tick_params(labelsize=9)
+
+            # Add legend in top right corner outside the entire subplot area
+            if len(chiefdoms) > 0:
+                fig.legend([plt.Line2D([0], [0], marker='o', color=f'C{i}', linewidth=2, markersize=4) 
+                           for i in range(len(variables))],
+                          [var.replace("_", " ").title() for var in variables],
+                          bbox_to_anchor=(0.5, 0.93), loc='center', ncol=4,
+                          frameon=True, fancybox=True, shadow=True, fontsize=10)
+
+            # Hide unused subplots
+            if n_rows > 1:
+                for i in range(len(chiefdoms), len(axes)):
+                    axes[i].set_visible(False)
+            elif isinstance(axes, (list, np.ndarray)) and len(chiefdoms) < len(axes):
+                for i in range(len(chiefdoms), len(axes)):
+                    axes[i].set_visible(False)
+
+            # Add common labels
+            fig.text(0.5, 0.02, 'Year', ha='center', fontweight='bold', fontsize=12)
+            fig.text(0.02, 0.5, 'Cases per 1000 population', va='center', rotation='vertical',
+                    fontweight='bold', fontsize=12)
+
+            plt.tight_layout(rect=[0.03, 0.03, 1, 0.90])  # Adjusted for horizontal legend after title
+            pdf.savefig(fig, bbox_inches='tight', pad_inches=0.3)
+
+            safe_district_name = "".join(c for c in district if c.isalnum() or c in (' ', '-', '_')).strip().replace(' ', '_')
+            save_and_track_figure(fig, f'04_{district_idx:02d}_{safe_district_name}_chiefdoms_all_variables',
+                                f'{district} - Chiefdoms All Variables Comparison', 'chiefdoms')
+            plt.close(fig)
+
+    print(f"✅ PDF created: {pdf_filename}")
+
+    # ==========================================
+    # CREATE ENHANCED HTML REPORT
+    # ==========================================
+    print(f"\n🌐 Creating enhanced HTML report...")
+
+    html_filename = f'{output_base_dir}/trend_analysis_report.html'
+
+    # Group images by section
+    sections = {
+        'national': [],
+        'districts_overview': [],
+        'individual_districts': [],
+        'chiefdoms': []
+    }
+
+    for img in html_images:
+        section = img.get('section', 'other')
+        if section in sections:
+            sections[section].append(img)
+
+    # Enhanced HTML with improved navigation
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Trend Analysis Report - Enhanced Navigation</title>
+        <style>
+            body {{
+                font-family: 'Arial', 'Helvetica', sans-serif;
+                margin: 0;
+                padding: 20px;
+                background-color: #f4f6f9;
+                line-height: 1.6;
+                color: #2c3e50;
+            }}
+            .container {{
+                max-width: 1200px;
+                margin: 0 auto;
+                background: white;
+                padding: 30px;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                border: 1px solid #e3e8ed;
+            }}
+            h1 {{
+                color: #1e3a8a;
+                text-align: center;
+                border-bottom: 3px solid #2563eb;
+                padding-bottom: 20px;
+                margin-bottom: 40px;
+                font-size: 2.2em;
+                font-weight: 600;
+            }}
+            h2 {{
+                color: white;
+                background-color: #2563eb;
+                margin: 40px -30px 30px -30px;
+                padding: 20px 30px;
+                font-size: 1.6em;
+                font-weight: 500;
+                border-left: 5px solid #1d4ed8;
+            }}
+            h3 {{
+                color: #1e3a8a;
+                margin-top: 35px;
+                margin-bottom: 20px;
+                padding-bottom: 8px;
+                border-bottom: 2px solid #e3e8ed;
+                font-size: 1.3em;
+                font-weight: 500;
+            }}
+            .image-container {{
+                background-color: #fafbfc;
+                border: 1px solid #e3e8ed;
+                border-radius: 6px;
+                margin: 25px 0;
+                padding: 20px;
+                text-align: center;
+            }}
+            .image-container img {{
+                max-width: 100%;
+                height: auto;
+                border: 1px solid #d1d9e0;
+                border-radius: 4px;
+            }}
+            .image-title {{
+                font-weight: 600;
+                margin-bottom: 15px;
+                color: #1e3a8a;
+                font-size: 1.1em;
+                background-color: #eff6ff;
+                padding: 12px;
+                border-radius: 4px;
+                border-left: 4px solid #2563eb;
+            }}
+            .toc {{
+                background-color: #eff6ff;
+                border: 2px solid #2563eb;
+                border-radius: 6px;
+                padding: 25px;
+                margin-bottom: 40px;
+            }}
+            .toc h3 {{
+                color: #1e3a8a;
+                margin-top: 0;
+                margin-bottom: 15px;
+                border-bottom: 2px solid #bfdbfe;
+                padding-bottom: 10px;
+                font-size: 1.3em;
+            }}
+            .toc ul {{
+                list-style-type: none;
+                padding-left: 0;
+                margin: 0;
+            }}
+            .toc li {{
+                margin: 6px 0;
+            }}
+            .toc a {{
+                color: #1e3a8a;
+                text-decoration: none;
+                padding: 8px 12px;
+                display: inline-block;
+                border-radius: 4px;
+                transition: background-color 0.2s ease;
+                font-weight: 500;
+            }}
+            .toc a:hover {{
+                background-color: #dbeafe;
+                color: #1d4ed8;
+            }}
+            .variable-section {{
+                border-top: 2px solid #e3e8ed;
+                margin-top: 50px;
+                padding-top: 10px;
+            }}
+            .stats-box {{
+                background-color: #eff6ff;
+                border: 2px solid #2563eb;
+                border-radius: 6px;
+                padding: 20px;
+                margin: 20px 0;
+                text-align: center;
+                color: #1e3a8a;
+            }}
+            .scaling-notice {{
+                background-color: #fef3c7;
+                border: 2px solid #f59e0b;
+                border-radius: 6px;
+                padding: 20px;
+                margin: 20px 0;
+                color: #92400e;
+                font-weight: 500;
+            }}
+
+            /* Enhanced Navigation Menu Styles */
+            .section-nav {{
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: white;
+                border: 2px solid #2563eb;
+                border-radius: 8px;
+                max-width: 280px;
+                min-width: 50px;
+                z-index: 1000;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+                transition: all 0.3s ease;
+                overflow: hidden;
+            }}
+
+            .nav-header {{
+                background: linear-gradient(135deg, #2563eb, #1d4ed8);
+                color: white;
+                padding: 12px 15px;
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-weight: 600;
+                font-size: 14px;
+                user-select: none;
+            }}
+
+            .nav-toggle {{
+                font-size: 18px;
+                transition: transform 0.3s ease;
+                line-height: 1;
+            }}
+
+            .nav-toggle.expanded {{
+                transform: rotate(180deg);
+            }}
+
+            .nav-content {{
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+                background: white;
+            }}
+
+            .nav-content.expanded {{
+                max-height: 500px;
+                padding: 10px 0;
+            }}
+
+            .section-nav.collapsed {{
+                width: 50px;
+            }}
+
+            .section-nav.collapsed .nav-header {{
+                justify-content: center;
+            }}
+
+            .section-nav.collapsed .nav-title {{
+                display: none;
+            }}
+
+            .nav-main-item {{
+                display: block;
+                color: #2563eb;
+                text-decoration: none;
+                padding: 8px 15px;
+                font-size: 13px;
+                font-weight: 600;
+                border-bottom: 1px solid #f1f5f9;
+                transition: all 0.2s ease;
+                cursor: pointer;
+                user-select: none;
+            }}
+
+            .nav-main-item:hover {{
+                background-color: #eff6ff;
+                color: #1d4ed8;
+            }}
+
+            .nav-main-item.active {{
+                background-color: #dbeafe;
+                color: #1d4ed8;
+                border-left: 4px solid #2563eb;
+            }}
+
+            /* Mobile responsiveness */
+            @media (max-width: 768px) {{
+                .section-nav {{
+                    top: 10px;
+                    right: 10px;
+                    max-width: 250px;
+                }}
+
+                .container {{
+                    padding: 15px;
+                    margin: 0 10px;
+                }}
+            }}
+
+            /* Scroll progress bar */
+            .scroll-progress {{
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 0%;
+                height: 3px;
+                background: linear-gradient(90deg, #2563eb, #60a5fa);
+                z-index: 1001;
+                transition: width 0.3s ease;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="scroll-progress" id="scrollProgress"></div>
+
+        <div class="section-nav" id="sectionNav">
+            <div class="nav-header" onclick="toggleNav()">
+                <span class="nav-title">Navigation</span>
+                <span class="nav-toggle" id="navToggle">▼</span>
+            </div>
+            <div class="nav-content" id="navContent">
+                <a href="#national" class="nav-main-item" onclick="scrollToSection('national')">🌍 National Analysis</a>
+                <a href="#districts_overview" class="nav-main-item" onclick="scrollToSection('districts_overview')">🏘️ Districts Overview</a>
+                <a href="#individual_districts" class="nav-main-item" onclick="scrollToSection('individual_districts')">📊 Individual Districts</a>
+                <a href="#chiefdoms" class="nav-main-item" onclick="scrollToSection('chiefdoms')">🏡 Chiefdoms Analysis</a>
+            </div>
+        </div>
+
+        <div class="container">
+            <h1>All Variables Malaria Trend Analysis<br><small>Comprehensive Comparative Report (2021-2024)</small></h1>
+
+            <div class="scaling-notice">
+                <strong>📊 All Variables Comparison:</strong> Every plot shows all variables (Crude Incidence, Adjusted 1, Adjusted 2, Adjusted 3) 
+                with 4-column horizontal legends positioned immediately after each title. Consistent Y-axis scaling enables accurate visual comparison across all geographic areas.
+            </div>
+
+            <div class="toc">
+                <h3>Table of Contents</h3>
+                <ul>
+                    <li><a href="#national">🌍 National Trends</a></li>
+                    <li><a href="#districts_overview">🏘️ Districts Overview</a></li>
+                    <li><a href="#individual_districts">📊 Individual Districts</a></li>
+                    <li><a href="#chiefdoms">🏡 Chiefdoms Analysis</a></li>
+                </ul>
+            </div>
+    """
+
+    # Add sections
+    section_titles = {
+        'national': '🌍 National Trends - All Variables',
+        'districts_overview': '🏘️ Districts Overview - All Variables', 
+        'individual_districts': '📊 Individual Districts - All Variables',
+        'chiefdoms': '🏡 Chiefdoms Analysis - All Variables'
+    }
+
+    for section_key, section_title in section_titles.items():
+        if section_key in sections and sections[section_key]:
+            html_content += f'''
+            <div id="{section_key}" class="variable-section">
+                <h2>{section_title}</h2>
+            '''
+            
+            for img in sections[section_key]:
+                html_content += f'''
+                <div class="image-container">
+                    <div class="image-title">{img['title']}</div>
+                    <img src="data:image/png;base64,{img['image']}" alt="{img['title']}">
+                </div>
+                '''
+            
+            html_content += '</div>\n'
+
+    html_content += '''
+            <div class="stats-box" style="margin-top: 50px;">
+                <h3>Analysis Features:</h3>
+                <p><strong>All Variables Comparison:</strong> Every plot shows all 4 variables with legends</p>
+                <p><strong>Legend Position:</strong> 4-column horizontal format immediately after titles</p>
+                <p><strong>Consistent Scaling:</strong> Same Y-axis range for accurate comparison</p>
+                <p><strong>Enhanced Navigation:</strong> Smooth scrolling and progress tracking</p>
+            </div>
+        </div>
+
+        <script>
+            let navExpanded = true;
+
+            function toggleNav() {
+                const nav = document.getElementById('sectionNav');
+                const content = document.getElementById('navContent');
+                const toggle = document.getElementById('navToggle');
+
+                navExpanded = !navExpanded;
+
+                if (navExpanded) {
+                    nav.classList.remove('collapsed');
+                    content.classList.add('expanded');
+                    toggle.classList.add('expanded');
+                } else {
+                    nav.classList.add('collapsed');
+                    content.classList.remove('expanded');
+                    toggle.classList.remove('expanded');
+                }
+            }
+
+            function scrollToSection(sectionId) {
+                const target = document.getElementById(sectionId);
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    updateActiveNav(sectionId);
+                }
+            }
+
+            function updateActiveNav(sectionId) {
+                document.querySelectorAll('.nav-main-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                const activeItem = document.querySelector(`a[href="#${sectionId}"]`);
+                if (activeItem) {
+                    activeItem.classList.add('active');
+                }
+            }
+
+            function updateScrollProgress() {
+                const scrollTop = window.pageYOffset;
+                const docHeight = document.body.scrollHeight - window.innerHeight;
+                const scrollPercent = (scrollTop / docHeight) * 100;
+                document.getElementById('scrollProgress').style.width = scrollPercent + '%';
+            }
+
+            function setupIntersectionObserver() {
+                const sections = document.querySelectorAll('.variable-section');
+                
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            updateActiveNav(entry.target.id);
+                        }
+                    });
+                }, {
+                    threshold: 0.1,
+                    rootMargin: '-20% 0px -70% 0px'
+                });
+
+                sections.forEach(section => observer.observe(section));
+            }
+
+            window.addEventListener('scroll', updateScrollProgress);
+            document.addEventListener('DOMContentLoaded', () => {
+                setupIntersectionObserver();
+                updateScrollProgress();
+            });
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    scrollToSection(targetId);
+                });
+            });
+        </script>
+    </body>
+    </html>
+    '''
+
+    # Save HTML file
+    with open(html_filename, 'w', encoding='utf-8') as f:
+        f.write(html_content)
+
+    print(f"✅ Enhanced HTML report created: {html_filename}")
+
+    # ==========================================
+    # CREATE FILE INDEX
+    # ==========================================
+    print(f"\n📋 Creating comprehensive file index...")
+
+    index_content = f"""# All Variables Comparative Trend Analysis Report
+
+Generated on: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+## 🎯 ALL VARIABLES COMPARISON APPROACH
+
+### Key Features:
+✅ **All Variables in Every Plot** - No individual variable analysis
+✅ **Top Right Corner Legends** - Positioned outside plot area for clarity
+✅ **No Text Labels on Points** - Clean visualization without clutter
+✅ **Consistent Global Scaling** - Accurate visual comparison across all plots
+✅ **Professional Navigation** - Smooth scrolling with section highlighting
+✅ **Four Analysis Levels** - National → Districts Overview → Individual Districts → Chiefdoms
+
+## 📊 Analysis Structure
+
+### 1. National Trends
+- Single plot with all 4 variables
+- National-level averages for each variable
+- Legend positioned in top right corner outside plot
+- Global y-axis scaling
+
+### 2. Districts Overview  
+- Grid layout showing all districts
+- Each district subplot includes all 4 variables
+- Single legend in top right corner outside subplot area
+- Consistent scaling across all subplots
+
+### 3. Individual Districts
+- Detailed plots for each district separately
+- All 4 variables plotted with legend in top right corner
+- Professional formatting for presentations
+- Same scaling as overview plots
+
+### 4. Chiefdoms Analysis
+- Comprehensive chiefdom comparison by district
+- All 4 variables shown in each chiefdom subplot
+- Legend positioned in top right corner outside subplot area
+- Consistent scaling and color coding
+
+## 🎨 Visual Design Features
+
+### Clean Visualization
+- No text labels on data points for cleaner appearance
+- Professional color palette with consistent markers
+- High contrast for accessibility
+- Matplotlib's default color cycle
+
+### Legends and Scaling
+- All legends positioned in top right corner outside plot areas
+- Global y-axis scaling for accurate comparison
+- Consistent marker styles and line weights
+- Professional typography and spacing
+
+## 🌐 Enhanced Navigation Features
+
+### Smart Navigation Menu
+- Fixed position navigation panel
+- Collapsible design to save space  
+- Section auto-highlighting while scrolling
+- Smooth scrolling to any section
+
+### User Experience
+- Intuitive interface design
+- Fast loading with optimized images
+- Cross-browser compatibility
+- Mobile-responsive design
+
+## 📁 File Structure
+```
+{output_base_dir}/
+├── png_files/                    # Individual PNG images
+│   ├── 01_national_trends_all_variables.png
+│   ├── 02_districts_overview_all_variables.png
+│   ├── 03_XX_district_name_all_variables.png
+│   └── 04_XX_district_chiefdoms_all_variables.png
+├── pdf_files/                    # Comprehensive PDF
+│   └── all_variables_trend_analysis.pdf
+├── trend_analysis_report.html    # Interactive web report
+├── FILE_INDEX.md                 # This documentation
+└── trend_analysis_complete.zip   # Complete package
 ```
 
-## Step 7: File Export and Variance Reporting
-Save high-quality PNG files and generate detailed variance analysis reports for each indicator to support decision-making.
+## 📊 Generated Files Summary
+- **PNG Files**: {len(all_png_files)} comparative plots (all with all variables)
+- **PDF Report**: 1 comprehensive multi-page document
+- **HTML Report**: 1 interactive web report with navigation
+- **Documentation**: 1 comprehensive index file
+- **ZIP Package**: Complete deliverable bundle
 
-```python
-    # Save individual plot
-    safe_name = name.replace(':', '').replace('/', '_').replace('(', '').replace(')', '').replace(' ', '_')[:60]
-    filename = f"impact_{indicator_index+1:02d}_{safe_name}.png"
-    filepath = os.path.join(output_dir, filename)
+## 🎯 Key Advantages
 
-    plt.tight_layout(pad=2.0)
-    fig.savefig(filepath, dpi=300, bbox_inches='tight', pad_inches=0.3,
-                facecolor='white', edgecolor='none')
+### Comprehensive Comparison
+✅ **All Variables Visible** - See all measures simultaneously in every plot
+✅ **Direct Comparison** - Easy to compare trends across variables
+✅ **Consistent Presentation** - Same format for all analysis levels
+✅ **Clean Visualization** - No clutter from text labels on points
 
-    plt.show()
-    plt.close(fig)
+### Professional Presentation
+✅ **Legend Clarity** - 4-column horizontal format immediately after titles
+✅ **Single Line Titles** - Clean, concise title presentation
+✅ **Scaling Accuracy** - Global scaling enables proper comparison
+✅ **Modern Design** - Clean, professional appearance
+✅ **Navigation Excellence** - Smooth, intuitive interface
 
-    # Print variance summary
-    print(f"\n{name}")
-    print("=" * 120)
+### Analytical Benefits
+✅ **Pattern Recognition** - Easier to spot relationships between variables
+✅ **Geographic Comparison** - Consistent scaling across all levels
+✅ **Quality Assessment** - Compare crude vs adjusted measures
+✅ **Decision Support** - Clear comparative information
 
-    if has_complete_data:
-        baseline_variance_text = f"+{baseline_variance:.1f}%" if baseline_variance >= 0 else f"{baseline_variance:.1f}%"
-        print(f"2021 (Baseline): Target={baseline_target}, Achieved={baseline_achieved}, Variance={baseline_variance_text}")
+## 🔧 Technical Implementation
 
-        for i, year in enumerate(years):
-            if variances[i] is not None:
-                variance_text = f"+{variances[i]:.1f}%" if variances[i] >= 0 else f"{variances[i]:.1f}%"
-                status = "Above target" if variances[i] > 0 else "Below target"
-                print(f"{year}: Target={targets[i]}, Achieved={achieved[i]}, Variance={variance_text} ({status})")
-    else:
-        print("⚠️  ACHIEVED DATA NOT AVAILABLE - Only target values shown")
-        print(f"2021 (Baseline): Target={baseline_target}, Achieved=N/A")
-        for i, year in enumerate(years):
-            print(f"{year}: Target={targets[i]}, Achieved=N/A")
+### Plotting Strategy
+- Single plot approach with all variables per analysis level
+- Global y-axis calculation across all variables and geographies
+- Consistent color palette and marker styles
+- 4-column horizontal legend positioning using bbox_to_anchor=(0.5, 1.02)
+- Single-line titles for clean presentation
 
-    return filepath
-```
+### Navigation System
+- JavaScript-based smooth scrolling
+- Intersection Observer for auto-highlighting
+- Responsive CSS layouts
+- Modern web standards compliance
 
-## Step 8: Batch Processing and Analysis Execution
-Process all 8 Impact Indicators systematically, generating comprehensive trend analysis plots and tracking data completeness across indicators.
+## 📱 Mobile Optimization
+- Responsive design principles
+- Touch-friendly navigation
+- Optimized image sizes for mobile
+- Fast loading performance
 
-```python
-# Process all 8 Impact Indicators
-print("ALL 8 IMPACT INDICATORS TREND ANALYSIS")
-print("="*120)
-print(f"Data Source: Excel file - Complete Impact Indicators Section")
-print(f"Baseline Year: 2021")
-print(f"Analysis Period: 2021-2024")
-print(f"Total Impact Indicators: {len(impact_indicators_data)}")
-print("="*120)
+---
 
-saved_files = []
-complete_data_count = 0
-incomplete_data_count = 0
+**Perfect for comprehensive malaria surveillance analysis with 4-column horizontal legends and single-line titles!**
+"""
 
-for i, indicator_data in enumerate(impact_indicators_data):
-    print(f"\nProcessing Impact Indicator {i+1}/{len(impact_indicators_data)}:")
-    print(f"'{indicator_data['name']}'")
+    index_path = f'{output_base_dir}/FILE_INDEX.md'
+    with open(index_path, 'w', encoding='utf-8') as f:
+        f.write(index_content)
 
-    if indicator_data['has_complete_data']:
-        print("✓ Complete data available")
-        complete_data_count += 1
-    else:
-        print("⚠️  Incomplete data - targets only")
-        incomplete_data_count += 1
+    print(f"✅ Comprehensive file index created: {index_path}")
 
-    filepath = create_individual_trend_plot(indicator_data, i)
-    saved_files.append(filepath)
-    print(f"✓ Saved: {os.path.basename(filepath)}")
-```
+    # ==========================================
+    # CREATE ZIP PACKAGE
+    # ==========================================
+    print(f"\n📦 Creating complete ZIP package...")
 
-## Step 9: Summary Report and Data Quality Assessment
-Generate comprehensive summary reports categorizing indicators by data completeness and providing actionable insights for program management.
+    zip_filename = f'{output_base_dir}/trend_analysis_complete.zip'
 
-```python
-print(f"\n" + "="*120)
-print("ALL 8 IMPACT INDICATORS ANALYSIS COMPLETE")
-print("="*120)
-print(f"Total plots created: {len(saved_files)}")
-print(f"Indicators with complete data: {complete_data_count}")
-print(f"Indicators with targets only: {incomplete_data_count}")
-print(f"Output directory: {output_dir}")
+    with zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        # Add PNG files
+        for png_file in all_png_files:
+            zipf.write(png_file, f"png_files/{Path(png_file).name}")
 
-print("\nAll 8 Impact Indicators processed:")
-for i, indicator_data in enumerate(impact_indicators_data, 1):
-    status = "✓ Complete" if indicator_data['has_complete_data'] else "⚠️  Targets Only"
-    print(f"{i}. {status} - {indicator_data['name']}")
+        # Add PDF file
+        zipf.write(pdf_filename, 'pdf_files/all_variables_trend_analysis.pdf')
 
-print("\nData Status by Indicator:")
-print("COMPLETE DATA (6 indicators):")
-complete_indicators = [ind for ind in impact_indicators_data if ind['has_complete_data']]
-for i, ind in enumerate(complete_indicators, 1):
-    print(f"  {i}. {ind['name']}")
+        # Add HTML file
+        zipf.write(html_filename, 'trend_analysis_report.html')
 
-print("\nTARGETS ONLY (2 indicators):")
-incomplete_indicators = [ind for ind in impact_indicators_data if not ind['has_complete_data']]
-for i, ind in enumerate(incomplete_indicators, 1):
-    print(f"  {i}. {ind['name']}")
+        # Add index file
+        zipf.write(index_path, 'FILE_INDEX.md')
 
-print(f"\n✓ All 8 Impact Indicator trend analysis plots saved!")
-print(f"✓ Resolution: 300 DPI (presentation quality)")
-print(f"✓ Format: PNG with white background")
-print(f"✓ Location: ./{output_dir}/ directory")
+    print(f"✅ ZIP package created: {zip_filename}")
 
-print(f"\n🎯 COMPLETE IMPACT INDICATORS SERIES!")
-print(f"📊 All 8 indicators from Excel Impact section")
-print(f"📈 6 with full trend analysis, 2 with target trajectories")
-print(f"🔢 Professional formatting with exact indicator names")
-print(f"💾 Individual high-quality PNG files ready for use")
+    # ==========================================
+    # FINAL SUMMARY
+    # ==========================================
+    print("\n" + "=" * 80)
+    print("🎉 ALL VARIABLES COMPARATIVE TREND ANALYSIS COMPLETE!")
+    print("=" * 80)
+
+    print(f"\n📊 **Generated Files:**")
+    print(f"   • {len(all_png_files)} PNG files (all variables comparison plots)")
+    print(f"   • 1 PDF file (comprehensive multi-page report)")
+    print(f"   • 1 HTML file (interactive web report with navigation)")
+    print(f"   • 1 Documentation file (comprehensive index)")
+    print(f"   • 1 ZIP package (complete deliverable)")
+
+    print(f"\n🎯 **Key Features:**")
+    print(f"   ✅ ALL legends in 4-column horizontal format after titles")
+    print(f"   ✅ ALL titles converted to single line format")
+    print(f"   ✅ NO individual variable plots")
+    print(f"   ✅ NO text labels on data points")
+    print(f"   ✅ Global y-axis scaling for accurate comparison")
+    print(f"   ✅ Professional navigation system")
+    print(f"   ✅ Mobile-responsive design")
+
+    print(f"\n🌐 **Analysis Levels:**")
+    print(f"   📊 National trends with all variables")
+    print(f"   🏘️ Districts overview with all variables")
+    print(f"   📈 Individual districts with all variables")
+    print(f"   🏡 Chiefdoms analysis with all variables")
+
+    print(f"\n📁 **Directory Structure:**")
+    print(f"   📂 {output_base_dir}/")
+    print(f"   ├── 📂 png_files/ ({len(all_png_files)} all-variables plots)")
+    print(f"   ├── 📂 pdf_files/ (1 comprehensive report)")
+    print(f"   ├── 🌐 trend_analysis_report.html")
+    print(f"   ├── 📋 FILE_INDEX.md")
+    print(f"   └── 📦 trend_analysis_complete.zip")
+
+    print(f"\n✨ **All variables comparative analysis with 4-column horizontal legends ready for professional use!**")
+
+# Run the all variables analysis
+if __name__ == "__main__":
+    create_comprehensive_trend_analysis()
 ```
