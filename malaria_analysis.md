@@ -3,10 +3,19 @@
 import geopandas as gpd
 import pandas as pd
 import matplotlib.pyplot as plt
+import requests
+
+files = ["Chiefdom2021.shp", "Chiefdom2021.shx", "Chiefdom2021.dbf"]
+base_url = ""https://github.com/mohamedsillahkanu/Code-Repository/raw/d04b11fdc34313c0040586a384c14605542ce903"
+
+for f in files:
+    r = requests.get(base_url + f)
+    with open(f, "wb") as out:
+        out.write(r.content)
 
 # ===== 1. Load shapefile =====
-shapefile_path = "https://github.com/mohamedsillahkanu/Code-Repository/raw/d04b11fdc34313c0040586a384c14605542ce903/Chiefdom2021.shp"
-gdf = gpd.read_file(shapefile_path)
+
+gdf = gpd.read_file("Chiefdom2021.shp")
 
 # ===== 2. Load Excel data =====
 excel_path = "https://github.com/mohamedsillahkanu/Code-Repository/raw/cc8ca054a0ad965678e90f2214d9d99b4f4f7cba/rainfall_max_percentages_by_location.xlsx"
