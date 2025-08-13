@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # ===== 1. Load shapefile =====
-shapefile_path = "Chiefdom2021.shp"
+shapefile_path = "https://github.com/mohamedsillahkanu/Code-Repository/raw/d04b11fdc34313c0040586a384c14605542ce903/Chiefdom2021.shp"
 gdf = gpd.read_file(shapefile_path)
 
 # ===== 2. Load Excel data =====
