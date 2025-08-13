@@ -1,851 +1,475 @@
-## Full  code
+## Full code
 
 ```python
-"""
-Enhanced Trend Analysis - PNG, PDF, and HTML Output with All Variables Comparison
-Creates individual PNG files, multi-page PDFs, and HTML reports with Enhanced Collapsible Navigation
-Order: National → District Subplots → Individual Districts → Chiefdom Subplots
-ALL PLOTS SHOW ALL VARIABLES WITH LEGENDS - NO INDIVIDUAL VARIABLE PLOTS
-ENHANCED NAVIGATION WITH COLLAPSIBLE MENU AND SUBMENUS
-NO TEXT LABELS ON DATA POINTS
-ALL LEGENDS ON TOP RIGHT CORNER OUTSIDE THE PLOT
-"""
-
-import os
 import matplotlib.pyplot as plt
-import pandas as pd
 import numpy as np
-import re
-from pathlib import Path
-import zipfile
-from matplotlib.backends.backend_pdf import PdfPages
-import base64
-from io import BytesIO
+import pandas as pd
+import os
+from matplotlib.ticker import MultipleLocator, FuncFormatter
 
-def create_comprehensive_trend_analysis(output_base_dir='trend_plots/'):
-    """Create comprehensive trend analysis with PNG files, PDFs, and HTML with all variables comparison"""
+# Create output directory for individual plots
+output_dir = "impact_indicators_complete"
+os.makedirs(output_dir, exist_ok=True)
 
-    print("🚀 Starting Comprehensive Trend Analysis - All Variables Comparison...")
-    print("=" * 70)
+# Enhanced Impact Indicators data with unique titles and labels for each
+impact_indicators_data = [
+    {
+        'name': 'Malaria case incidence: number and rate per 1000 people per year',
+        'plot_title': 'Malaria Case Incidence Rate',
+        'subtitle': 'Cases per 1,000 Population per Year',
+        'y_label': 'Cases per 1,000 Population',
+        'unit_description': 'case incidence rate',
+        'baseline_2021_target': 298,
+        'baseline_2021_achieved': 267,
+        'years': [2022, 2023, 2024],
+        'targets': [293, 288, 283],
+        'achieved': [239, 309, 239],
+        'step': 50,
+        'format_type': 'number',
+        'has_complete_data': True,
+        'trend_goal': 'decrease'  # Lower is better
+    },
+    {
+        'name': 'Malaria admissions: number and rate per 10,000 persons per year',
+        'plot_title': 'Malaria Hospital Admissions',
+        'subtitle': 'Admission Rate per 10,000 Persons per Year',
+        'y_label': 'Admissions per 10,000 Persons',
+        'unit_description': 'admission rate',
+        'baseline_2021_target': 50,
+        'baseline_2021_achieved': 42,
+        'years': [2022, 2023, 2024],
+        'targets': [49.1, 47.9, 46.5],
+        'achieved': [47, 51, 36],
+        'step': 10,
+        'format_type': 'number',
+        'has_complete_data': True,
+        'trend_goal': 'decrease'  # Lower is better
+    },
+    {
+        'name': 'Malaria test positivity rate',
+        'plot_title': 'Malaria Test Positivity Rate',
+        'subtitle': 'Percentage of Positive Test Results',
+        'y_label': 'Positivity Rate (%)',
+        'unit_description': 'positivity percentage',
+        'baseline_2021_target': 59.3,
+        'baseline_2021_achieved': 63.7,
+        'years': [2022, 2023, 2024],
+        'targets': [58.2, 56.7, 55.0],
+        'achieved': [63.2, 66.0, 64.3],
+        'step': 10,
+        'format_type': 'percentage',
+        'has_complete_data': True,
+        'trend_goal': 'decrease'  # Lower positivity is better
+    },
+    {
+        'name': 'Proportion of admissions for malaria',
+        'plot_title': 'Proportion of Hospital Admissions Due to Malaria',
+        'subtitle': 'Percentage of Total Admissions',
+        'y_label': 'Proportion of Admissions (%)',
+        'unit_description': 'admission proportion',
+        'baseline_2021_target': 37.7,
+        'baseline_2021_achieved': None,
+        'years': [2022, 2023, 2024],
+        'targets': [37.0, 36.0, 35.0],
+        'achieved': [None, None, None],
+        'step': 10,
+        'format_type': 'percentage',
+        'has_complete_data': False,
+        'trend_goal': 'decrease'  # Lower proportion is better
+    },
+    {
+        'name': 'Reported malaria cases (presumed and confirmed)',
+        'plot_title': 'Total Reported Malaria Cases',
+        'subtitle': 'Presumed and Confirmed Cases Combined',
+        'y_label': 'Total Cases (Millions)',
+        'unit_description': 'total cases',
+        'baseline_2021_target': 2.396,
+        'baseline_2021_achieved': 1.961,
+        'years': [2022, 2023, 2024],
+        'targets': [2.384, 2.372, 2.360],
+        'achieved': [1.814, 2.448, 1.954],
+        'step': 0.5,
+        'format_type': 'millions',
+        'has_complete_data': True,
+        'trend_goal': 'decrease'  # Lower total cases is better
+    },
+    {
+        'name': 'Inpatient malaria deaths: rate per 100,000 population',
+        'plot_title': 'Inpatient Malaria Death Rate',
+        'subtitle': 'Deaths per 100,000 Population',
+        'y_label': 'Deaths per 100,000 Population',
+        'unit_description': 'death rate',
+        'baseline_2021_target': 17.6,
+        'baseline_2021_achieved': 17.0,
+        'years': [2022, 2023, 2024],
+        'targets': [17.2, 16.8, 16.3],
+        'achieved': [18.0, 18.0, 19.0],
+        'step': 5,
+        'format_type': 'number',
+        'has_complete_data': True,
+        'trend_goal': 'decrease'  # Lower death rate is better
+    },
+    {
+        'name': 'Malaria mortality',
+        'plot_title': 'Malaria Mortality Count',
+        'subtitle': 'Total Number of Deaths',
+        'y_label': 'Number of Deaths',
+        'unit_description': 'mortality count',
+        'baseline_2021_target': 35,
+        'baseline_2021_achieved': 28,
+        'years': [2022, 2023, 2024],
+        'targets': [34, 33, 32],
+        'achieved': [33, 30, 27],
+        'step': 10,
+        'format_type': 'number',
+        'has_complete_data': True,
+        'trend_goal': 'decrease'  # Lower mortality is better
+    },
+    {
+        'name': 'Proportion of inpatient deaths due to malaria',
+        'plot_title': 'Proportion of Inpatient Deaths Due to Malaria',
+        'subtitle': 'Percentage of Total Inpatient Deaths',
+        'y_label': 'Proportion of Deaths (%)',
+        'unit_description': 'death proportion',
+        'baseline_2021_target': 37.7,
+        'baseline_2021_achieved': None,
+        'years': [2022, 2023, 2024],
+        'targets': [37.0, 36.0, 35.0],
+        'achieved': [None, None, None],
+        'step': 10,
+        'format_type': 'percentage',
+        'has_complete_data': False,
+        'trend_goal': 'decrease'  # Lower proportion is better
+    }
+]
 
-    # Variables to analyze
-    variables = ['crude_incidence', 'adjusted1', 'adjusted2', 'adjusted3']
+def calculate_variance(target, achieved):
+    """Calculate variance as (Achieved - Target) / Target * 100"""
+    if target == 0 or achieved is None:
+        return None
+    return ((achieved - target) / target) * 100
 
-    # Load data once
-    print("📊 Loading data...")
-    try:
-        df = pd.read_excel("/content/2024_snt_data.xlsx")
-        print(f"✓ Data loaded: {len(df)} rows")
-        print(f"✓ Available columns: {list(df.columns)}")
-    except FileNotFoundError:
-        print("❌ Error: /content/2024_snt_data.xlsx not found")
-        return
+def format_millions(x, pos):
+    """Format numbers in millions"""
+    return f'{x:.1f}M'
 
-    # Create main output directory and subdirectories
-    os.makedirs(output_base_dir, exist_ok=True)
-    os.makedirs(f'{output_base_dir}/png_files/', exist_ok=True)
-    os.makedirs(f'{output_base_dir}/pdf_files/', exist_ok=True)
+def format_percentage(x, pos):
+    """Format as percentage"""
+    return f'{x:.0f}%'
 
-    # Store all figures for HTML generation
-    html_images = []
-    all_png_files = []
-
-    def save_and_track_figure(fig, filename, title, section_type, save_png=True):
-        """Save figure as PNG and track for HTML"""
-        if save_png:
-            png_path = f'{output_base_dir}/png_files/{filename}.png'
-            fig.savefig(png_path, dpi=300, bbox_inches='tight')
-            all_png_files.append(png_path)
-            print(f"   ✓ Saved PNG: {filename}.png")
-
-        # Convert to base64 for HTML
-        buffer = BytesIO()
-        fig.savefig(buffer, format='png', dpi=150, bbox_inches='tight')
-        buffer.seek(0)
-        image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
-        buffer.close()
-
-        html_images.append({
-            'title': title,
-            'image': image_base64,
-            'section': section_type,
-            'filename': filename
-        })
-        return image_base64
-
-    def get_variable_data(variable, df):
-        """Get year columns and data for a specific variable"""
-        pattern = re.compile(f'^{variable}_(\d{{4}})$')
-        year_cols = [col for col in df.columns
-                     if pattern.match(col) and 2021 <= int(pattern.match(col).group(1)) <= 2024]
-        
-        if len(year_cols) < 2:
-            return None, None
-            
-        years = [int(re.search(r'(\d{4})', col).group(1)) for col in year_cols]
-        return year_cols, years
-
-    def calculate_global_y_limits():
-        """Calculate global y-axis limits for consistent scaling across all plots"""
-        print(f"   🔍 Calculating global y-axis limits for all variables...")
-
-        all_values = []
-        districts = df['FIRST_DNAM'].dropna().unique()
-
-        for variable in variables:
-            year_cols, years = get_variable_data(variable, df)
-            if year_cols is None:
-                continue
-
-            # National averages
-            national_avg = df[year_cols].mean(axis=0)
-            all_values.extend(national_avg.dropna().values)
-
-            # District averages
-            for district in districts:
-                district_data = df[df['FIRST_DNAM'] == district]
-                district_avg = district_data[year_cols].mean(axis=0)
-                all_values.extend(district_avg.dropna().values)
-
-                # Chiefdom averages within this district
-                chiefdoms = district_data['FIRST_CHIE'].dropna().unique()
-                for chiefdom in chiefdoms:
-                    chie_data = district_data[district_data['FIRST_CHIE'] == chiefdom]
-                    chie_avg = chie_data[year_cols].mean(axis=0)
-                    all_values.extend(chie_avg.dropna().values)
-
-        if len(all_values) == 0:
-            return 0, 10
-
-        global_min = 0
-        global_max = max(all_values) * 1.15
-        
-        print(f"   ✓ Global y-axis range for all variables: 0 to {global_max:.1f}")
-        return global_min, global_max
-
-    # Calculate global limits for all variables
-    global_y_min, global_y_max = calculate_global_y_limits()
-    districts = df['FIRST_DNAM'].dropna().unique()
-
-    # ==========================================
-    # CREATE COMPREHENSIVE PDF REPORT
-    # ==========================================
-    print(f"\n📄 Creating comprehensive PDF report with all variables comparison...")
+def get_performance_status(achieved, target, trend_goal):
+    """Determine if performance is good or bad based on trend goal"""
+    if achieved is None or target is None:
+        return 'unknown', 'gray'
     
-    pdf_filename = f'{output_base_dir}/pdf_files/all_variables_trend_analysis.pdf'
-    
-    with PdfPages(pdf_filename) as pdf:
-
-        # ==========================================
-        # PAGE 1: NATIONAL TRENDS - ALL VARIABLES
-        # ==========================================
-        print(f"📊 Creating Page 1: National trends comparison...")
-
-        fig, ax = plt.subplots(figsize=(12, 8))
-
-        # Get first variable to establish years
-        first_var_year_cols, years = get_variable_data(variables[0], df)
-        if first_var_year_cols is None:
-            print("❌ Error: No valid data found for any variable")
-            return
-
-        # Plot all variables on the same axis
-        for variable in variables:
-            year_cols, _ = get_variable_data(variable, df)
-            if year_cols is None:
-                continue
-
-            national_avg = df[year_cols].mean(axis=0)
-            values = national_avg.values
-
-            if not pd.isna(values).all():
-                ax.plot(years, values, marker='o', linewidth=4, markersize=8, 
-                       label=variable.replace("_", " ").title())
-
-        ax.set_title('National Malaria Incidence Trends - All Variables Comparison (2021-2024)',
-                     fontsize=16, fontweight='bold', pad=50)
-        
-        # Place legend horizontally immediately after title
-        ax.legend(bbox_to_anchor=(0.5, 1.02), loc='lower center', ncol=4,
-                 frameon=True, fancybox=True, shadow=True, fontsize=11)
-        
-        ax.set_xlabel('Year', fontweight='bold', fontsize=14)
-        ax.set_ylabel('Cases per 1000 population', fontweight='bold', fontsize=14)
-        ax.grid(True, alpha=0.3)
-        ax.set_xticks(years)
-        ax.set_xticklabels([int(year) for year in years])
-        ax.tick_params(labelsize=12)
-        ax.set_ylim(global_y_min, global_y_max)
-
-        plt.tight_layout()
-        pdf.savefig(fig, bbox_inches='tight', pad_inches=0.3)
-        save_and_track_figure(fig, '01_national_trends_all_variables', 
-                            'National Trends - All Variables Comparison', 'national')
-        plt.close(fig)
-
-        # ==========================================
-        # PAGE 2: DISTRICTS OVERVIEW - ALL VARIABLES
-        # ==========================================
-        print(f"🏘️ Creating Page 2: Districts overview with all variables...")
-
-        n_districts = len(districts)
-        n_cols = 4  # Fixed to 4 columns as requested
-        n_rows = int(np.ceil(n_districts / n_cols))
-
-        fig, axes = plt.subplots(n_rows, n_cols, figsize=(16, 4 * n_rows))
-        fig.suptitle('District-wise Malaria Incidence Trends - All Variables Comparison (2021-2024)',
-                     fontsize=18, fontweight='bold', y=0.98)
-
-        # Add horizontal legend immediately after title
-        fig.legend([plt.Line2D([0], [0], marker='o', color=f'C{i}', linewidth=2.5, markersize=5) 
-                   for i in range(len(variables))],
-                  [var.replace("_", " ").title() for var in variables],
-                  bbox_to_anchor=(0.5, 0.93), loc='center', ncol=4,
-                  frameon=True, fancybox=True, shadow=True, fontsize=11)
-
-        # Handle different subplot configurations
-        if n_districts == 1:
-            axes = [axes]
-        elif n_rows == 1:
-            axes = axes if n_districts > 1 else [axes]
+    if trend_goal == 'decrease':
+        # For indicators where lower is better
+        if achieved < target:
+            return 'good', 'green'  # Below target is good
         else:
-            axes = axes.flatten()
+            return 'poor', 'red'    # Above target is poor
+    else:  # trend_goal == 'increase'
+        # For indicators where higher is better
+        if achieved > target:
+            return 'good', 'green'  # Above target is good
+        else:
+            return 'poor', 'red'    # Below target is poor
 
-        for i, district in enumerate(districts):
-            if i >= len(axes):
-                break
+def create_individual_trend_plot(indicator_data, indicator_index):
+    """Create individual trend analysis plot for one indicator with unique styling"""
 
-            ax = axes[i] if isinstance(axes, list) else axes[i]
-            district_data = df[df['FIRST_DNAM'] == district]
+    # Extract data
+    name = indicator_data['name']
+    plot_title = indicator_data['plot_title']
+    subtitle = indicator_data['subtitle']
+    y_label = indicator_data['y_label']
+    unit_description = indicator_data['unit_description']
+    trend_goal = indicator_data['trend_goal']
+    
+    baseline_target = indicator_data['baseline_2021_target']
+    baseline_achieved = indicator_data['baseline_2021_achieved']
+    years = indicator_data['years']
+    targets = indicator_data['targets']
+    achieved = indicator_data['achieved']
+    step_size = indicator_data['step']
+    format_type = indicator_data['format_type']
+    has_complete_data = indicator_data['has_complete_data']
 
-            # Plot all variables for this district
-            for variable in variables:
-                year_cols, _ = get_variable_data(variable, df)
-                if year_cols is None:
-                    continue
+    # Create individual plot with proper margins
+    fig, ax = plt.subplots(figsize=(14, 10))
 
-                district_avg = district_data[year_cols].mean(axis=0)
-                values = district_avg.values
+    # Plot baseline (2021) and subsequent years
+    all_years = [2021] + years
+    all_targets = [baseline_target] + targets
 
-                if not pd.isna(values).all():
-                    ax.plot(years, values, marker='o', linewidth=2.5, markersize=5, 
-                           label=variable.replace("_", " ").title(), alpha=0.8)
+    # Handle missing achieved data
+    if has_complete_data:
+        all_achieved = [baseline_achieved] + achieved
+        # Calculate variances for complete data
+        baseline_variance = calculate_variance(baseline_target, baseline_achieved)
+        variances = [calculate_variance(t, a) for t, a in zip(targets, achieved)]
+        all_variances = [baseline_variance] + variances
+    else:
+        # For indicators with no achieved data, create placeholder
+        all_achieved = [None] * len(all_years)
+        all_variances = [None] * len(all_years)
 
-            ax.set_title(f'{district}', fontsize=12, fontweight='bold')
-            ax.set_ylim(global_y_min, global_y_max)
-            ax.grid(True, alpha=0.3)
-            ax.set_xticks(years)
-            ax.set_xticklabels([int(year) for year in years])
-            ax.tick_params(labelsize=10)
+    # Plot target line (always available) with enhanced styling
+    ax.plot(all_years, all_targets, 'go-', label='Target', linewidth=4, markersize=12, 
+            markerfacecolor='lightgreen', markeredgecolor='darkgreen', markeredgewidth=2)
 
-        # Add legend in top right corner outside the entire subplot area
-        if len(districts) > 0:
-            fig.legend([plt.Line2D([0], [0], marker='o', color=f'C{i}', linewidth=2.5, markersize=5) 
-                       for i in range(len(variables))],
-                      [var.replace("_", " ").title() for var in variables],
-                      bbox_to_anchor=(0.5, 0.93), loc='center', ncol=4,
-                      frameon=True, fancybox=True, shadow=True, fontsize=11)
+    # Plot achieved line only if data is available
+    if has_complete_data:
+        ax.plot(all_years, all_achieved, 'bo-', label='Achieved', linewidth=4, markersize=12,
+                markerfacecolor='lightblue', markeredgecolor='darkblue', markeredgewidth=2)
 
-        # Hide unused subplots
-        if isinstance(axes, list) or hasattr(axes, 'flatten'):
-            axes_to_check = axes if isinstance(axes, list) else axes.flatten()
-            for i in range(len(districts), len(axes_to_check)):
-                axes_to_check[i].set_visible(False)
+        # Add performance analysis arrows and variance calculations
+        for i, year in enumerate(all_years):
+            target_val = all_targets[i]
+            achieved_val = all_achieved[i]
 
-        # Add common labels
-        fig.text(0.5, 0.04, 'Year', ha='center', fontweight='bold', fontsize=14)
-        fig.text(0.02, 0.5, 'Cases per 1000 population', va='center', rotation='vertical',
-                fontweight='bold', fontsize=14)
-
-        plt.tight_layout(rect=[0.03, 0.08, 1, 0.90])  # Adjusted for horizontal legend after title
-        pdf.savefig(fig, bbox_inches='tight', pad_inches=0.8)
-        save_and_track_figure(fig, '02_districts_overview_all_variables',
-                            'Districts Overview - All Variables Comparison', 'districts_overview')
-        plt.close(fig)
-
-        # ==========================================
-        # PAGES 3+: INDIVIDUAL DISTRICT PLOTS - ALL VARIABLES
-        # ==========================================
-        print(f"📈 Creating Pages 3+: Individual district plots with all variables...")
-
-        for district_idx, district in enumerate(districts, 1):
-            print(f"   Creating Page {district_idx + 2}: {district}")
-
-            fig, ax = plt.subplots(figsize=(12, 8))
-
-            district_data = df[df['FIRST_DNAM'] == district]
-
-            # Plot all variables for this district
-            for variable in variables:
-                year_cols, _ = get_variable_data(variable, df)
-                if year_cols is None:
-                    continue
-
-                district_avg = district_data[year_cols].mean(axis=0)
-                values = district_avg.values
-
-                if not pd.isna(values).all():
-                    ax.plot(years, values, marker='o', linewidth=3, markersize=8, 
-                           label=variable.replace("_", " ").title())
-
-            ax.set_title(f'Malaria Incidence Trends - {district} All Variables Comparison (2021-2024)',
-                       fontsize=16, fontweight='bold', pad=50)
-
-            # Place legend horizontally immediately after title
-            ax.legend(bbox_to_anchor=(0.5, 1.02), loc='lower center', ncol=4,
-                     frameon=True, fancybox=True, shadow=True, fontsize=11)
+            # Determine arrow color based on performance vs trend goal
+            status, arrow_color = get_performance_status(achieved_val, target_val, trend_goal)
             
-            ax.set_xlabel('Year', fontweight='bold', fontsize=14)
-            ax.set_ylabel('Cases per 1000 population', fontweight='bold', fontsize=14)
-            ax.grid(True, alpha=0.3)
-            ax.set_xticks(years)
-            ax.set_xticklabels([int(year) for year in years])
-            ax.set_ylim(global_y_min, global_y_max)
-
-            plt.tight_layout()
-            pdf.savefig(fig, bbox_inches='tight', pad_inches=0.8)
-
-            safe_name = "".join(c for c in district if c.isalnum() or c in (' ', '-', '_')).strip().replace(' ', '_')
-            save_and_track_figure(fig, f'03_{district_idx:02d}_{safe_name}_all_variables',
-                                f'{district} - All Variables Comparison', 'individual_districts')
-            plt.close(fig)
-
-        # ==========================================
-        # FINAL PAGES: CHIEFDOM PLOTS - ALL VARIABLES
-        # ==========================================
-        print(f"🏡 Creating final pages: Chiefdom plots with all variables...")
-
-        for district_idx, district in enumerate(districts, 1):
-            print(f"   Creating chiefdom plots for {district}")
-
-            district_data = df[df['FIRST_DNAM'] == district]
-            if len(district_data) == 0:
-                continue
-
-            chiefdoms = district_data['FIRST_CHIE'].dropna().unique()
-            if len(chiefdoms) == 0:
-                continue
-
-            # Calculate optimal grid - ALWAYS use 4 columns
-            n_cols = 4  # Fixed to 4 columns for all subplot grids
-            n_rows = int(np.ceil(len(chiefdoms) / n_cols))
-
-            fig, axes = plt.subplots(n_rows, n_cols, figsize=(18, 6 * n_rows))
-            fig.suptitle(f'Chiefdom-wise Malaria Incidence Trends - {district} All Variables Comparison',
-                        fontsize=16, fontweight='bold', y=0.98)
-
-            # Add horizontal legend immediately after title
-            fig.legend([plt.Line2D([0], [0], marker='o', color=f'C{i}', linewidth=2, markersize=4) 
-                       for i in range(len(variables))],
-                      [var.replace("_", " ").title() for var in variables],
-                      bbox_to_anchor=(0.5, 0.93), loc='center', ncol=4,
-                      frameon=True, fancybox=True, shadow=True, fontsize=10)
-
-            # Handle subplot configurations
-            if len(chiefdoms) == 1:
-                axes = [axes]
-            elif n_rows == 1:
-                axes = axes if len(chiefdoms) > 1 else [axes]
+            # Use different arrow colors for performance
+            if status == 'good':
+                arrow_color = 'forestgreen'
+                arrow_alpha = 0.8
+            elif status == 'poor':
+                arrow_color = 'crimson'
+                arrow_alpha = 0.8
             else:
-                axes = axes.flatten()
+                arrow_color = 'orange'
+                arrow_alpha = 0.6
 
-            for i, chiefdom in enumerate(chiefdoms):
-                if n_rows > 1:
-                    ax = axes[i]
+            # Draw arrow from target to achieved
+            ax.annotate('', xy=(year, achieved_val), xytext=(year, target_val),
+                        arrowprops=dict(arrowstyle='<->', color=arrow_color, lw=5,
+                                      alpha=arrow_alpha, mutation_scale=25))
+
+            # Add variance text with performance indicator
+            variance_val = all_variances[i]
+            if variance_val is not None:
+                variance_text = f'+{variance_val:.1f}%' if variance_val >= 0 else f'{variance_val:.1f}%'
+                mid_point = (target_val + achieved_val) / 2
+
+                # Color code variance text based on performance
+                if status == 'good':
+                    variance_color = 'darkgreen'
+                    variance_bg = 'lightgreen'
+                elif status == 'poor':
+                    variance_color = 'darkred'
+                    variance_bg = 'lightcoral'
                 else:
-                    ax = axes[i] if isinstance(axes, (list, np.ndarray)) else axes
+                    variance_color = 'darkorange'
+                    variance_bg = 'moccasin'
 
-                chie_data = district_data[district_data['FIRST_CHIE'] == chiefdom]
+                text_x_offset = 0.08
+                ax.text(year + text_x_offset, mid_point, variance_text,
+                        fontsize=12, color=variance_color, weight='bold',
+                        bbox=dict(boxstyle="round,pad=0.4", facecolor=variance_bg, 
+                                alpha=0.9, edgecolor=variance_color, linewidth=1))
 
-                # Plot all variables for this chiefdom
-                for variable in variables:
-                    year_cols, _ = get_variable_data(variable, df)
-                    if year_cols is None:
-                        continue
+            # Add achieved value with performance-based coloring
+            if status == 'good':
+                text_color = 'darkgreen'
+                box_color = 'lightgreen'
+            elif status == 'poor':
+                text_color = 'darkred'
+                box_color = 'lightcoral'
+            else:
+                text_color = 'darkorange'
+                box_color = 'moccasin'
 
-                    chie_avg = chie_data[year_cols].mean(axis=0)
-                    values = chie_avg.values
+            if format_type == 'millions':
+                achieved_label = f'{achieved_val:.1f}M'
+            elif format_type == 'percentage':
+                achieved_label = f'{achieved_val:.1f}%'
+            else:
+                achieved_label = f'{achieved_val:.1f}' if achieved_val != int(achieved_val) else f'{achieved_val:.0f}'
 
-                    if not pd.isna(values).all():
-                        ax.plot(years, values, marker='o', linewidth=2, markersize=4, 
-                               label=variable.replace("_", " ").title(), alpha=0.8)
+            y_range = max(all_targets + all_achieved) - min(all_targets + all_achieved)
+            y_range = max(y_range, step_size)  # Ensure minimum range
+            offset_direction = 1 if achieved_val > target_val else -1
+            ax.text(year, achieved_val + offset_direction * y_range * 0.06,
+                    achieved_label, ha='center', va='bottom' if offset_direction > 0 else 'top',
+                    fontsize=12, color=text_color, weight='bold',
+                    bbox=dict(boxstyle="round,pad=0.3", facecolor=box_color, alpha=0.8,
+                            edgecolor=text_color, linewidth=1))
+    else:
+        # Enhanced "No Data Available" annotation for incomplete indicators
+        ax.text(0.5, 0.5, f'ACHIEVED DATA NOT AVAILABLE\nfor {plot_title}\n\nOnly Target Trajectory Shown',
+                transform=ax.transAxes, ha='center', va='center',
+                fontsize=16, color='darkred', weight='bold',
+                bbox=dict(boxstyle="round,pad=0.8", facecolor="mistyrose", 
+                        alpha=0.9, edgecolor='darkred', linewidth=2))
 
-                ax.set_title(f'{chiefdom}', fontsize=11, fontweight='bold')
-                ax.set_ylim(global_y_min, global_y_max)
-                ax.grid(True, alpha=0.3)
-                ax.set_xticks(years)
-                ax.set_xticklabels([int(year) for year in years])
-                ax.tick_params(labelsize=9)
+    # Add target values above green points with enhanced styling
+    for i, year in enumerate(all_years):
+        target_val = all_targets[i]
 
-            # Add legend in top right corner outside the entire subplot area
-            if len(chiefdoms) > 0:
-                fig.legend([plt.Line2D([0], [0], marker='o', color=f'C{i}', linewidth=2, markersize=4) 
-                           for i in range(len(variables))],
-                          [var.replace("_", " ").title() for var in variables],
-                          bbox_to_anchor=(0.5, 0.93), loc='center', ncol=4,
-                          frameon=True, fancybox=True, shadow=True, fontsize=10)
+        if format_type == 'millions':
+            target_label = f'{target_val:.1f}M'
+        elif format_type == 'percentage':
+            target_label = f'{target_val:.1f}%'
+        else:
+            target_label = f'{target_val:.1f}' if target_val != int(target_val) else f'{target_val:.0f}'
 
-            # Hide unused subplots
-            if n_rows > 1:
-                for i in range(len(chiefdoms), len(axes)):
-                    axes[i].set_visible(False)
-            elif isinstance(axes, (list, np.ndarray)) and len(chiefdoms) < len(axes):
-                for i in range(len(chiefdoms), len(axes)):
-                    axes[i].set_visible(False)
+        y_range = max(all_targets) - min(all_targets) if max(all_targets) != min(all_targets) else step_size
+        ax.text(year, target_val + y_range * 0.06,
+                target_label, ha='center', va='bottom', fontsize=12, color='darkgreen', weight='bold',
+                bbox=dict(boxstyle="round,pad=0.3", facecolor="lightgreen", alpha=0.8,
+                        edgecolor='darkgreen', linewidth=1))
 
-            # Add common labels
-            fig.text(0.5, 0.02, 'Year', ha='center', fontweight='bold', fontsize=12)
-            fig.text(0.02, 0.5, 'Cases per 1000 population', va='center', rotation='vertical',
-                    fontweight='bold', fontsize=12)
+    # Enhanced title with subtitle
+    main_title = f'{plot_title}'
+    full_title = f'{main_title}\n{subtitle} | Trend Analysis (2021-2024)'
+    ax.set_title(full_title, fontsize=16, weight='bold', pad=25, linespacing=1.5)
+    
+    # Custom labels
+    ax.set_xlabel('Year', fontsize=14, weight='bold')
+    ax.set_ylabel(y_label, fontsize=14, weight='bold')
+    
+    # Enhanced legend
+    legend = ax.legend(fontsize=13, loc='best', frameon=True, fancybox=True, shadow=True)
+    legend.get_frame().set_facecolor('white')
+    legend.get_frame().set_alpha(0.9)
+    
+    # Enhanced grid
+    ax.grid(True, alpha=0.4, linestyle='--', linewidth=0.8)
+    ax.set_facecolor('white')
 
-            plt.tight_layout(rect=[0.03, 0.03, 1, 0.90])  # Adjusted for horizontal legend after title
-            pdf.savefig(fig, bbox_inches='tight', pad_inches=0.3)
+    # Set x-axis
+    ax.set_xticks(all_years)
+    ax.tick_params(axis='both', which='major', labelsize=12)
+    x_margin = 0.4
+    ax.set_xlim(min(all_years) - x_margin, max(all_years) + x_margin)
 
-            safe_district_name = "".join(c for c in district if c.isalnum() or c in (' ', '-', '_')).strip().replace(' ', '_')
-            save_and_track_figure(fig, f'04_{district_idx:02d}_{safe_district_name}_chiefdoms_all_variables',
-                                f'{district} - Chiefdoms All Variables Comparison', 'chiefdoms')
-            plt.close(fig)
+    # Enhanced y-axis formatting
+    if has_complete_data:
+        all_values = all_targets + [x for x in all_achieved if x is not None]
+        y_min = min(all_values)
+        y_max = max(all_values)
+    else:
+        y_min = min(all_targets)
+        y_max = max(all_targets)
 
-    print(f"✅ PDF created: {pdf_filename}")
+    # Start from 0 but allow some padding
+    y_max_rounded = int(np.ceil(y_max / step_size) * step_size)
+    if y_max_rounded < y_max + step_size * 0.3:
+        y_max_rounded += step_size
 
-    # ==========================================
-    # CREATE ENHANCED HTML REPORT
-    # ==========================================
-    print(f"\n🌐 Creating enhanced HTML report...")
+    ax.set_ylim(0, y_max_rounded)
+    ax.yaxis.set_major_locator(MultipleLocator(step_size))
 
-    html_filename = f'{output_base_dir}/trend_analysis_report.html'
+    # Apply formatting based on indicator type
+    if format_type == 'percentage':
+        ax.yaxis.set_major_formatter(FuncFormatter(format_percentage))
+    elif format_type == 'millions':
+        ax.yaxis.set_major_formatter(FuncFormatter(format_millions))
 
-    # Group images by section
-    sections = {
-        'national': [],
-        'districts_overview': [],
-        'individual_districts': [],
-        'chiefdoms': []
-    }
+    # Add trend goal indicator
+    trend_text = "↓ Lower is Better" if trend_goal == 'decrease' else "↑ Higher is Better"
+    ax.text(0.02, 0.98, trend_text, transform=ax.transAxes, fontsize=11, 
+            weight='bold', va='top', ha='left',
+            bbox=dict(boxstyle="round,pad=0.3", facecolor="lightyellow", 
+                    alpha=0.8, edgecolor='orange'))
 
-    for img in html_images:
-        section = img.get('section', 'other')
-        if section in sections:
-            sections[section].append(img)
+    # Save individual plot with descriptive filename
+    safe_title = plot_title.replace(':', '').replace('/', '_').replace('(', '').replace(')', '').replace(' ', '_')[:40]
+    filename = f"impact_{indicator_index+1:02d}_{safe_title}.png"
+    filepath = os.path.join(output_dir, filename)
 
-    # Enhanced HTML with improved navigation
-    html_content = f"""
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Trend Analysis Report - Enhanced Navigation</title>
-        <style>
-            body {{
-                font-family: 'Arial', 'Helvetica', sans-serif;
-                margin: 0;
-                padding: 20px;
-                background-color: #f4f6f9;
-                line-height: 1.6;
-                color: #2c3e50;
-            }}
-            .container {{
-                max-width: 1200px;
-                margin: 0 auto;
-                background: white;
-                padding: 30px;
-                border-radius: 8px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                border: 1px solid #e3e8ed;
-            }}
-            h1 {{
-                color: #1e3a8a;
-                text-align: center;
-                border-bottom: 3px solid #2563eb;
-                padding-bottom: 20px;
-                margin-bottom: 40px;
-                font-size: 2.2em;
-                font-weight: 600;
-            }}
-            h2 {{
-                color: white;
-                background-color: #2563eb;
-                margin: 40px -30px 30px -30px;
-                padding: 20px 30px;
-                font-size: 1.6em;
-                font-weight: 500;
-                border-left: 5px solid #1d4ed8;
-            }}
-            h3 {{
-                color: #1e3a8a;
-                margin-top: 35px;
-                margin-bottom: 20px;
-                padding-bottom: 8px;
-                border-bottom: 2px solid #e3e8ed;
-                font-size: 1.3em;
-                font-weight: 500;
-            }}
-            .image-container {{
-                background-color: #fafbfc;
-                border: 1px solid #e3e8ed;
-                border-radius: 6px;
-                margin: 25px 0;
-                padding: 20px;
-                text-align: center;
-            }}
-            .image-container img {{
-                max-width: 100%;
-                height: auto;
-                border: 1px solid #d1d9e0;
-                border-radius: 4px;
-            }}
-            .image-title {{
-                font-weight: 600;
-                margin-bottom: 15px;
-                color: #1e3a8a;
-                font-size: 1.1em;
-                background-color: #eff6ff;
-                padding: 12px;
-                border-radius: 4px;
-                border-left: 4px solid #2563eb;
-            }}
-            .toc {{
-                background-color: #eff6ff;
-                border: 2px solid #2563eb;
-                border-radius: 6px;
-                padding: 25px;
-                margin-bottom: 40px;
-            }}
-            .toc h3 {{
-                color: #1e3a8a;
-                margin-top: 0;
-                margin-bottom: 15px;
-                border-bottom: 2px solid #bfdbfe;
-                padding-bottom: 10px;
-                font-size: 1.3em;
-            }}
-            .toc ul {{
-                list-style-type: none;
-                padding-left: 0;
-                margin: 0;
-            }}
-            .toc li {{
-                margin: 6px 0;
-            }}
-            .toc a {{
-                color: #1e3a8a;
-                text-decoration: none;
-                padding: 8px 12px;
-                display: inline-block;
-                border-radius: 4px;
-                transition: background-color 0.2s ease;
-                font-weight: 500;
-            }}
-            .toc a:hover {{
-                background-color: #dbeafe;
-                color: #1d4ed8;
-            }}
-            .variable-section {{
-                border-top: 2px solid #e3e8ed;
-                margin-top: 50px;
-                padding-top: 10px;
-            }}
-            .stats-box {{
-                background-color: #eff6ff;
-                border: 2px solid #2563eb;
-                border-radius: 6px;
-                padding: 20px;
-                margin: 20px 0;
-                text-align: center;
-                color: #1e3a8a;
-            }}
-            .scaling-notice {{
-                background-color: #fef3c7;
-                border: 2px solid #f59e0b;
-                border-radius: 6px;
-                padding: 20px;
-                margin: 20px 0;
-                color: #92400e;
-                font-weight: 500;
-            }}
+    plt.tight_layout(pad=3.0)
+    fig.savefig(filepath, dpi=300, bbox_inches='tight', pad_inches=0.4,
+                facecolor='white', edgecolor='none')
 
-            /* Enhanced Navigation Menu Styles */
-            .section-nav {{
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: white;
-                border: 2px solid #2563eb;
-                border-radius: 8px;
-                max-width: 280px;
-                min-width: 50px;
-                z-index: 1000;
-                box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-                transition: all 0.3s ease;
-                overflow: hidden;
-            }}
+    plt.show()
+    plt.close(fig)
 
-            .nav-header {{
-                background: linear-gradient(135deg, #2563eb, #1d4ed8);
-                color: white;
-                padding: 12px 15px;
-                cursor: pointer;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                font-weight: 600;
-                font-size: 14px;
-                user-select: none;
-            }}
+    # Enhanced variance summary
+    print(f"\n{plot_title}")
+    print(f"📊 {subtitle}")
+    print("=" * 100)
 
-            .nav-toggle {{
-                font-size: 18px;
-                transition: transform 0.3s ease;
-                line-height: 1;
-            }}
+    if has_complete_data:
+        baseline_variance_text = f"+{baseline_variance:.1f}%" if baseline_variance >= 0 else f"{baseline_variance:.1f}%"
+        baseline_status, _ = get_performance_status(baseline_achieved, baseline_target, trend_goal)
+        performance_icon = "✅" if baseline_status == 'good' else "❌" if baseline_status == 'poor' else "⚠️"
+        
+        print(f"2021 (Baseline): Target={baseline_target} {unit_description}, Achieved={baseline_achieved}, Variance={baseline_variance_text} {performance_icon}")
 
-            .nav-toggle.expanded {{
-                transform: rotate(180deg);
-            }}
+        for i, year in enumerate(years):
+            if variances[i] is not None:
+                variance_text = f"+{variances[i]:.1f}%" if variances[i] >= 0 else f"{variances[i]:.1f}%"
+                year_status, _ = get_performance_status(achieved[i], targets[i], trend_goal)
+                performance_icon = "✅" if year_status == 'good' else "❌" if year_status == 'poor' else "⚠️"
+                status_text = "Meeting Goal" if year_status == 'good' else "Missing Target" if year_status == 'poor' else "Unknown"
+                print(f"{year}: Target={targets[i]} {unit_description}, Achieved={achieved[i]}, Variance={variance_text} ({status_text}) {performance_icon}")
+    else:
+        print("⚠️  ACHIEVED DATA NOT AVAILABLE - Only target trajectory shown")
+        print(f"2021 (Baseline): Target={baseline_target} {unit_description}, Achieved=N/A")
+        for i, year in enumerate(years):
+            print(f"{year}: Target={targets[i]} {unit_description}, Achieved=N/A")
 
-            .nav-content {{
-                max-height: 0;
-                overflow: hidden;
-                transition: max-height 0.3s ease;
-                background: white;
-            }}
+    return filepath
 
-            .nav-content.expanded {{
-                max-height: 500px;
-                padding: 10px 0;
-            }}
+# Process all 8 Impact Indicators with enhanced reporting
+print("🎯 ENHANCED IMPACT INDICATORS TREND ANALYSIS")
+print("="*100)
+print(f"📋 Data Source: Excel file - Complete Impact Indicators Section")
+print(f"📅 Baseline Year: 2021")
+print(f"📈 Analysis Period: 2021-2024")
+print(f"📊 Total Impact Indicators: {len(impact_indicators_data)}")
+print(f"🎨 Enhanced Visualization: Unique titles, labels, and performance coding")
+print("="*100)
 
-            .section-nav.collapsed {{
-                width: 50px;
-            }}
+saved_files = []
+complete_data_count = 0
+incomplete_data_count = 0
 
-            .section-nav.collapsed .nav-header {{
-                justify-content: center;
-            }}
+for i, indicator_data in enumerate(impact_indicators_data):
+    print(f"\n🔄 Processing Impact Indicator {i+1}/{len(impact_indicators_data)}:")
+    print(f"📌 '{indicator_data['plot_title']}'")
+    print(f"📝 {indicator_data['subtitle']}")
 
-            .section-nav.collapsed .nav-title {{
-                display: none;
-            }}
+    if indicator_data['has_complete_data']:
+        print("✅ Complete data available")
+        complete_data_count += 1
+    else:
+        print("⚠️  Incomplete data - targets only")
+        incomplete_data_count += 1
 
-            .nav-main-item {{
-                display: block;
-                color: #2563eb;
-                text-decoration: none;
-                padding: 8px 15px;
-                font-size: 13px;
-                font-weight: 600;
-                border-bottom: 1px solid #f1f5f9;
-                transition: all 0.2s ease;
-                cursor: pointer;
-                user-select: none;
-            }}
+    filepath = create_individual_trend_plot(indicator_data, i)
+    saved_files.append(filepath)
+    print(f"💾 Saved: {os.path.basename(filepath)}")
 
-            .nav-main-item:hover {{
-                background-color: #eff6ff;
-                color: #1d4ed8;
-            }}
+print(f"\n" + "="*100)
+print("🎉 ALL 8 ENHANCED IMPACT INDICATORS ANALYSIS COMPLETE")
+print("="*100)
+print(f"📊 Total plots created: {len(saved_files)}")
+print(f"✅ Indicators with complete data: {complete_data_count}")
+print(f"⚠️  Indicators with targets only: {incomplete_data_count}")
+print(f"📁 Output directory: {output_dir}")
 
-            .nav-main-item.active {{
-                background-color: #dbeafe;
-                color: #1d4ed8;
-                border-left: 4px solid #2563eb;
-            }}
+print(f"\n🎯 SUMMARY OF ALL 8 IMPACT INDICATORS:")
+for i, indicator_data in enumerate(impact_indicators_data, 1):
+    status = "✅ Complete Analysis" if indicator_data['has_complete_data'] else "⚠️  Target Trajectory Only"
+    trend = "📉 Lower is Better" if indicator_data['trend_goal'] == 'decrease' else "📈 Higher is Better"
+    print(f"{i}. {status} {trend}")
+    print(f"   📊 {indicator_data['plot_title']}")
+    print(f"   📝 {indicator_data['subtitle']}")
 
-            /* Mobile responsiveness */
-            @media (max-width: 768px) {{
-                .section-nav {{
-                    top: 10px;
-                    right: 10px;
-                    max-width: 250px;
-                }}
+print(f"\n✨ ENHANCED FEATURES:")
+print(f"🎨 Unique titles and subtitles for each indicator")
+print(f"🏷️  Custom Y-axis labels specific to each metric")
+print(f"🎯 Performance color coding (Green=Good, Red=Poor)")
+print(f"📊 Trend goal indicators (↑↓)")
+print(f"💯 Professional formatting with enhanced styling")
+print(f"🔍 Detailed variance analysis with performance assessment")
 
-                .container {{
-                    padding: 15px;
-                    margin: 0 10px;
-                }}
-            }}
-
-            /* Scroll progress bar */
-            .scroll-progress {{
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 0%;
-                height: 3px;
-                background: linear-gradient(90deg, #2563eb, #60a5fa);
-                z-index: 1001;
-                transition: width 0.3s ease;
-            }}
-        </style>
-    </head>
-    <body>
-        <div class="scroll-progress" id="scrollProgress"></div>
-
-        <div class="section-nav" id="sectionNav">
-            <div class="nav-header" onclick="toggleNav()">
-                <span class="nav-title">Navigation</span>
-                <span class="nav-toggle" id="navToggle">▼</span>
-            </div>
-            <div class="nav-content" id="navContent">
-                <a href="#national" class="nav-main-item" onclick="scrollToSection('national')">🌍 National Analysis</a>
-                <a href="#districts_overview" class="nav-main-item" onclick="scrollToSection('districts_overview')">🏘️ Districts Overview</a>
-                <a href="#individual_districts" class="nav-main-item" onclick="scrollToSection('individual_districts')">📊 Individual Districts</a>
-                <a href="#chiefdoms" class="nav-main-item" onclick="scrollToSection('chiefdoms')">🏡 Chiefdoms Analysis</a>
-            </div>
-        </div>
-
-        <div class="container">
-            <h1>All Variables Malaria Trend Analysis<br><small>Comprehensive Comparative Report (2021-2024)</small></h1>
-
-            <div class="scaling-notice">
-                <strong>📊 All Variables Comparison:</strong> Every plot shows all variables (Crude Incidence, Adjusted 1, Adjusted 2, Adjusted 3) 
-                with 4-column horizontal legends positioned immediately after each title. Consistent Y-axis scaling enables accurate visual comparison across all geographic areas.
-            </div>
-
-            <div class="toc">
-                <h3>Table of Contents</h3>
-                <ul>
-                    <li><a href="#national">🌍 National Trends</a></li>
-                    <li><a href="#districts_overview">🏘️ Districts Overview</a></li>
-                    <li><a href="#individual_districts">📊 Individual Districts</a></li>
-                    <li><a href="#chiefdoms">🏡 Chiefdoms Analysis</a></li>
-                </ul>
-            </div>
-    """
-
-    # Add sections
-    section_titles = {
-        'national': '🌍 National Trends - All Variables',
-        'districts_overview': '🏘️ Districts Overview - All Variables', 
-        'individual_districts': '📊 Individual Districts - All Variables',
-        'chiefdoms': '🏡 Chiefdoms Analysis - All Variables'
-    }
-
-    for section_key, section_title in section_titles.items():
-        if section_key in sections and sections[section_key]:
-            html_content += f'''
-            <div id="{section_key}" class="variable-section">
-                <h2>{section_title}</h2>
-            '''
-            
-            for img in sections[section_key]:
-                html_content += f'''
-                <div class="image-container">
-                    <div class="image-title">{img['title']}</div>
-                    <img src="data:image/png;base64,{img['image']}" alt="{img['title']}">
-                </div>
-                '''
-            
-            html_content += '</div>\n'
-
-    html_content += '''
-            <div class="stats-box" style="margin-top: 50px;">
-                <h3>Analysis Features:</h3>
-                <p><strong>All Variables Comparison:</strong> Every plot shows all 4 variables with legends</p>
-                <p><strong>Legend Position:</strong> 4-column horizontal format immediately after titles</p>
-                <p><strong>Consistent Scaling:</strong> Same Y-axis range for accurate comparison</p>
-                <p><strong>Enhanced Navigation:</strong> Smooth scrolling and progress tracking</p>
-            </div>
-        </div>
-
-        <script>
-            let navExpanded = true;
-
-            function toggleNav() {
-                const nav = document.getElementById('sectionNav');
-                const content = document.getElementById('navContent');
-                const toggle = document.getElementById('navToggle');
-
-                navExpanded = !navExpanded;
-
-                if (navExpanded) {
-                    nav.classList.remove('collapsed');
-                    content.classList.add('expanded');
-                    toggle.classList.add('expanded');
-                } else {
-                    nav.classList.add('collapsed');
-                    content.classList.remove('expanded');
-                    toggle.classList.remove('expanded');
-                }
-            }
-
-            function scrollToSection(sectionId) {
-                const target = document.getElementById(sectionId);
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                    updateActiveNav(sectionId);
-                }
-            }
-
-            function updateActiveNav(sectionId) {
-                document.querySelectorAll('.nav-main-item').forEach(item => {
-                    item.classList.remove('active');
-                });
-                
-                const activeItem = document.querySelector(`a[href="#${sectionId}"]`);
-                if (activeItem) {
-                    activeItem.classList.add('active');
-                }
-            }
-
-            function updateScrollProgress() {
-                const scrollTop = window.pageYOffset;
-                const docHeight = document.body.scrollHeight - window.innerHeight;
-                const scrollPercent = (scrollTop / docHeight) * 100;
-                document.getElementById('scrollProgress').style.width = scrollPercent + '%';
-            }
-
-            function setupIntersectionObserver() {
-                const sections = document.querySelectorAll('.variable-section');
-                
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            updateActiveNav(entry.target.id);
-                        }
-                    });
-                }, {
-                    threshold: 0.1,
-                    rootMargin: '-20% 0px -70% 0px'
-                });
-
-                sections.forEach(section => observer.observe(section));
-            }
-
-            window.addEventListener('scroll', updateScrollProgress);
-            document.addEventListener('DOMContentLoaded', () => {
-                setupIntersectionObserver();
-                updateScrollProgress();
-            });
-
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href').substring(1);
-                    scrollToSection(targetId);
-                });
-            });
-        </script>
-    </body>
-    </html>
-    '''
-
-    # Save HTML file
-    with open(html_filename, 'w', encoding='utf-8') as f:
-        f.write(html_content)
-
-    print(f"✅ Enhanced HTML report created: {html_filename}")
-
-    # ==========================================
-    # CREATE FILE INDEX
-    # ==========================================
-    print(f"\n📋 Creating comprehensive file index...")
-
-    index_content = f"""# All Variables Comparative Trend Analysis Report
-
-Generated on: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}
+print(f"\n🎉 All 8 Enhanced Impact Indicator plots ready!")
+print(f"📊 High-resolution (300 DPI) for presentations")
+print(f"🎨 Professional styling with unique customization")
+print(f"📁 Individual PNG files in ./{output_dir}/ directory")
 ```
