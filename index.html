@@ -814,7 +814,7 @@ print(f"• Peak incidence rate: {df['Incidence_Rate'].max():.2f} per 1000")
                 
                 statusText.textContent = 'Installing Python Packages...';
                 // Install required packages
-                await pyodide.loadPackage(['pandas', 'numpy', 'matplotlib', 'micropip', 'geopandas]);
+                await pyodide.loadPackage(['pandas', 'numpy', 'matplotlib', 'micropip', 'geopandas']);
                 
                 // Setup matplotlib for web
                 await pyodide.runPythonAsync(`
@@ -825,6 +825,7 @@ print(f"• Peak incidence rate: {df['Incidence_Rate'].max():.2f} per 1000")
                     from io import BytesIO
                     import pandas as pd
                     import numpy as np
+                    import geopandas as gpd
                     
                     # Function to save plot as base64 image
                     def save_plot_as_base64():
