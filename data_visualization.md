@@ -1,5 +1,4 @@
-## Full code
-
+## Full Code
 ```python
 import matplotlib.pyplot as plt
 import numpy as np
@@ -7,9 +6,7 @@ import pandas as pd
 import os
 from matplotlib.ticker import MultipleLocator, FuncFormatter
 
-# Create output directory for individual plots
-output_dir = "impact_indicators_complete"
-os.makedirs(output_dir, exist_ok=True)
+# No output directory needed - displaying plots in console only
 
 # Enhanced Impact Indicators data with unique titles and labels for each
 impact_indicators_data = [
@@ -369,107 +366,101 @@ def create_individual_trend_plot(indicator_data, indicator_index):
         ax.yaxis.set_major_formatter(FuncFormatter(format_millions))
 
     # Add trend goal indicator
-    trend_text = "↓ Lower is Better" if trend_goal == 'decrease' else "↑ Higher is Better"
+    trend_text = "Lower is Better" if trend_goal == 'decrease' else "Higher is Better"
     ax.text(0.02, 0.98, trend_text, transform=ax.transAxes, fontsize=11, 
             weight='bold', va='top', ha='left',
             bbox=dict(boxstyle="round,pad=0.3", facecolor="lightyellow", 
                     alpha=0.8, edgecolor='orange'))
 
-    # Save individual plot with descriptive filename
-    safe_title = plot_title.replace(':', '').replace('/', '_').replace('(', '').replace(')', '').replace(' ', '_')[:40]
-    filename = f"impact_{indicator_index+1:02d}_{safe_title}.png"
-    filepath = os.path.join(output_dir, filename)
-
+    # Display plot in console only - no saving
     plt.tight_layout(pad=3.0)
-    fig.savefig(filepath, dpi=300, bbox_inches='tight', pad_inches=0.4,
-                facecolor='white', edgecolor='none')
-
     plt.show()
     plt.close(fig)
 
     # Enhanced variance summary
     print(f"\n{plot_title}")
-    print(f"📊 {subtitle}")
+    print(f"Description: {subtitle}")
     print("=" * 100)
 
     if has_complete_data:
         baseline_variance_text = f"+{baseline_variance:.1f}%" if baseline_variance >= 0 else f"{baseline_variance:.1f}%"
         baseline_status, _ = get_performance_status(baseline_achieved, baseline_target, trend_goal)
-        performance_icon = "✅" if baseline_status == 'good' else "❌" if baseline_status == 'poor' else "⚠️"
+        performance_indicator = "[GOOD]" if baseline_status == 'good' else "[POOR]" if baseline_status == 'poor' else "[UNKNOWN]"
         
-        print(f"2021 (Baseline): Target={baseline_target} {unit_description}, Achieved={baseline_achieved}, Variance={baseline_variance_text} {performance_icon}")
+        print(f"2021 (Baseline): Target={baseline_target} {unit_description}, Achieved={baseline_achieved}, Variance={baseline_variance_text} {performance_indicator}")
 
         for i, year in enumerate(years):
             if variances[i] is not None:
                 variance_text = f"+{variances[i]:.1f}%" if variances[i] >= 0 else f"{variances[i]:.1f}%"
                 year_status, _ = get_performance_status(achieved[i], targets[i], trend_goal)
-                performance_icon = "✅" if year_status == 'good' else "❌" if year_status == 'poor' else "⚠️"
+                performance_indicator = "[GOOD]" if year_status == 'good' else "[POOR]" if year_status == 'poor' else "[UNKNOWN]"
                 status_text = "Meeting Goal" if year_status == 'good' else "Missing Target" if year_status == 'poor' else "Unknown"
-                print(f"{year}: Target={targets[i]} {unit_description}, Achieved={achieved[i]}, Variance={variance_text} ({status_text}) {performance_icon}")
+                print(f"{year}: Target={targets[i]} {unit_description}, Achieved={achieved[i]}, Variance={variance_text} ({status_text}) {performance_indicator}")
     else:
-        print("⚠️  ACHIEVED DATA NOT AVAILABLE - Only target trajectory shown")
+        print("WARNING: ACHIEVED DATA NOT AVAILABLE - Only target trajectory shown")
         print(f"2021 (Baseline): Target={baseline_target} {unit_description}, Achieved=N/A")
         for i, year in enumerate(years):
             print(f"{year}: Target={targets[i]} {unit_description}, Achieved=N/A")
 
-    return filepath
+    return None  # No file saved, just displayed
 
 # Process all 8 Impact Indicators with enhanced reporting
-print("🎯 ENHANCED IMPACT INDICATORS TREND ANALYSIS")
+print("ENHANCED IMPACT INDICATORS TREND ANALYSIS")
 print("="*100)
-print(f"📋 Data Source: Excel file - Complete Impact Indicators Section")
-print(f"📅 Baseline Year: 2021")
-print(f"📈 Analysis Period: 2021-2024")
-print(f"📊 Total Impact Indicators: {len(impact_indicators_data)}")
-print(f"🎨 Enhanced Visualization: Unique titles, labels, and performance coding")
+print(f"Data Source: Excel file - Complete Impact Indicators Section")
+print(f"Baseline Year: 2021")
+print(f"Analysis Period: 2021-2024")
+print(f"Total Impact Indicators: {len(impact_indicators_data)}")
+print(f"Enhanced Visualization: Unique titles, labels, and performance coding")
+print(f"Displaying all plots in console - No files saved")
 print("="*100)
 
-saved_files = []
+plots_displayed = []
 complete_data_count = 0
 incomplete_data_count = 0
 
 for i, indicator_data in enumerate(impact_indicators_data):
-    print(f"\n🔄 Processing Impact Indicator {i+1}/{len(impact_indicators_data)}:")
-    print(f"📌 '{indicator_data['plot_title']}'")
-    print(f"📝 {indicator_data['subtitle']}")
+    print(f"\nProcessing Impact Indicator {i+1}/{len(impact_indicators_data)}:")
+    print(f"Title: '{indicator_data['plot_title']}'")
+    print(f"Description: {indicator_data['subtitle']}")
 
     if indicator_data['has_complete_data']:
-        print("✅ Complete data available")
+        print("Status: Complete data available")
         complete_data_count += 1
     else:
-        print("⚠️  Incomplete data - targets only")
+        print("Status: Incomplete data - targets only")
         incomplete_data_count += 1
 
-    filepath = create_individual_trend_plot(indicator_data, i)
-    saved_files.append(filepath)
-    print(f"💾 Saved: {os.path.basename(filepath)}")
+    create_individual_trend_plot(indicator_data, i)
+    plots_displayed.append(indicator_data['plot_title'])
+    print(f"Displayed: {indicator_data['plot_title']}")
 
 print(f"\n" + "="*100)
-print("🎉 ALL 8 ENHANCED IMPACT INDICATORS ANALYSIS COMPLETE")
+print("ALL 8 ENHANCED IMPACT INDICATORS ANALYSIS COMPLETE")
 print("="*100)
-print(f"📊 Total plots created: {len(saved_files)}")
-print(f"✅ Indicators with complete data: {complete_data_count}")
-print(f"⚠️  Indicators with targets only: {incomplete_data_count}")
-print(f"📁 Output directory: {output_dir}")
+print(f"Total plots displayed: {len(plots_displayed)}")
+print(f"Indicators with complete data: {complete_data_count}")
+print(f"Indicators with targets only: {incomplete_data_count}")
+print(f"All plots displayed in console - No files created")
 
-print(f"\n🎯 SUMMARY OF ALL 8 IMPACT INDICATORS:")
+print(f"\nSUMMARY OF ALL 8 IMPACT INDICATORS:")
 for i, indicator_data in enumerate(impact_indicators_data, 1):
-    status = "✅ Complete Analysis" if indicator_data['has_complete_data'] else "⚠️  Target Trajectory Only"
-    trend = "📉 Lower is Better" if indicator_data['trend_goal'] == 'decrease' else "📈 Higher is Better"
-    print(f"{i}. {status} {trend}")
-    print(f"   📊 {indicator_data['plot_title']}")
-    print(f"   📝 {indicator_data['subtitle']}")
+    status = "Complete Analysis" if indicator_data['has_complete_data'] else "Target Trajectory Only"
+    trend = "Lower is Better" if indicator_data['trend_goal'] == 'decrease' else "Higher is Better"
+    print(f"{i}. {status} - {trend}")
+    print(f"   Title: {indicator_data['plot_title']}")
+    print(f"   Description: {indicator_data['subtitle']}")
 
-print(f"\n✨ ENHANCED FEATURES:")
-print(f"🎨 Unique titles and subtitles for each indicator")
-print(f"🏷️  Custom Y-axis labels specific to each metric")
-print(f"🎯 Performance color coding (Green=Good, Red=Poor)")
-print(f"📊 Trend goal indicators (↑↓)")
-print(f"💯 Professional formatting with enhanced styling")
-print(f"🔍 Detailed variance analysis with performance assessment")
+print(f"\nENHANCED FEATURES:")
+print(f"- Unique titles and subtitles for each indicator")
+print(f"- Custom Y-axis labels specific to each metric")
+print(f"- Performance color coding (Green=Good, Red=Poor)")
+print(f"- Trend goal indicators")
+print(f"- Professional formatting with enhanced styling")
+print(f"- Detailed variance analysis with performance assessment")
 
-print(f"\n🎉 All 8 Enhanced Impact Indicator plots ready!")
-print(f"📊 High-resolution (300 DPI) for presentations")
-print(f"🎨 Professional styling with unique customization")
-print(f"📁 Individual PNG files in ./{output_dir}/ directory")
+print(f"\nAll 8 Enhanced Impact Indicator plots displayed!")
+print(f"Professional styling with unique customization")
+print(f"Plots shown directly in console output")
+
 ```
