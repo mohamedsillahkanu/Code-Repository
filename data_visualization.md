@@ -375,8 +375,7 @@ def create_individual_trend_plot(indicator_data, indicator_index):
     # Display plot in console only - no saving
     plt.tight_layout(pad=3.0)
     plt.show()
-    plt.close(fig)
-
+    
     # Enhanced variance summary
     print(f"\n{plot_title}")
     print(f"Description: {subtitle}")
