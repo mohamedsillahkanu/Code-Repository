@@ -9,7 +9,7 @@ shapefile_path = "https://github.com/mohamedsillahkanu/Code-Repository/raw/d04b1
 gdf = gpd.read_file(shapefile_path)
 
 # ===== 2. Load Excel data =====
-excel_path = "rainfall_max_percentages_by_location.xlsx"
+excel_path = "https://github.com/mohamedsillahkanu/Code-Repository/raw/cc8ca054a0ad965678e90f2214d9d99b4f4f7cba/rainfall_max_percentages_by_location.xlsx"
 df = pd.read_excel(excel_path)
 
 df2 = pd.read_excel("scenario_with_irs_smc_06_20_2025.xlsx")
