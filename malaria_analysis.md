@@ -12,8 +12,8 @@ gdf = gpd.read_file(shapefile_path)
 excel_path = "https://github.com/mohamedsillahkanu/Code-Repository/raw/cc8ca054a0ad965678e90f2214d9d99b4f4f7cba/rainfall_max_percentages_by_location.xlsx"
 df = pd.read_excel(excel_path)
 
-df2 = pd.read_excel("scenario_with_irs_smc_06_20_2025.xlsx")
-df2.to_excel("maximum window percent plotting data_08_13_2025.xlsx")
+df2 = pd.read_excel("https://github.com/mohamedsillahkanu/Code-Repository/raw/2aa33791c3b0ede446e73a0c49669282aaf8da53/scenario_with_irs_smc_06_20_2025.xlsx")
+df2.to_excel("maximum window percent plotting data_08_13_2025.xls")
 
 # ===== 3. Merge with shapefile =====
 merged = gdf.merge(df, on=['FIRST_DNAM', 'FIRST_CHIE'], how='left', validate='1:1')
