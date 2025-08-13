@@ -1,7 +1,7 @@
 ## SMC map code
 ```python
 import geopandas as gpd
-import pandas as pd
+import pandas as pd  
 import matplotlib.pyplot as plt
 import requests
 
