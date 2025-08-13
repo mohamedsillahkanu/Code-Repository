@@ -818,6 +818,9 @@ print(f"• Peak incidence rate: {df['Incidence_Rate'].max():.2f} per 1000")
                 
                 // Setup matplotlib for web
                 await pyodide.runPythonAsync(`
+                    import micropip
+                    await micropip.install('geopandas')
+                    
                     import matplotlib
                     matplotlib.use('Agg')  # Use non-interactive backend
                     import matplotlib.pyplot as plt
