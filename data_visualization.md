@@ -1,4 +1,5 @@
-## Full Code
+## Full code
+
 ```python
 import matplotlib.pyplot as plt
 import numpy as np
@@ -6,16 +7,14 @@ import pandas as pd
 import os
 from matplotlib.ticker import MultipleLocator, FuncFormatter
 
-# No output directory needed - displaying plots in console only
+# Create output directory for individual plots
+output_dir = "impact_indicators_complete"
+os.makedirs(output_dir, exist_ok=True)
 
-# Enhanced Impact Indicators data with unique titles and labels for each
+# All 8 specific Impact Indicators data extracted from Excel file with exact names
 impact_indicators_data = [
     {
         'name': 'Malaria case incidence: number and rate per 1000 people per year',
-        'plot_title': 'Malaria Case Incidence Rate',
-        'subtitle': 'Cases per 1,000 Population per Year',
-        'y_label': 'Cases per 1,000 Population',
-        'unit_description': 'case incidence rate',
         'baseline_2021_target': 298,
         'baseline_2021_achieved': 267,
         'years': [2022, 2023, 2024],
@@ -23,15 +22,10 @@ impact_indicators_data = [
         'achieved': [239, 309, 239],
         'step': 50,
         'format_type': 'number',
-        'has_complete_data': True,
-        'trend_goal': 'decrease'  # Lower is better
+        'has_complete_data': True
     },
     {
         'name': 'Malaria admissions: number and rate per 10,000 persons per year',
-        'plot_title': 'Malaria Hospital Admissions',
-        'subtitle': 'Admission Rate per 10,000 Persons per Year',
-        'y_label': 'Admissions per 10,000 Persons',
-        'unit_description': 'admission rate',
         'baseline_2021_target': 50,
         'baseline_2021_achieved': 42,
         'years': [2022, 2023, 2024],
@@ -39,63 +33,43 @@ impact_indicators_data = [
         'achieved': [47, 51, 36],
         'step': 10,
         'format_type': 'number',
-        'has_complete_data': True,
-        'trend_goal': 'decrease'  # Lower is better
+        'has_complete_data': True
     },
     {
         'name': 'Malaria test positivity rate',
-        'plot_title': 'Malaria Test Positivity Rate',
-        'subtitle': 'Percentage of Positive Test Results',
-        'y_label': 'Positivity Rate (%)',
-        'unit_description': 'positivity percentage',
-        'baseline_2021_target': 59.3,
+        'baseline_2021_target': 59.3,  # Convert from decimal to percentage
         'baseline_2021_achieved': 63.7,
         'years': [2022, 2023, 2024],
         'targets': [58.2, 56.7, 55.0],
         'achieved': [63.2, 66.0, 64.3],
         'step': 10,
         'format_type': 'percentage',
-        'has_complete_data': True,
-        'trend_goal': 'decrease'  # Lower positivity is better
+        'has_complete_data': True
     },
     {
         'name': 'Proportion of admissions for malaria',
-        'plot_title': 'Proportion of Hospital Admissions Due to Malaria',
-        'subtitle': 'Percentage of Total Admissions',
-        'y_label': 'Proportion of Admissions (%)',
-        'unit_description': 'admission proportion',
-        'baseline_2021_target': 37.7,
-        'baseline_2021_achieved': None,
+        'baseline_2021_target': 37.7,  # Convert from decimal to percentage
+        'baseline_2021_achieved': None,  # No achieved data
         'years': [2022, 2023, 2024],
         'targets': [37.0, 36.0, 35.0],
-        'achieved': [None, None, None],
+        'achieved': [None, None, None],  # No achieved data for any year
         'step': 10,
         'format_type': 'percentage',
-        'has_complete_data': False,
-        'trend_goal': 'decrease'  # Lower proportion is better
+        'has_complete_data': False
     },
     {
         'name': 'Reported malaria cases (presumed and confirmed)',
-        'plot_title': 'Total Reported Malaria Cases',
-        'subtitle': 'Presumed and Confirmed Cases Combined',
-        'y_label': 'Total Cases (Millions)',
-        'unit_description': 'total cases',
-        'baseline_2021_target': 2.396,
+        'baseline_2021_target': 2.396,  # Convert to millions - FOCUS ON MILLIONS
         'baseline_2021_achieved': 1.961,
         'years': [2022, 2023, 2024],
         'targets': [2.384, 2.372, 2.360],
         'achieved': [1.814, 2.448, 1.954],
         'step': 0.5,
-        'format_type': 'millions',
-        'has_complete_data': True,
-        'trend_goal': 'decrease'  # Lower total cases is better
+        'format_type': 'millions',  # MILLIONS FORMAT
+        'has_complete_data': True
     },
     {
         'name': 'Inpatient malaria deaths: rate per 100,000 population',
-        'plot_title': 'Inpatient Malaria Death Rate',
-        'subtitle': 'Deaths per 100,000 Population',
-        'y_label': 'Deaths per 100,000 Population',
-        'unit_description': 'death rate',
         'baseline_2021_target': 17.6,
         'baseline_2021_achieved': 17.0,
         'years': [2022, 2023, 2024],
@@ -103,15 +77,10 @@ impact_indicators_data = [
         'achieved': [18.0, 18.0, 19.0],
         'step': 5,
         'format_type': 'number',
-        'has_complete_data': True,
-        'trend_goal': 'decrease'  # Lower death rate is better
+        'has_complete_data': True
     },
     {
         'name': 'Malaria mortality',
-        'plot_title': 'Malaria Mortality Count',
-        'subtitle': 'Total Number of Deaths',
-        'y_label': 'Number of Deaths',
-        'unit_description': 'mortality count',
         'baseline_2021_target': 35,
         'baseline_2021_achieved': 28,
         'years': [2022, 2023, 2024],
@@ -119,24 +88,18 @@ impact_indicators_data = [
         'achieved': [33, 30, 27],
         'step': 10,
         'format_type': 'number',
-        'has_complete_data': True,
-        'trend_goal': 'decrease'  # Lower mortality is better
+        'has_complete_data': True
     },
     {
         'name': 'Proportion of inpatient deaths due to malaria',
-        'plot_title': 'Proportion of Inpatient Deaths Due to Malaria',
-        'subtitle': 'Percentage of Total Inpatient Deaths',
-        'y_label': 'Proportion of Deaths (%)',
-        'unit_description': 'death proportion',
-        'baseline_2021_target': 37.7,
-        'baseline_2021_achieved': None,
+        'baseline_2021_target': 37.7,  # Convert from decimal to percentage
+        'baseline_2021_achieved': None,  # No achieved data
         'years': [2022, 2023, 2024],
         'targets': [37.0, 36.0, 35.0],
-        'achieved': [None, None, None],
+        'achieved': [None, None, None],  # No achieved data for any year
         'step': 10,
         'format_type': 'percentage',
-        'has_complete_data': False,
-        'trend_goal': 'decrease'  # Lower proportion is better
+        'has_complete_data': False
     }
 ]
 
@@ -148,41 +111,17 @@ def calculate_variance(target, achieved):
 
 def format_millions(x, pos):
     """Format numbers in millions"""
-    return f'{x:.1f}M'
+    return f'{x:.0f}M'
 
 def format_percentage(x, pos):
     """Format as percentage"""
     return f'{x:.0f}%'
 
-def get_performance_status(achieved, target, trend_goal):
-    """Determine if performance is good or bad based on trend goal"""
-    if achieved is None or target is None:
-        return 'unknown', 'gray'
-    
-    if trend_goal == 'decrease':
-        # For indicators where lower is better
-        if achieved < target:
-            return 'good', 'green'  # Below target is good
-        else:
-            return 'poor', 'red'    # Above target is poor
-    else:  # trend_goal == 'increase'
-        # For indicators where higher is better
-        if achieved > target:
-            return 'good', 'green'  # Above target is good
-        else:
-            return 'poor', 'red'    # Below target is poor
-
 def create_individual_trend_plot(indicator_data, indicator_index):
-    """Create individual trend analysis plot for one indicator with unique styling"""
+    """Create individual trend analysis plot for one indicator and save as PNG"""
 
     # Extract data
     name = indicator_data['name']
-    plot_title = indicator_data['plot_title']
-    subtitle = indicator_data['subtitle']
-    y_label = indicator_data['y_label']
-    unit_description = indicator_data['unit_description']
-    trend_goal = indicator_data['trend_goal']
-    
     baseline_target = indicator_data['baseline_2021_target']
     baseline_achieved = indicator_data['baseline_2021_achieved']
     years = indicator_data['years']
@@ -211,149 +150,101 @@ def create_individual_trend_plot(indicator_data, indicator_index):
         all_achieved = [None] * len(all_years)
         all_variances = [None] * len(all_years)
 
-    # Plot target line (always available) with enhanced styling
-    ax.plot(all_years, all_targets, 'go-', label='Target', linewidth=4, markersize=12, 
-            markerfacecolor='lightgreen', markeredgecolor='darkgreen', markeredgewidth=2)
+    # Plot target line (always available)
+    ax.plot(all_years, all_targets, 'go-', label='Target', linewidth=3, markersize=10)
 
     # Plot achieved line only if data is available
     if has_complete_data:
-        ax.plot(all_years, all_achieved, 'bo-', label='Achieved', linewidth=4, markersize=12,
-                markerfacecolor='lightblue', markeredgecolor='darkblue', markeredgewidth=2)
+        ax.plot(all_years, all_achieved, 'bo-', label='Achieved', linewidth=3, markersize=10)
 
-        # Add performance analysis arrows and variance calculations
+        # Add arrows and variance calculations
         for i, year in enumerate(all_years):
             target_val = all_targets[i]
             achieved_val = all_achieved[i]
 
-            # Determine arrow color based on performance vs trend goal
-            status, arrow_color = get_performance_status(achieved_val, target_val, trend_goal)
-            
-            # Use different arrow colors for performance
-            if status == 'good':
-                arrow_color = 'forestgreen'
-                arrow_alpha = 0.8
-            elif status == 'poor':
-                arrow_color = 'crimson'
-                arrow_alpha = 0.8
+            # Determine arrow color based on direction
+            if achieved_val < target_val:
+                arrow_color = 'gold'  # Yellow for reduction
             else:
-                arrow_color = 'orange'
-                arrow_alpha = 0.6
+                arrow_color = 'red'   # Red for increase
 
             # Draw arrow from target to achieved
             ax.annotate('', xy=(year, achieved_val), xytext=(year, target_val),
-                        arrowprops=dict(arrowstyle='<->', color=arrow_color, lw=5,
-                                      alpha=arrow_alpha, mutation_scale=25))
+                        arrowprops=dict(arrowstyle='<->', color=arrow_color, lw=4,
+                                      alpha=1.0, mutation_scale=20))
 
-            # Add variance text with performance indicator
+            # Add variance text
             variance_val = all_variances[i]
             if variance_val is not None:
                 variance_text = f'+{variance_val:.1f}%' if variance_val >= 0 else f'{variance_val:.1f}%'
                 mid_point = (target_val + achieved_val) / 2
 
-                # Color code variance text based on performance
-                if status == 'good':
-                    variance_color = 'darkgreen'
-                    variance_bg = 'lightgreen'
-                elif status == 'poor':
-                    variance_color = 'darkred'
-                    variance_bg = 'lightcoral'
-                else:
-                    variance_color = 'darkorange'
-                    variance_bg = 'moccasin'
-
                 text_x_offset = 0.08
                 ax.text(year + text_x_offset, mid_point, variance_text,
-                        fontsize=12, color=variance_color, weight='bold',
-                        bbox=dict(boxstyle="round,pad=0.4", facecolor=variance_bg, 
-                                alpha=0.9, edgecolor=variance_color, linewidth=1))
+                        fontsize=11, color='black', weight='bold',
+                        bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.9, edgecolor='black'))
 
-            # Add achieved value with performance-based coloring
-            if status == 'good':
-                text_color = 'darkgreen'
-                box_color = 'lightgreen'
-            elif status == 'poor':
-                text_color = 'darkred'
-                box_color = 'lightcoral'
-            else:
-                text_color = 'darkorange'
-                box_color = 'moccasin'
+            # Add achieved value - RED TEXT if above target, BLUE if below
+            text_color = 'red' if achieved_val > target_val else 'darkblue'
+            box_color = 'lightcoral' if achieved_val > target_val else 'lightblue'
 
             if format_type == 'millions':
-                achieved_label = f'{achieved_val:.1f}M'
+                achieved_label = f'{achieved_val:.0f}M'
             elif format_type == 'percentage':
-                achieved_label = f'{achieved_val:.1f}%'
+                achieved_label = f'{achieved_val:.1f}%'  # Keep 1 decimal for percentages
             else:
-                achieved_label = f'{achieved_val:.1f}' if achieved_val != int(achieved_val) else f'{achieved_val:.0f}'
+                achieved_label = f'{achieved_val:.0f}'
 
-            y_range = max(all_targets + all_achieved) - min(all_targets + all_achieved)
-            y_range = max(y_range, step_size)  # Ensure minimum range
+            y_range = max(all_targets) - min(all_targets)
             offset_direction = 1 if achieved_val > target_val else -1
-            ax.text(year, achieved_val + offset_direction * y_range * 0.06,
+            ax.text(year, achieved_val + offset_direction * y_range * 0.04,
                     achieved_label, ha='center', va='bottom' if offset_direction > 0 else 'top',
-                    fontsize=12, color=text_color, weight='bold',
-                    bbox=dict(boxstyle="round,pad=0.3", facecolor=box_color, alpha=0.8,
-                            edgecolor=text_color, linewidth=1))
+                    fontsize=11, color=text_color, weight='bold',
+                    bbox=dict(boxstyle="round,pad=0.2", facecolor=box_color, alpha=0.7))
     else:
-        # Enhanced "No Data Available" annotation for incomplete indicators
-        ax.text(0.5, 0.5, f'ACHIEVED DATA NOT AVAILABLE\nfor {plot_title}\n\nOnly Target Trajectory Shown',
+        # Add "No Data Available" annotation for incomplete indicators
+        ax.text(0.5, 0.5, 'ACHIEVED DATA NOT AVAILABLE\nOnly Target Values Shown',
                 transform=ax.transAxes, ha='center', va='center',
-                fontsize=16, color='darkred', weight='bold',
-                bbox=dict(boxstyle="round,pad=0.8", facecolor="mistyrose", 
-                        alpha=0.9, edgecolor='darkred', linewidth=2))
+                fontsize=14, color='red', weight='bold',
+                bbox=dict(boxstyle="round,pad=0.5", facecolor="lightyellow", alpha=0.8, edgecolor='red'))
 
-    # Add target values above green points with enhanced styling
+    # Add target values above green points
     for i, year in enumerate(all_years):
         target_val = all_targets[i]
 
         if format_type == 'millions':
-            target_label = f'{target_val:.1f}M'
+            target_label = f'{target_val:.0f}M'
         elif format_type == 'percentage':
-            target_label = f'{target_val:.1f}%'
+            target_label = f'{target_val:.1f}%'  # Keep 1 decimal for percentages
         else:
-            target_label = f'{target_val:.1f}' if target_val != int(target_val) else f'{target_val:.0f}'
+            target_label = f'{target_val:.0f}'
 
-        y_range = max(all_targets) - min(all_targets) if max(all_targets) != min(all_targets) else step_size
-        ax.text(year, target_val + y_range * 0.06,
-                target_label, ha='center', va='bottom', fontsize=12, color='darkgreen', weight='bold',
-                bbox=dict(boxstyle="round,pad=0.3", facecolor="lightgreen", alpha=0.8,
-                        edgecolor='darkgreen', linewidth=1))
+        y_range = max(all_targets) - min(all_targets) if max(all_targets) != min(all_targets) else 10
+        ax.text(year, target_val + y_range * 0.04,
+                target_label, ha='center', va='bottom', fontsize=11, color='darkgreen', weight='bold',
+                bbox=dict(boxstyle="round,pad=0.2", facecolor="lightgreen", alpha=0.7))
 
-    # Enhanced title with subtitle
-    main_title = f'{plot_title}'
-    full_title = f'{main_title}\n{subtitle} | Trend Analysis (2021-2024)'
-    ax.set_title(full_title, fontsize=16, weight='bold', pad=25, linespacing=1.5)
-    
-    # Custom labels
-    ax.set_xlabel('Year', fontsize=14, weight='bold')
-    ax.set_ylabel(y_label, fontsize=14, weight='bold')
-    
-    # Enhanced legend
-    legend = ax.legend(fontsize=13, loc='best', frameon=True, fancybox=True, shadow=True)
-    legend.get_frame().set_facecolor('white')
-    legend.get_frame().set_alpha(0.9)
-    
-    # Enhanced grid
-    ax.grid(True, alpha=0.4, linestyle='--', linewidth=0.8)
-    ax.set_facecolor('white')
+    # Formatting and title
+    ax.set_title(f'{name}\nTrend Analysis (2021-2024)', fontsize=14, weight='bold', pad=20)
+    ax.set_xlabel('Year', fontsize=12, weight='bold')
+    ax.set_ylabel('Cases per 1000 population', fontsize=12, weight='bold')
+    ax.legend(fontsize=12)
+    ax.grid(True, alpha=0.3)
 
     # Set x-axis
     ax.set_xticks(all_years)
-    ax.tick_params(axis='both', which='major', labelsize=12)
-    x_margin = 0.4
+    ax.tick_params(axis='both', which='major', labelsize=11)
+    x_margin = 0.3
     ax.set_xlim(min(all_years) - x_margin, max(all_years) + x_margin)
 
-    # Enhanced y-axis formatting
+    # Set y-axis starting from 0 with specified step sizes
     if has_complete_data:
-        all_values = all_targets + [x for x in all_achieved if x is not None]
-        y_min = min(all_values)
-        y_max = max(all_values)
+        y_max = max(all_targets + [x for x in all_achieved if x is not None])
     else:
-        y_min = min(all_targets)
         y_max = max(all_targets)
 
-    # Start from 0 but allow some padding
     y_max_rounded = int(np.ceil(y_max / step_size) * step_size)
-    if y_max_rounded < y_max + step_size * 0.3:
+    if y_max_rounded < y_max + step_size * 0.2:
         y_max_rounded += step_size
 
     ax.set_ylim(0, y_max_rounded)
@@ -365,101 +256,99 @@ def create_individual_trend_plot(indicator_data, indicator_index):
     elif format_type == 'millions':
         ax.yaxis.set_major_formatter(FuncFormatter(format_millions))
 
-    # Add trend goal indicator
-    trend_text = "Lower is Better" if trend_goal == 'decrease' else "Higher is Better"
-    ax.text(0.02, 0.98, trend_text, transform=ax.transAxes, fontsize=11, 
-            weight='bold', va='top', ha='left',
-            bbox=dict(boxstyle="round,pad=0.3", facecolor="lightyellow", 
-                    alpha=0.8, edgecolor='orange'))
+    # Save individual plot
+    safe_name = name.replace(':', '').replace('/', '_').replace('(', '').replace(')', '').replace(' ', '_')[:60]
+    filename = f"impact_{indicator_index+1:02d}_{safe_name}.png"
+    filepath = os.path.join(output_dir, filename)
 
-    # Display plot in console only - no saving
-    plt.tight_layout(pad=3.0)
+    plt.tight_layout(pad=2.0)
+    fig.savefig(filepath, dpi=300, bbox_inches='tight', pad_inches=0.3,
+                facecolor='white', edgecolor='none')
+
     plt.show()
-    
-    # Enhanced variance summary
-    print(f"\n{plot_title}")
-    print(f"Description: {subtitle}")
-    print("=" * 100)
+    plt.close(fig)
+
+    # Print variance summary
+    print(f"\n{name}")
+    print("=" * 120)
 
     if has_complete_data:
         baseline_variance_text = f"+{baseline_variance:.1f}%" if baseline_variance >= 0 else f"{baseline_variance:.1f}%"
-        baseline_status, _ = get_performance_status(baseline_achieved, baseline_target, trend_goal)
-        performance_indicator = "[GOOD]" if baseline_status == 'good' else "[POOR]" if baseline_status == 'poor' else "[UNKNOWN]"
-        
-        print(f"2021 (Baseline): Target={baseline_target} {unit_description}, Achieved={baseline_achieved}, Variance={baseline_variance_text} {performance_indicator}")
+        print(f"2021 (Baseline): Target={baseline_target}, Achieved={baseline_achieved}, Variance={baseline_variance_text}")
 
         for i, year in enumerate(years):
             if variances[i] is not None:
                 variance_text = f"+{variances[i]:.1f}%" if variances[i] >= 0 else f"{variances[i]:.1f}%"
-                year_status, _ = get_performance_status(achieved[i], targets[i], trend_goal)
-                performance_indicator = "[GOOD]" if year_status == 'good' else "[POOR]" if year_status == 'poor' else "[UNKNOWN]"
-                status_text = "Meeting Goal" if year_status == 'good' else "Missing Target" if year_status == 'poor' else "Unknown"
-                print(f"{year}: Target={targets[i]} {unit_description}, Achieved={achieved[i]}, Variance={variance_text} ({status_text}) {performance_indicator}")
+                status = "Above target" if variances[i] > 0 else "Below target"
+                print(f"{year}: Target={targets[i]}, Achieved={achieved[i]}, Variance={variance_text} ({status})")
     else:
-        print("WARNING: ACHIEVED DATA NOT AVAILABLE - Only target trajectory shown")
-        print(f"2021 (Baseline): Target={baseline_target} {unit_description}, Achieved=N/A")
+        print("⚠️  ACHIEVED DATA NOT AVAILABLE - Only target values shown")
+        print(f"2021 (Baseline): Target={baseline_target}, Achieved=N/A")
         for i, year in enumerate(years):
-            print(f"{year}: Target={targets[i]} {unit_description}, Achieved=N/A")
+            print(f"{year}: Target={targets[i]}, Achieved=N/A")
 
-    return None  # No file saved, just displayed
+    return filepath
 
-# Process all 8 Impact Indicators with enhanced reporting
-print("ENHANCED IMPACT INDICATORS TREND ANALYSIS")
-print("="*100)
+# Process all 8 Impact Indicators
+print("ALL 8 IMPACT INDICATORS TREND ANALYSIS")
+print("="*120)
 print(f"Data Source: Excel file - Complete Impact Indicators Section")
 print(f"Baseline Year: 2021")
 print(f"Analysis Period: 2021-2024")
 print(f"Total Impact Indicators: {len(impact_indicators_data)}")
-print(f"Enhanced Visualization: Unique titles, labels, and performance coding")
-print(f"Displaying all plots in console - No files saved")
-print("="*100)
+print("="*120)
 
-plots_displayed = []
+saved_files = []
 complete_data_count = 0
 incomplete_data_count = 0
 
 for i, indicator_data in enumerate(impact_indicators_data):
     print(f"\nProcessing Impact Indicator {i+1}/{len(impact_indicators_data)}:")
-    print(f"Title: '{indicator_data['plot_title']}'")
-    print(f"Description: {indicator_data['subtitle']}")
+    print(f"'{indicator_data['name']}'")
 
     if indicator_data['has_complete_data']:
-        print("Status: Complete data available")
+        print("✓ Complete data available")
         complete_data_count += 1
     else:
-        print("Status: Incomplete data - targets only")
+        print("⚠️  Incomplete data - targets only")
         incomplete_data_count += 1
 
-    create_individual_trend_plot(indicator_data, i)
-    plots_displayed.append(indicator_data['plot_title'])
-    print(f"Displayed: {indicator_data['plot_title']}")
+    filepath = create_individual_trend_plot(indicator_data, i)
+    saved_files.append(filepath)
+    print(f"✓ Saved: {os.path.basename(filepath)}")
 
-print(f"\n" + "="*100)
-print("ALL 8 ENHANCED IMPACT INDICATORS ANALYSIS COMPLETE")
-print("="*100)
-print(f"Total plots displayed: {len(plots_displayed)}")
+print(f"\n" + "="*120)
+print("ALL 8 IMPACT INDICATORS ANALYSIS COMPLETE")
+print("="*120)
+print(f"Total plots created: {len(saved_files)}")
 print(f"Indicators with complete data: {complete_data_count}")
 print(f"Indicators with targets only: {incomplete_data_count}")
-print(f"All plots displayed in console - No files created")
+print(f"Output directory: {output_dir}")
 
-print(f"\nSUMMARY OF ALL 8 IMPACT INDICATORS:")
+print("\nAll 8 Impact Indicators processed:")
 for i, indicator_data in enumerate(impact_indicators_data, 1):
-    status = "Complete Analysis" if indicator_data['has_complete_data'] else "Target Trajectory Only"
-    trend = "Lower is Better" if indicator_data['trend_goal'] == 'decrease' else "Higher is Better"
-    print(f"{i}. {status} - {trend}")
-    print(f"   Title: {indicator_data['plot_title']}")
-    print(f"   Description: {indicator_data['subtitle']}")
+    status = "✓ Complete" if indicator_data['has_complete_data'] else "⚠️  Targets Only"
+    print(f"{i}. {status} - {indicator_data['name']}")
 
-print(f"\nENHANCED FEATURES:")
-print(f"- Unique titles and subtitles for each indicator")
-print(f"- Custom Y-axis labels specific to each metric")
-print(f"- Performance color coding (Green=Good, Red=Poor)")
-print(f"- Trend goal indicators")
-print(f"- Professional formatting with enhanced styling")
-print(f"- Detailed variance analysis with performance assessment")
+print("\nData Status by Indicator:")
+print("COMPLETE DATA (6 indicators):")
+complete_indicators = [ind for ind in impact_indicators_data if ind['has_complete_data']]
+for i, ind in enumerate(complete_indicators, 1):
+    print(f"  {i}. {ind['name']}")
 
-print(f"\nAll 8 Enhanced Impact Indicator plots displayed!")
-print(f"Professional styling with unique customization")
-print(f"Plots shown directly in console output")
+print("\nTARGETS ONLY (2 indicators):")
+incomplete_indicators = [ind for ind in impact_indicators_data if not ind['has_complete_data']]
+for i, ind in enumerate(incomplete_indicators, 1):
+    print(f"  {i}. {ind['name']}")
 
+print(f"\n✓ All 8 Impact Indicator trend analysis plots saved!")
+print(f"✓ Resolution: 300 DPI (presentation quality)")
+print(f"✓ Format: PNG with white background")
+print(f"✓ Location: ./{output_dir}/ directory")
+
+print(f"\n🎯 COMPLETE IMPACT INDICATORS SERIES!")
+print(f"📊 All 8 indicators from Excel Impact section")
+print(f"📈 6 with full trend analysis, 2 with target trajectories")
+print(f"🔢 Professional formatting with exact indicator names")
+print(f"💾 Individual high-quality PNG files ready for use")
 ```
