@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 import requests
 
 files = ["Chiefdom2021.shp", "Chiefdom2021.shx", "Chiefdom2021.dbf"]
-base_url = "https://github.com/mohamedsillahkanu/Code-Repository/raw/d04b11fdc34313c0040586a384c14605542ce903"
+base_url = "https://github.com/mohamedsillahkanu/Code-Repository/raw/9faef1963141e18344df17a4310a7a07100679c4/"
+
 
 for f in files:
     r = requests.get(base_url + f)
