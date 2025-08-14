@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-df = pd.read_csv("https://github.com/mohamedsillahkanu/Code-Repository/raw/3357aa2f0192822837bcfc5e7a33a68c6e542c50/rainfall_max_percentages_by_location.xlsx")
+df = pd.read_csv("https://github.com/mohamedsillahkanu/Code-Repository/raw/f47f1a31c1a8be52294b8e279ca0e8ea3e692108/CHIRPS_Mean_2015_11.csv")
 
 df.head(10)
 
