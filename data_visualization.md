@@ -1,15 +1,12 @@
-## Full code
+##
 
 ```python
+
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
-import os
 from matplotlib.ticker import MultipleLocator, FuncFormatter
 
-# Create output directory for individual plots
-output_dir = "impact_indicators_complete"
-os.makedirs(output_dir, exist_ok=True)
+# No file saving - display only
 
 # All 8 specific Impact Indicators data extracted from Excel file with exact names
 impact_indicators_data = [
@@ -256,99 +253,13 @@ def create_individual_trend_plot(indicator_data, indicator_index):
     elif format_type == 'millions':
         ax.yaxis.set_major_formatter(FuncFormatter(format_millions))
 
-    # Save individual plot
-    safe_name = name.replace(':', '').replace('/', '_').replace('(', '').replace(')', '').replace(' ', '_')[:60]
-    filename = f"impact_{indicator_index+1:02d}_{safe_name}.png"
-    filepath = os.path.join(output_dir, filename)
-
+    # Display plot only - no saving
     plt.tight_layout(pad=2.0)
-    fig.savefig(filepath, dpi=300, bbox_inches='tight', pad_inches=0.3,
-                facecolor='white', edgecolor='none')
-
     plt.show()
-    plt.close(fig)
+    
+    return None
 
-    # Print variance summary
-    print(f"\n{name}")
-    print("=" * 120)
-
-    if has_complete_data:
-        baseline_variance_text = f"+{baseline_variance:.1f}%" if baseline_variance >= 0 else f"{baseline_variance:.1f}%"
-        print(f"2021 (Baseline): Target={baseline_target}, Achieved={baseline_achieved}, Variance={baseline_variance_text}")
-
-        for i, year in enumerate(years):
-            if variances[i] is not None:
-                variance_text = f"+{variances[i]:.1f}%" if variances[i] >= 0 else f"{variances[i]:.1f}%"
-                status = "Above target" if variances[i] > 0 else "Below target"
-                print(f"{year}: Target={targets[i]}, Achieved={achieved[i]}, Variance={variance_text} ({status})")
-    else:
-        print("⚠️  ACHIEVED DATA NOT AVAILABLE - Only target values shown")
-        print(f"2021 (Baseline): Target={baseline_target}, Achieved=N/A")
-        for i, year in enumerate(years):
-            print(f"{year}: Target={targets[i]}, Achieved=N/A")
-
-    return filepath
-
-# Process all 8 Impact Indicators
-print("ALL 8 IMPACT INDICATORS TREND ANALYSIS")
-print("="*120)
-print(f"Data Source: Excel file - Complete Impact Indicators Section")
-print(f"Baseline Year: 2021")
-print(f"Analysis Period: 2021-2024")
-print(f"Total Impact Indicators: {len(impact_indicators_data)}")
-print("="*120)
-
-saved_files = []
-complete_data_count = 0
-incomplete_data_count = 0
-
+# Process all 8 Impact Indicators - display only
 for i, indicator_data in enumerate(impact_indicators_data):
-    print(f"\nProcessing Impact Indicator {i+1}/{len(impact_indicators_data)}:")
-    print(f"'{indicator_data['name']}'")
-
-    if indicator_data['has_complete_data']:
-        print("✓ Complete data available")
-        complete_data_count += 1
-    else:
-        print("⚠️  Incomplete data - targets only")
-        incomplete_data_count += 1
-
-    filepath = create_individual_trend_plot(indicator_data, i)
-    saved_files.append(filepath)
-    print(f"✓ Saved: {os.path.basename(filepath)}")
-
-print(f"\n" + "="*120)
-print("ALL 8 IMPACT INDICATORS ANALYSIS COMPLETE")
-print("="*120)
-print(f"Total plots created: {len(saved_files)}")
-print(f"Indicators with complete data: {complete_data_count}")
-print(f"Indicators with targets only: {incomplete_data_count}")
-print(f"Output directory: {output_dir}")
-
-print("\nAll 8 Impact Indicators processed:")
-for i, indicator_data in enumerate(impact_indicators_data, 1):
-    status = "✓ Complete" if indicator_data['has_complete_data'] else "⚠️  Targets Only"
-    print(f"{i}. {status} - {indicator_data['name']}")
-
-print("\nData Status by Indicator:")
-print("COMPLETE DATA (6 indicators):")
-complete_indicators = [ind for ind in impact_indicators_data if ind['has_complete_data']]
-for i, ind in enumerate(complete_indicators, 1):
-    print(f"  {i}. {ind['name']}")
-
-print("\nTARGETS ONLY (2 indicators):")
-incomplete_indicators = [ind for ind in impact_indicators_data if not ind['has_complete_data']]
-for i, ind in enumerate(incomplete_indicators, 1):
-    print(f"  {i}. {ind['name']}")
-
-print(f"\n✓ All 8 Impact Indicator trend analysis plots saved!")
-print(f"✓ Resolution: 300 DPI (presentation quality)")
-print(f"✓ Format: PNG with white background")
-print(f"✓ Location: ./{output_dir}/ directory")
-
-print(f"\n🎯 COMPLETE IMPACT INDICATORS SERIES!")
-print(f"📊 All 8 indicators from Excel Impact section")
-print(f"📈 6 with full trend analysis, 2 with target trajectories")
-print(f"🔢 Professional formatting with exact indicator names")
-print(f"💾 Individual high-quality PNG files ready for use")
+    create_individual_trend_plot(indicator_data, i)
 ```
