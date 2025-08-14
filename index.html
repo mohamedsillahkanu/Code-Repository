@@ -596,7 +596,7 @@
     <div class="dashboard-container">
         <!-- Python Status Indicator -->
         <div class="python-status loading" id="pythonStatus">
-            <span>🐍</span>
+            <span></span>
             <span id="statusText">Loading Python Environment...</span>
         </div>
 
@@ -814,12 +814,13 @@ print(f"• Peak incidence rate: {df['Incidence_Rate'].max():.2f} per 1000")
                 
                 statusText.textContent = 'Installing Python Packages...';
                 // Install required packages
-                await pyodide.loadPackage(['pandas', 'numpy', 'matplotlib', 'micropip', 'geopandas']);
+                await pyodide.loadPackage(['pandas', 'numpy', 'matplotlib', 'micropip', 'geopandas', 'requests']);
                 
                 // Setup matplotlib for web
                 await pyodide.runPythonAsync(`
                     import micropip
                     await micropip.install('geopandas')
+                    await micropip.install("requests")
                     
                     import matplotlib
                     matplotlib.use('Agg')  # Use non-interactive backend
@@ -829,6 +830,8 @@ print(f"• Peak incidence rate: {df['Incidence_Rate'].max():.2f} per 1000")
                     import pandas as pd
                     import numpy as np
                     import geopandas as gpd
+                    import requests
+
                     
                     # Function to save plot as base64 image
                     def save_plot_as_base64():
