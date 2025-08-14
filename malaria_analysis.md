@@ -23,7 +23,7 @@ excel_path = "https://github.com/mohamedsillahkanu/Code-Repository/raw/cc8ca054a
 df = pd.read_excel(excel_path)
 
 df2 = pd.read_excel("https://github.com/mohamedsillahkanu/Code-Repository/raw/2aa33791c3b0ede446e73a0c49669282aaf8da53/scenario_with_irs_smc_06_20_2025.xlsx")
-df2.to_excel("maximum window percent plotting data_08_13_2025.xls")
+
 
 # ===== 3. Merge with shapefile =====
 merged = gdf.merge(df, on=['FIRST_DNAM', 'FIRST_CHIE'], how='left', validate='1:1')
