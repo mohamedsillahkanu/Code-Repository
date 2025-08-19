@@ -1,4 +1,4 @@
-## **Step 1: Import Libraries**
+## Step 1: Import Libraries
 
 ```python
 import pandas as pd
@@ -8,13 +8,13 @@ from tabulate import tabulate
 
 **Explanation:**
 
-* `pandas` → for reading and manipulating Excel files.
-* `Path` from `pathlib` → makes it easy to find and manage file paths.
-* `tabulate` → prints tables nicely in the console for better readability.
+`pandas` → for reading and manipulating Excel files.
+`Path` from `pathlib` → makes it easy to find and manage file paths.
+`tabulate` → prints tables nicely in the console for better readability.
 
 
 
-## **Step 2: Set Folder Path**
+## Step 2: Set Folder Path
 
 ```python
 file_path = "your_folder_path_here"
@@ -22,8 +22,8 @@ file_path = "your_folder_path_here"
 
 **Explanation:**
 
-* Replace `"your_folder_path_here"` with the path where your Excel files are stored.
-* This folder will be searched for all `.xlsx` files to combine.
+Replace `"your_folder_path_here"` with the path where your Excel files are stored.
+This folder will be searched for all `.xlsx` files to combine.
 
 
 
