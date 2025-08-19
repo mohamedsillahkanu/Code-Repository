@@ -34,8 +34,8 @@
       "title": "Malaria Analysis Code"
     },
     "visualization": {
-      "file": "data_visualization.md", 
-      "title": "Data Visualization"
+      "file": "combine_excel.md", 
+      "title": "Combine Excel"
     },
     "reports": {
       "file": "reports_export.md",
