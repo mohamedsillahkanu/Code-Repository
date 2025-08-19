@@ -1,4 +1,3 @@
-
 ## **Step 1: Import Libraries**
 
 ```python
