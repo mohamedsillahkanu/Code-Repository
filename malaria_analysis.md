@@ -1,3 +1,7 @@
+## Method
+
+NMCP.png
+
 ## Step
 
 ```python
