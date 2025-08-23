@@ -1,14 +1,14 @@
 ## Method
 
-This is one method how to combine files.
+**This is one method how to combine files.**
 
 
 ![NMCP lOGO](Concatenate.png)
 
 
-## Step
+##Step
 
-### Step 2
+###Step 2###
 
 ```python
 import pandas as pd
