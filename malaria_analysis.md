@@ -1,9 +1,14 @@
 ## Method
 
-![NMCP lOGO](NMCP.png)
+This is one method how to combine files
+
+
+![NMCP lOGO](Concatenate.png)
 
 
 ## Step
+
+### Step 2
 
 ```python
 import pandas as pd
