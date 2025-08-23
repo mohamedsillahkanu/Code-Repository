@@ -1,6 +1,6 @@
 ## Method
 
-This is one method how to combine files
+This is one method how to combine files.
 
 
 ![NMCP lOGO](Concatenate.png)
