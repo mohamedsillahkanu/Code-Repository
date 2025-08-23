@@ -1,6 +1,7 @@
 ## Method
 
-NMCP.png
+![NMCP lOGO](NMCP.png)
+
 
 ## Step
 
