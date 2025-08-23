@@ -1,10 +1,9 @@
-<!DOCTYPE html>       
-<html lang="en">        
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Code Repository</title>
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+    <title>Code Repository</title>
     <style>
         * {
             margin: 0;
@@ -93,34 +92,6 @@
             padding: 50px;
             box-shadow: 0 15px 40px rgba(0, 102, 204, 0.2);
             border: 1px solid rgba(0, 102, 204, 0.2);
-        }
-
-        /* Python Status Indicator */
-        .python-status {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .python-status.loading {
-            background: linear-gradient(135deg, #ffc107, #ff8c00);
-            animation: pulse 2s infinite;
-        }
-
-        .python-status.error {
-            background: linear-gradient(135deg, #dc3545, #c82333);
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
         }
 
         /* Tab Toggle Button */
@@ -295,7 +266,32 @@
             border-left: 4px solid #0066cc;
         }
 
-        /* Enhanced Code Section with Execution */
+        /* Image styling within content */
+        .content-text img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2);
+            margin: 15px 0;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Step Description */
+        .step-description {
+            background: rgba(0, 102, 204, 0.05);
+            border-left: 4px solid #0066cc;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 0 10px 10px 0;
+            color: #004499;
+            font-size: 1em;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        /* Code Section Styling */
         .code-section {
             margin: 30px 0;
             border: 2px solid rgba(59, 130, 246, 0.3);
@@ -324,12 +320,7 @@
             gap: 8px;
         }
 
-        .code-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .copy-btn, .run-btn {
+        .copy-btn {
             background: rgba(255, 255, 255, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.3);
             color: white;
@@ -342,28 +333,6 @@
             display: flex;
             align-items: center;
             gap: 6px;
-        }
-
-        .run-btn {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            border-color: #28a745;
-        }
-
-        .run-btn:hover {
-            background: linear-gradient(135deg, #20c997, #17a2b8);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
-        }
-
-        .run-btn:disabled {
-            background: #6c757d;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-
-        .run-btn.running {
-            background: linear-gradient(135deg, #ffc107, #ff8c00);
-            animation: pulse 1s infinite;
         }
 
         .copy-btn:hover {
@@ -392,89 +361,6 @@
             color: #e2e8f0;
             white-space: pre;
             overflow-x: auto;
-        }
-
-        /* Code Output Section */
-        .code-output {
-            background: #f8f9fa;
-            border-top: 2px solid #dee2e6;
-            padding: 20px;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 14px;
-            line-height: 1.5;
-            color: #495057;
-            display: none;
-        }
-
-        .code-output.active {
-            display: block;
-        }
-
-        .code-output pre {
-            margin: 0;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
-        .code-output .success {
-            color: #28a745;
-            font-weight: 600;
-        }
-
-        .code-output .error {
-            color: #dc3545;
-            font-weight: 600;
-            background: rgba(220, 53, 69, 0.1);
-            padding: 10px;
-            border-radius: 5px;
-            border-left: 4px solid #dc3545;
-        }
-
-        .code-output .plot-container {
-            text-align: center;
-            margin: 15px 0;
-            padding: 10px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .code-output .plot-container img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 5px;
-        }
-
-        /* Data Table Styling */
-        .data-table {
-            overflow-x: auto;
-            margin: 15px 0;
-        }
-
-        .data-table table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .data-table th,
-        .data-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .data-table th {
-            background: #0066cc;
-            color: white;
-            font-weight: 600;
-        }
-
-        .data-table tr:nth-child(even) {
-            background: rgba(0, 102, 204, 0.05);
         }
 
         /* Loading indicator */
@@ -544,23 +430,13 @@
                 padding: 12px 20px;
                 font-size: 1em;
             }
-
-            .code-actions {
-                flex-direction: column;
-                gap: 5px;
-            }
-
-            .copy-btn, .run-btn {
-                padding: 6px 12px;
-                font-size: 0.8em;
-            }
         }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="header-content">
-            <!-- Logo Section for 5 logos -->
+            <!-- Logo Section for 4 logos -->
             <div class="logo-section">
                 <div class="logo-container">
                     <img src="NMCP.png" alt="NMCP Logo" class="logo-image">
@@ -585,19 +461,14 @@
             
             <!-- Title Section -->
             <div class="title-section">
-                <h1 class="main-title">Interactive MTR Code Repository</h1>
-                <h2 class="subtitle">2021-2024 • Python Execution Enabled</h2>
+                <h1 class="main-title">MTR Code Repository</h1>
+                <h2 class="subtitle">2021-2024</h2>
+                
             </div>
         </div>
     </div>
 
     <div class="dashboard-container">
-        <!-- Python Status Indicator -->
-        <div class="python-status loading" id="pythonStatus">
-            <span>🐍</span>
-            <span id="statusText">Loading Python Environment...</span>
-        </div>
-
         <!-- Tab Toggle Button -->
         <button class="tab-toggle-btn collapsed" onclick="toggleTabs()" id="tabToggleBtn">
             <span>📂</span>
@@ -605,166 +476,25 @@
             <span class="arrow">▼</span>
         </button>
 
-        <!-- Dynamic Tab Navigation -->
+        <!-- Dynamic Tab Navigation - Will be populated by JavaScript -->
         <div class="tab-navigation" id="tabNavigation">
-            <!-- Tabs will be generated dynamically -->
+            <!-- Tabs will be generated dynamically from tab_config.json -->
         </div>
 
         <!-- Tab Contents -->
         <div id="overview" class="tab-content active">
-            <div class="section-header">Interactive Code Repository</div>
+            <div class="section-header">Code Repository</div>
             
             <!-- Code Repository Introduction -->
             <div class="collapsible-section">
                 <button class="section-toggle collapsed" onclick="toggleSection(this)">
-                    💻 Interactive Code Repository Overview
+                    💻 Code Repository Overview
                 </button>
                 <div class="section-content">
                     <div class="content-text">
-                        <strong>Interactive Malaria Data Analysis Platform</strong><br>
-                        This system provides a comprehensive collection of executable Python scripts and analysis tools designed specifically for the National Malaria Control Programme (NMCP) in Sierra Leone. 
-                        You can now <strong>run code directly in your browser</strong> and see live results including data analysis, visualizations, and calculated indicators.
-                        <br><br>
-                        <strong>Features:</strong><br>
-                        • ▶️ <strong>Execute Python Code</strong> - Run analysis directly in browser<br>
-                        • 📊 <strong>Generate Live Plots</strong> - Create charts and visualizations<br>
-                        • 📋 <strong>Copy Code</strong> - Easy code sharing and reuse<br>
-                        • 🔍 <strong>Interactive Data Exploration</strong> - Examine malaria datasets<br>
-                        • 📈 <strong>Real-time Calculations</strong> - Compute key malaria indicators
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sample Interactive Code -->
-            <div class="collapsible-section">
-                <button class="section-toggle collapsed" onclick="toggleSection(this)">
-                    🚀 Try Interactive Python Code
-                </button>
-                <div class="section-content">
-                    <div class="content-text">
-                        <strong>Sample Malaria Data Analysis</strong><br>
-                        Click the "Run Code" button below to execute Python code and see live results!
-                    </div>
-                    
-                    <div class="code-section">
-                        <div class="code-header">
-                            <div class="code-title">
-                                <span>💻</span>
-                                PYTHON Code - Interactive Demo
-                            </div>
-                            <div class="code-actions">
-                                <button class="copy-btn" onclick="copyCode('demo_code')">
-                                    <span>📋</span>
-                                    Copy Code
-                                </button>
-                                <button class="run-btn" onclick="executePythonCode('demo_code')">
-                                    <span>▶️</span>
-                                    Run Code
-                                </button>
-                            </div>
-                        </div>
-                        <div class="code-container">
-                            <div class="code-content" id="demo_code"># Interactive Malaria Data Analysis Demo
-
-                               
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-
-# Create sample malaria surveillance data
-np.random.seed(42)
-dates = pd.date_range('2024-01-01', periods=12, freq='M')
-districts = ['Western Area', 'Freetown', 'Bo', 'Kenema', 'Makeni']
-
-# Generate sample data
-data = []
-for district in districts:
-    cases = np.random.poisson(100 + np.random.randint(-30, 30), 12)
-    for i, (date, case_count) in enumerate(zip(dates, cases)):
-        data.append({
-            'Date': date,
-            'District': district,
-            'Cases': case_count,
-            'Population': 50000 + np.random.randint(-10000, 10000)
-        })
-
-df = pd.DataFrame(data)
-
-# Calculate incidence rate per 1000 population
-df['Incidence_Rate'] = (df['Cases'] / df['Population']) * 1000
-
-print("🦟 MALARIA SURVEILLANCE DATA SUMMARY")
-print("="*50)
-print(f"Total Records: {len(df)}")
-print(f"Districts: {', '.join(df['District'].unique())}")
-print(f"Date Range: {df['Date'].min().strftime('%Y-%m')} to {df['Date'].max().strftime('%Y-%m')}")
-
-print("\n📊 SUMMARY STATISTICS")
-print("="*50)
-summary = df.groupby('District').agg({
-    'Cases': ['sum', 'mean', 'std'],
-    'Incidence_Rate': ['mean', 'max']
-}).round(2)
-print(summary)
-
-# Create visualization
-plt.figure(figsize=(12, 8))
-
-# Plot 1: Cases by District over Time
-plt.subplot(2, 2, 1)
-for district in districts:
-    district_data = df[df['District'] == district]
-    plt.plot(district_data['Date'], district_data['Cases'], 
-             marker='o', label=district, linewidth=2)
-plt.title('Malaria Cases by District Over Time')
-plt.xlabel('Date')
-plt.ylabel('Number of Cases')
-plt.legend()
-plt.xticks(rotation=45)
-
-# Plot 2: Average Incidence Rate by District
-plt.subplot(2, 2, 2)
-avg_incidence = df.groupby('District')['Incidence_Rate'].mean().sort_values(ascending=False)
-plt.bar(avg_incidence.index, avg_incidence.values, 
-        color=['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7'])
-plt.title('Average Incidence Rate by District')
-plt.xlabel('District')
-plt.ylabel('Cases per 1000 Population')
-plt.xticks(rotation=45)
-
-# Plot 3: Monthly Trend
-plt.subplot(2, 2, 3)
-monthly_cases = df.groupby('Date')['Cases'].sum()
-plt.plot(monthly_cases.index, monthly_cases.values, 
-         marker='o', linewidth=3, color='#FF6B6B')
-plt.title('Total Monthly Cases Trend')
-plt.xlabel('Date')
-plt.ylabel('Total Cases')
-plt.xticks(rotation=45)
-
-# Plot 4: District Comparison
-plt.subplot(2, 2, 4)
-total_cases = df.groupby('District')['Cases'].sum().sort_values(ascending=True)
-plt.barh(total_cases.index, total_cases.values, 
-         color=['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7'])
-plt.title('Total Cases by District (2024)')
-plt.xlabel('Total Cases')
-
-plt.tight_layout()
-plt.show()
-
-print("\n✅ Analysis Complete!")
-print("🔍 Key Insights:")
-print(f"• Highest burden district: {total_cases.index[-1]} ({total_cases.iloc[-1]} cases)")
-print(f"• Lowest burden district: {total_cases.index[0]} ({total_cases.iloc[0]} cases)")
-print(f"• Average monthly cases: {df['Cases'].mean():.1f}")
-print(f"• Peak incidence rate: {df['Incidence_Rate'].max():.2f} per 1000")
-
-
-                                
-</div>
-                        </div>
-                        <div class="code-output" id="output_demo_code"></div>
+                        <strong>Malaria Data Analysis Code Repository</strong><br>
+                        This system provides a comprehensive collection of Python scripts and analysis tools designed specifically for the National Malaria Control Programme (NMCP) in Sierra Leone. 
+                        The code repository contains standardized functions for processing malaria surveillance data, calculating key indicators, and generating analytical reports that support evidence-based decision making.
                     </div>
                 </div>
             </div>
@@ -775,15 +505,15 @@ print(f"• Peak incidence rate: {df['Incidence_Rate'].max():.2f} per 1000")
             <div class="section-header">Malaria Analysis Code</div>
             <div class="loading" id="loading-tab2">
                 <div class="spinner"></div>
-                Loading interactive content...
+                Loading content...
             </div>
         </div>
 
         <div id="tab3" class="tab-content">
-            <div class="section-header">Combine Excel</div>
+            <div class="section-header">Data Visualization</div>
             <div class="loading" id="loading-tab3">
                 <div class="spinner"></div>
-                Loading interactive content...
+                Loading content...
             </div>
         </div>
 
@@ -791,184 +521,13 @@ print(f"• Peak incidence rate: {df['Incidence_Rate'].max():.2f} per 1000")
             <div class="section-header">Reports & Export</div>
             <div class="loading" id="loading-tab4">
                 <div class="spinner"></div>
-                Loading interactive content...
+                Loading content...
             </div>
         </div>
     </div>
 
     <script>
-        // Global variables for Python execution
-        let pyodide = null;
-        let pythonReady = false;
-
-        // Initialize Pyodide
-        async function initializePython() {
-            const statusElement = document.getElementById('pythonStatus');
-            const statusText = document.getElementById('statusText');
-            
-            try {
-                statusText.textContent = 'Loading Python Environment...';
-                pyodide = await loadPyodide();
-                
-                statusText.textContent = 'Installing Python Packages...';
-                // Install required packages
-                await pyodide.loadPackage(['pandas', 'numpy', 'matplotlib', 'micropip', 'geopandas']);
-                
-                // Setup matplotlib for web
-                await pyodide.runPythonAsync(`
-                    import micropip
-                    await micropip.install('geopandas')
-                    
-                    import matplotlib
-                    matplotlib.use('Agg')  # Use non-interactive backend
-                    import matplotlib.pyplot as plt
-                    import base64
-                    from io import BytesIO
-                    import pandas as pd
-                    import numpy as np
-                    import geopandas as gpd
-                    
-                    # Function to save plot as base64 image
-                    def save_plot_as_base64():
-                        buf = BytesIO()
-                        plt.savefig(buf, format='png', dpi=100, bbox_inches='tight')
-                        buf.seek(0)
-                        img_base64 = base64.b64encode(buf.read()).decode('utf-8')
-                        buf.close()
-                        plt.close()  # Close the figure to free memory
-                        return img_base64
-                `);
-                
-                pythonReady = true;
-                statusElement.className = 'python-status';
-                statusElement.innerHTML = '<span>🐍</span><span>Python Ready - Interactive Code Execution Enabled!</span>';
-                
-                console.log('✅ Python environment initialized successfully');
-                
-            } catch (error) {
-                console.error('❌ Failed to initialize Python:', error);
-                statusElement.className = 'python-status error';
-                statusElement.innerHTML = '<span>⚠️</span><span>Python Failed to Load - Code execution disabled</span>';
-            }
-        }
-
-        // Execute Python code
-        async function executePythonCode(codeElementId) {
-            if (!pythonReady) {
-                alert('Python environment is not ready yet. Please wait for initialization to complete.');
-                return;
-            }
-
-            const codeElement = document.getElementById(codeElementId);
-            const outputElement = document.getElementById(`output_${codeElementId}`);
-            const runButton = codeElement.closest('.code-section').querySelector('.run-btn');
-            
-            if (!codeElement || !outputElement) return;
-
-            // Get the code content
-            const code = codeElement.textContent || codeElement.innerText;
-            
-            // Update button state
-            const originalButtonContent = runButton.innerHTML;
-            runButton.innerHTML = '<span>⏳</span> Running...';
-            runButton.classList.add('running');
-            runButton.disabled = true;
-            
-            // Show output section
-            outputElement.classList.add('active');
-            outputElement.innerHTML = '<div class="loading"><div class="spinner"></div>Executing Python code...</div>';
-
-            try {
-                // Clear previous matplotlib figures
-                await pyodide.runPythonAsync('plt.clf(); plt.close("all")');
-                
-                // Capture stdout
-                await pyodide.runPythonAsync(`
-                    import sys
-                    from io import StringIO
-                    import traceback
-                    
-                    # Capture stdout
-                    old_stdout = sys.stdout
-                    sys.stdout = captured_output = StringIO()
-                    
-                    # Store plots
-                    plot_images = []
-                `);
-                
-                // Execute the user's code
-                await pyodide.runPythonAsync(`
-try:
-${code.split('\n').map(line => '    ' + line).join('\n')}
-    
-    # Check if there are any plots to save
-    if plt.get_fignums():
-        for fig_num in plt.get_fignums():
-            plt.figure(fig_num)
-            img_base64 = save_plot_as_base64()
-            plot_images.append(img_base64)
-            
-except Exception as e:
-    print(f"Error: {str(e)}")
-    traceback.print_exc()
-finally:
-    # Restore stdout
-    sys.stdout = old_stdout
-    output_text = captured_output.getvalue()
-                `);
-                
-                // Get the results
-                const output = pyodide.globals.get('output_text');
-                const plotImages = pyodide.globals.get('plot_images').toJs();
-                
-                // Format the output
-                let outputHTML = '';
-                
-                if (output && output.trim()) {
-                    outputHTML += `<pre class="success">${escapeHtml(output)}</pre>`;
-                }
-                
-                // Add plots if any
-                if (plotImages && plotImages.length > 0) {
-                    plotImages.forEach((imgBase64, index) => {
-                        outputHTML += `
-                            <div class="plot-container">
-                                <img src="data:image/png;base64,${imgBase64}" alt="Plot ${index + 1}" />
-                            </div>
-                        `;
-                    });
-                }
-                
-                if (!outputHTML) {
-                    outputHTML = '<pre class="success">Code executed successfully (no output)</pre>';
-                }
-                
-                outputElement.innerHTML = outputHTML;
-                
-            } catch (error) {
-                console.error('Python execution error:', error);
-                outputElement.innerHTML = `
-                    <div class="error">
-                        <strong>Execution Error:</strong><br>
-                        ${escapeHtml(error.message || error.toString())}
-                    </div>
-                `;
-            } finally {
-                // Reset button state
-                runButton.innerHTML = originalButtonContent;
-                runButton.classList.remove('running');
-                runButton.disabled = false;
-            }
-        }
-
-        // Helper function to escape HTML
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // Dynamic Tab Configuration System
+        // Dynamic Tab Configuration System - Load from external config file
         let TAB_CONFIG = {};
         let dynamicTabs = [];
 
@@ -981,7 +540,9 @@ finally:
                     TAB_CONFIG = config.tabs || {};
                     dynamicTabs = config.navigation || [];
                     
+                    // Generate navigation dynamically
                     generateDynamicNavigation();
+                    
                     console.log('✅ Tab configuration loaded successfully');
                     return true;
                 } else {
@@ -989,6 +550,9 @@ finally:
                 }
             } catch (error) {
                 console.warn('⚠️ Could not load tab_config.json, using default configuration');
+                console.warn('📝 Create tab_config.json file to customize tabs and files');
+                
+                // Fallback to default configuration
                 loadDefaultConfiguration();
                 return false;
             }
@@ -998,7 +562,7 @@ finally:
         function loadDefaultConfiguration() {
             TAB_CONFIG = {
                 'tab2': { file: 'malaria_analysis.md', title: 'Malaria Analysis Code' },
-                'tab3': { file: 'combine_excel.md', title: 'Combine Excel' },
+                'tab3': { file: 'data_visualization.md', title: 'Data Visualization' },
                 'tab4': { file: 'reports_export.md', title: 'Reports & Export' }
             };
             
@@ -1017,8 +581,10 @@ finally:
             const tabNavigation = document.getElementById('tabNavigation');
             if (!tabNavigation) return;
             
+            // Clear existing tabs
             tabNavigation.innerHTML = '';
             
+            // Generate tabs from configuration
             dynamicTabs.forEach((tab, index) => {
                 const button = document.createElement('button');
                 button.className = `tab-button ${tab.default ? 'active' : ''}`;
@@ -1026,6 +592,7 @@ finally:
                 button.textContent = tab.title;
                 tabNavigation.appendChild(button);
                 
+                // Create tab content container if it doesn't exist (except overview)
                 if (tab.id !== 'overview' && !document.getElementById(tab.id)) {
                     createTabContainer(tab.id, tab.title);
                 }
@@ -1044,7 +611,7 @@ finally:
                 <div class="section-header">${title}</div>
                 <div class="loading" id="loading-${tabId}">
                     <div class="spinner"></div>
-                    Loading interactive content...
+                    Loading content...
                 </div>
             `;
             
@@ -1094,10 +661,12 @@ finally:
             
             if (tabNav && toggleBtn) {
                 if (tabNav.classList.contains("expanded")) {
+                    // Collapse the menu
                     tabNav.classList.remove("expanded");
                     toggleBtn.classList.add("collapsed");
                     toggleBtn.innerHTML = '<span>📂</span><span>Show Navigation Menu</span><span class="arrow">▼</span>';
                 } else {
+                    // Expand the menu
                     tabNav.classList.add("expanded");
                     toggleBtn.classList.remove("collapsed");
                     toggleBtn.innerHTML = '<span>📂</span><span>Hide Navigation Menu</span><span class="arrow">▼</span>';
@@ -1124,23 +693,29 @@ finally:
             const codeContent = document.getElementById(elementId);
             if (!codeContent) return;
             
+            // Find the copy button (next button in the code header)
             const codeSection = codeContent.closest('.code-section');
             const copyBtn = codeSection ? codeSection.querySelector('.copy-btn') : null;
             if (!copyBtn) return;
             
+            // Get the text content without HTML tags
             const textContent = codeContent.innerText || codeContent.textContent;
             
+            // Copy to clipboard
             navigator.clipboard.writeText(textContent).then(function() {
+                // Change button appearance
                 const originalHTML = copyBtn.innerHTML;
                 copyBtn.innerHTML = '<span>✅</span> Copied!';
                 copyBtn.classList.add('copied');
                 
+                // Reset button after 2 seconds
                 setTimeout(function() {
                     copyBtn.innerHTML = originalHTML;
                     copyBtn.classList.remove('copied');
                 }, 2000);
             }).catch(function(err) {
                 console.error('Could not copy text: ', err);
+                // Fallback for older browsers
                 const textarea = document.createElement('textarea');
                 textarea.value = textContent;
                 document.body.appendChild(textarea);
@@ -1159,7 +734,7 @@ finally:
             });
         }
 
-        // Load markdown content from file and make it interactive
+        // Load markdown content from file
         async function loadTabContent(tabName) {
             const config = TAB_CONFIG[tabName];
             if (!config) return;
@@ -1168,6 +743,7 @@ finally:
             const loadingElement = document.getElementById(`loading-${tabName}`);
             
             try {
+                // Show loading
                 if (loadingElement) {
                     loadingElement.style.display = 'flex';
                 }
@@ -1180,17 +756,21 @@ finally:
                 const markdown = await response.text();
                 const sections = parseMarkdown(markdown);
                 
+                // Render sections
                 const renderedSections = sections.map((section, idx) => renderSection(section, idx)).join('');
                 
+                // Update tab content
                 if (tabElement) {
                     const header = tabElement.querySelector('.section-header').outerHTML;
                     tabElement.innerHTML = header + renderedSections;
                 }
                 
+                // Mark as loaded
                 tabElement.dataset.loaded = 'true';
                 
             } catch (error) {
                 console.error('Error loading tab content:', error);
+                // Show error message
                 if (tabElement) {
                     const header = tabElement.querySelector('.section-header').outerHTML;
                     tabElement.innerHTML = header + `
@@ -1208,14 +788,16 @@ finally:
                     `;
                 }
             } finally {
+                // Hide loading
                 if (loadingElement) {
                     loadingElement.style.display = 'none';
                 }
             }
         }
 
-        // Markdown parsing functions
+        // Markdown parsing and rendering functions
         function parseMarkdown(markdown) {
+            // Split into sections based on ## headers
             const sections = [];
             const lines = markdown.split('\n');
             let currentSection = null;
@@ -1223,12 +805,14 @@ finally:
 
             for (let line of lines) {
                 if (line.startsWith('## ')) {
+                    // Save previous section if exists
                     if (currentSection) {
                         sections.push({
                             title: currentSection,
                             content: currentContent.join('\n').trim()
                         });
                     }
+                    // Start new section
                     currentSection = line.substring(3).trim();
                     currentContent = [];
                 } else {
@@ -1236,6 +820,7 @@ finally:
                 }
             }
 
+            // Add last section
             if (currentSection) {
                 sections.push({
                     title: currentSection,
@@ -1244,6 +829,125 @@ finally:
             }
 
             return sections;
+        }
+
+        function formatCodeBlock(code, language = '') {
+            // Escape HTML entities first
+            let escaped = code
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            
+            // Apply if-else color highlighting
+            if (language === 'python' || language === 'py' || language === '') {
+                return applyIfElseColors(escaped);
+            }
+            
+            return escaped;
+        }
+
+        function applyIfElseColors(code) {
+            // Split code into lines and apply colors using if-else logic
+            let result = '';
+            const lines = code.split('\n');
+            
+            lines.forEach((line, lineIndex) => {
+                // Check if entire line is a comment first (any line starting with # regardless of spacing)
+                const trimmedLine = line.trim();
+                if (trimmedLine.startsWith('#')) {
+                    // If entire line starts with #, make it bright blue bold
+                    result += `<span style="color: #3399ff; font-weight: bold;">${line}</span>`;
+                } else {
+                    // Process line word by word for other highlighting
+                    const words = line.split(/(\s+)/); // Split but keep whitespace
+                    
+                    words.forEach(word => {
+                        // Skip empty words
+                        if (!word.trim()) {
+                            result += word;
+                            return;
+                        }
+                        
+                        // If-else color logic for each word
+                        if (word.includes('#')) {
+                            // If word contains #, make it gray italic (comments)
+                            result += `<span style="color: #6a9955; font-style: italic;">${word}</span>`;
+                        }
+                        else if (word === 'print') {
+                            // If print statement, make it bright magenta
+                            result += `<span style="color: #d73a49; font-weight: bold;">${word}</span>`;
+                        }
+                        else if (word.includes('.') && !word.startsWith('.') && !word.endsWith('.')) {
+                            // If word contains dot (method calls like df.head, data.shape), split and color
+                            const parts = word.split('.');
+                            let coloredParts = [];
+                            
+                            parts.forEach((part, index) => {
+                                if (index === 0) {
+                                    // First part (object name) - check if it's a DataFrame
+                                    if (part === 'df' || part === 'data' || part === 'dataset' || part === 'dataframe' || part === 'DataFrame' || part === 'Series' || part === 'series' || part === 'matrix' || part === 'array' || part === 'Array' || part === 'ndarray' || part === 'tensor' || part === 'Tensor' || part === 'malaria_data' || part === 'cases_df' || part === 'stats_df' || part === 'results_df' || part === 'clean_data' || part === 'raw_data' || part === 'processed_data' || part === 'filtered_data' || part === 'merged_data' || part === 'grouped_data') {
+                                        coloredParts.push(`<span style="color: #0366d6; font-weight: bold;">${part}</span>`);
+                                    } else if (part === 'pandas' || part === 'pd' || part === 'numpy' || part === 'np' || part === 'matplotlib' || part === 'plt' || part === 'seaborn' || part === 'sns') {
+                                        coloredParts.push(`<span style="color: #e36209; font-weight: bold;">${part}</span>`);
+                                    } else {
+                                        coloredParts.push(part);
+                                    }
+                                } else {
+                                    // Method/attribute names after dot - make them bright purple
+                                    coloredParts.push(`<span style="color: #6f42c1; font-weight: bold;">${part}</span>`);
+                                }
+                            });
+                            
+                            result += coloredParts.join('.');
+                        }
+                        else if (word === 'import' || word === 'from' || word === 'as' || word === 'def' || word === 'class' || word === 'return' || word === 'if' || word === 'else' || word === 'elif' || word === 'for' || word === 'while' || word === 'try' || word === 'except' || word === 'with' || word === 'in' || word === 'and' || word === 'or' || word === 'not' || word === 'is' || word === 'lambda' || word === 'yield' || word === 'break' || word === 'continue' || word === 'pass' || word === 'raise' || word === 'assert' || word === 'del' || word === 'global' || word === 'nonlocal' || word === 'async' || word === 'await') {
+                            // If keyword, make it purple
+                            result += `<span style="color: #c678dd; font-weight: bold;">${word}</span>`;
+                        }
+                        else if (word === 'pandas' || word === 'pd' || word === 'numpy' || word === 'np' || word === 'matplotlib' || word === 'plt' || word === 'seaborn' || word === 'sns' || word === 'tensorflow' || word === 'tf' || word === 'sklearn' || word === 'sk' || word === 'plotly' || word === 'px' || word === 'scipy' || word === 'sp' || word === 'opencv' || word === 'cv2' || word === 'requests' || word === 'flask' || word === 'django' || word === 'fastapi' || word === 'sqlalchemy' || word === 'pytest' || word === 'streamlit' || word === 'dash' || word === 'bokeh' || word === 'altair' || word === 'folium' || word === 'geopandas' || word === 'gpd' || word === 'xgboost' || word === 'lgb' || word === 'catboost' || word === 'statsmodels' || word === 'sm' || word === 'networkx' || word === 'nx' || word === 'beautifulsoup4' || word === 'bs4' || word === 'scrapy' || word === 'selenium' || word === 'pymongo' || word === 'redis' || word === 'psycopg2' || word === 'mysql' || word === 'sqlite3') {
+                            // If package/alias, make it red
+                            result += `<span style="color: #ff6b6b; font-weight: bold;">${word}</span>`;
+                        }
+                        else if (word === 'df' || word === 'data' || word === 'dataset' || word === 'dataframe' || word === 'DataFrame' || word === 'Series' || word === 'series' || word === 'matrix' || word === 'array' || word === 'Array' || word === 'ndarray' || word === 'tensor' || word === 'Tensor' || word === 'malaria_data' || word === 'cases_df' || word === 'stats_df' || word === 'results_df' || word === 'clean_data' || word === 'raw_data' || word === 'processed_data' || word === 'filtered_data' || word === 'merged_data' || word === 'grouped_data') {
+                            // If DataFrame/data structures, make it cyan
+                            result += `<span style="color: #56b6c2; font-weight: bold;">${word}</span>`;
+                        }
+                        else if (word === 'len' || word === 'str' || word === 'int' || word === 'float' || word === 'bool' || word === 'list' || word === 'dict' || word === 'tuple' || word === 'set' || word === 'type' || word === 'range' || word === 'enumerate' || word === 'zip' || word === 'map' || word === 'filter' || word === 'sorted' || word === 'reversed' || word === 'sum' || word === 'min' || word === 'max' || word === 'abs' || word === 'round' || word === 'pow' || word === 'divmod' || word === 'print' || word === 'input' || word === 'open' || word === 'file' || word === 'iter' || word === 'next' || word === 'all' || word === 'any' || word === 'bin' || word === 'hex' || word === 'oct' || word === 'ord' || word === 'chr' || word === 'ascii' || word === 'repr' || word === 'format' || word === 'eval' || word === 'exec' || word === 'compile' || word === 'callable' || word === 'isinstance' || word === 'issubclass' || word === 'hasattr' || word === 'getattr' || word === 'setattr' || word === 'delattr' || word === 'dir' || word === 'vars' || word === 'locals' || word === 'globals' || word === 'id' || word === 'hash' || word === 'object' || word === 'super' || word === 'property' || word === 'staticmethod' || word === 'classmethod' || word === 'slice' || word === 'memoryview' || word === 'bytearray' || word === 'bytes' || word === 'complex' || word === 'frozenset') {
+                            // If built-in functions, make it yellow
+                            result += `<span style="color: #e5c07b; font-weight: bold;">${word}</span>`;
+                        }
+                        else if (word === 'True' || word === 'False' || word === 'None' || word === 'self' || word === 'cls') {
+                            // If built-in constants, make it orange
+                            result += `<span style="color: #e06c75; font-weight: bold;">${word}</span>`;
+                        }
+                        else if (word.startsWith('&quot;') || word.startsWith('&#39;') || (word.startsWith('&quot;') && word.endsWith('&quot;')) || (word.startsWith('&#39;') && word.endsWith('&#39;'))) {
+                            // If string, make it green
+                            result += `<span style="color: #98c379;">${word}</span>`;
+                        }
+                        else if (/^\d+(\.\d+)?$/.test(word)) {
+                            // If number, make it light blue
+                            result += `<span style="color: #61afef; font-weight: bold;">${word}</span>`;
+                        }
+                        else if (word === '=' || word === '+' || word === '-' || word === '*' || word === '/' || word === '%' || word === '==' || word === '!=' || word === '&lt;' || word === '&gt;' || word === '&lt;=' || word === '&gt;=') {
+                            // If operator, make it pink
+                            result += `<span style="color: #ff79c6; font-weight: bold;">${word}</span>`;
+                        }
+                        else {
+                            // Else, keep it white/default
+                            result += word;
+                        }
+                    });
+                }
+                
+                // Add line break except for last line
+                if (lineIndex < lines.length - 1) {
+                    result += '\n';
+                }
+            });
+            
+            return result;
         }
 
         function renderSection(section, index) {
@@ -1258,11 +962,16 @@ finally:
                 return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
             });
 
-            // Process other markdown
+            // Process other markdown - escape HTML entities in regular content first
             content = content
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
+                .replace(/>/g, '&gt;');
+            
+            // Process markdown syntax (after escaping HTML)
+            content = content
+                .replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,102,204,0.2); margin: 15px 0;">')
+                .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" style="color: #0066cc; text-decoration: underline;">$1</a>')
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                 .replace(/\*(.*?)\*/g, '<em>$1</em>')
                 .replace(/`(.*?)`/g, '<code style="background: rgba(0,102,204,0.1); padding: 2px 4px; border-radius: 3px;">$1</code>')
@@ -1275,35 +984,24 @@ finally:
                 .replace(/<\/p><p><ul>/g, '<ul>')
                 .replace(/<\/ul><\/p><p>/g, '</ul>');
 
-            // Replace code blocks with interactive HTML
+            // Replace code blocks with properly formatted HTML
             codeBlocks.forEach((block, idx) => {
                 const formattedCode = formatCodeBlock(block.code, block.language);
-                const isPython = block.language === 'python' || block.language === 'py' || block.language === '';
-                
                 const codeHtml = `
                     <div class="code-section">
                         <div class="code-header">
                             <div class="code-title">
                                 <span>💻</span>
-                                ${block.language.toUpperCase() || 'PYTHON'} Code
+                                ${block.language.toUpperCase()} Code
                             </div>
-                            <div class="code-actions">
-                                <button class="copy-btn" onclick="copyCode('${block.id}')">
-                                    <span>📋</span>
-                                    Copy Code
-                                </button>
-                                ${isPython ? `
-                                    <button class="run-btn" onclick="executePythonCode('${block.id}')">
-                                        <span>▶️</span>
-                                        Run Code
-                                    </button>
-                                ` : ''}
-                            </div>
+                            <button class="copy-btn" onclick="copyCode('${block.id}')">
+                                <span>📋</span>
+                                Copy Code
+                            </button>
                         </div>
                         <div class="code-container">
                             <div class="code-content" id="${block.id}">${formattedCode}</div>
                         </div>
-                        ${isPython ? `<div class="code-output" id="output_${block.id}"></div>` : ''}
                     </div>
                 `;
                 content = content.replace(`__CODE_BLOCK_${idx}__`, codeHtml);
@@ -1312,7 +1010,7 @@ finally:
             return `
                 <div class="collapsible-section">
                     <button class="section-toggle collapsed" onclick="toggleSection(this)">
-                        ${section.title}
+                           ${section.title}
                     </button>
                     <div class="section-content">
                         <div class="content-text">
@@ -1323,102 +1021,9 @@ finally:
             `;
         }
 
-        function formatCodeBlock(code, language = '') {
-            let escaped = code
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-            
-            if (language === 'python' || language === 'py' || language === '') {
-                return applyPythonSyntaxHighlighting(escaped);
-            }
-            
-            return escaped;
-        }
-
-        function applyPythonSyntaxHighlighting(code) {
-            const lines = code.split('\n');
-            let result = '';
-            
-            lines.forEach((line, lineIndex) => {
-                const trimmedLine = line.trim();
-                if (trimmedLine.startsWith('#')) {
-                    result += `<span style="color: #3399ff; font-weight: bold;">${line}</span>`;
-                } else {
-                    const words = line.split(/(\s+)/);
-                    
-                    words.forEach(word => {
-                        if (!word.trim()) {
-                            result += word;
-                            return;
-                        }
-                        
-                        if (word.includes('#')) {
-                            result += `<span style="color: #6a9955; font-style: italic;">${word}</span>`;
-                        }
-                        else if (word === 'print') {
-                            result += `<span style="color: #d73a49; font-weight: bold;">${word}</span>`;
-                        }
-                        else if (word.includes('.') && !word.startsWith('.') && !word.endsWith('.')) {
-                            const parts = word.split('.');
-                            let coloredParts = [];
-                            
-                            parts.forEach((part, index) => {
-                                if (index === 0) {
-                                    if (['df', 'data', 'dataset', 'dataframe', 'DataFrame'].includes(part)) {
-                                        coloredParts.push(`<span style="color: #0366d6; font-weight: bold;">${part}</span>`);
-                                    } else if (['pandas', 'pd', 'numpy', 'np', 'matplotlib', 'plt'].includes(part)) {
-                                        coloredParts.push(`<span style="color: #e36209; font-weight: bold;">${part}</span>`);
-                                    } else {
-                                        coloredParts.push(part);
-                                    }
-                                } else {
-                                    coloredParts.push(`<span style="color: #6f42c1; font-weight: bold;">${part}</span>`);
-                                }
-                            });
-                            
-                            result += coloredParts.join('.');
-                        }
-                        else if (['import', 'from', 'as', 'def', 'class', 'return', 'if', 'else', 'elif', 'for', 'while', 'try', 'except', 'with', 'in', 'and', 'or', 'not'].includes(word)) {
-                            result += `<span style="color: #c678dd; font-weight: bold;">${word}</span>`;
-                        }
-                        else if (['pandas', 'pd', 'numpy', 'np', 'matplotlib', 'plt'].includes(word)) {
-                            result += `<span style="color: #ff6b6b; font-weight: bold;">${word}</span>`;
-                        }
-                        else if (['df', 'data', 'dataset'].includes(word)) {
-                            result += `<span style="color: #56b6c2; font-weight: bold;">${word}</span>`;
-                        }
-                        else if (['len', 'str', 'int', 'float', 'list', 'dict', 'print'].includes(word)) {
-                            result += `<span style="color: #e5c07b; font-weight: bold;">${word}</span>`;
-                        }
-                        else if (['True', 'False', 'None'].includes(word)) {
-                            result += `<span style="color: #e06c75; font-weight: bold;">${word}</span>`;
-                        }
-                        else if (/^\d+(\.\d+)?$/.test(word)) {
-                            result += `<span style="color: #61afef; font-weight: bold;">${word}</span>`;
-                        }
-                        else {
-                            result += word;
-                        }
-                    });
-                }
-                
-                if (lineIndex < lines.length - 1) {
-                    result += '\n';
-                }
-            });
-            
-            return result;
-        }
-
-        // Initialize the page
+        // Initialize the page with dynamic configuration
         document.addEventListener('DOMContentLoaded', async function() {
-            // Initialize Python environment
-            initializePython();
-            
-            // Load tab configuration
+            // Load tab configuration first
             await loadTabConfiguration();
             
             // Set navigation as collapsed by default
@@ -1441,7 +1046,33 @@ finally:
             buttons.forEach(function(button) {
                 if (button) button.classList.add('collapsed');
             });
+
+            // Apply syntax highlighting to ALL existing code content
+            applyGlobalSyntaxHighlighting();
         });
+
+        function applyGlobalSyntaxHighlighting() {
+            // Apply if-else color highlighting to all code elements
+            const allCodeElements = document.querySelectorAll('.code-content');
+            
+            allCodeElements.forEach(element => {
+                // Only apply if not already colored
+                if (!element.innerHTML.includes('style="color:')) {
+                    const originalCode = element.textContent;
+                    const coloredCode = formatCodeBlock(originalCode, 'python');
+                    element.innerHTML = coloredCode;
+                }
+            });
+        }
+
+        // Enhanced function to apply highlighting to newly created code blocks
+        function applySyntaxHighlightingToElement(element) {
+            if (!element || element.querySelector('span')) return;
+            
+            const originalCode = element.textContent;
+            const highlightedCode = formatCodeBlock(originalCode, 'python');
+            element.innerHTML = highlightedCode;
+        }
     </script>
 </body>
 </html>
