@@ -1,4 +1,4 @@
-This is a section that talks about how to combine mulgtiples files of the same variables or columns into one.
+**This is a section that talks about how to combine multiple files of the same variables or columns into one**
 ## Method
 
 **This is one method how to combine files**
@@ -8,7 +8,7 @@ This is a section that talks about how to combine mulgtiples files of the same v
 
 
 
-## Code : 
+## Code 
 
 ```python
 import pandas as pd
@@ -28,5 +28,12 @@ with open("output.html", "w", encoding="utf-8") as f:
 
 print("HTML table saved as 'output.html'")
 ```
-## Output
+## Malaria Surveillance Dashboard
+
+| District | Cases 2024 | Status | Trend | Completion |
+|----------|------------|--------|-------|------------|
+| **Western Area** | 15,420 | ✅ Complete | 📈 +2.3% | 98.5% |
+| **Eastern Province** | 22,180 | ⚠️ Review | 📉 -1.8% | 89.2% |
+| **Northern Province** | 18,750 | ✅ Complete | 📈 +5.1% | 95.7% |
+| **Southern Province** | 12,340 | 🔄 Processing | 📊 Stable | 76.8% |
 
