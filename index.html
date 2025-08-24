@@ -1,4 +1,4 @@
-<!DOCTYPE html>   
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">   
@@ -367,6 +367,254 @@
             font-size: 1em;
             line-height: 1.5;
             font-weight: 500;
+        }
+
+        /* Enhanced Beautiful Table Styling */
+        .markdown-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 
+                0 10px 30px rgba(0, 102, 204, 0.15),
+                0 4px 15px rgba(0, 102, 204, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(0, 102, 204, 0.1);
+            position: relative;
+            font-size: 0.95em;
+        }
+
+        .markdown-table::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #0066cc, #3b82f6, #10b981, #f59e0b, #ef4444);
+            background-size: 400% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .markdown-table thead {
+            background: linear-gradient(135deg, #0066cc 0%, #004499 50%, #003366 100%);
+            position: relative;
+        }
+
+        .markdown-table thead::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        }
+
+        .markdown-table th {
+            padding: 18px 16px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 1.1em;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(0,0,0,0.05) 100%);
+            transition: all 0.3s ease;
+        }
+
+        .markdown-table th:hover {
+            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 50%, rgba(0,0,0,0.1) 100%);
+            transform: translateY(-1px);
+        }
+
+        .markdown-table th:last-child {
+            border-right: none;
+        }
+
+        .markdown-table th:first-child {
+            border-top-left-radius: 15px;
+        }
+
+        .markdown-table th:last-child {
+            border-top-right-radius: 15px;
+        }
+
+        .markdown-table tbody tr {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .markdown-table tbody tr:nth-child(odd) {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        }
+
+        .markdown-table tbody tr:nth-child(even) {
+            background: linear-gradient(135deg, rgba(0, 102, 204, 0.03) 0%, rgba(59, 130, 246, 0.05) 100%);
+        }
+
+        .markdown-table tbody tr:hover {
+            background: linear-gradient(135deg, rgba(0, 102, 204, 0.08) 0%, rgba(59, 130, 246, 0.12) 100%);
+            transform: translateX(5px);
+            box-shadow: 
+                5px 0 15px rgba(0, 102, 204, 0.15),
+                inset 5px 0 0 rgba(0, 102, 204, 0.3);
+        }
+
+        .markdown-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(0, 102, 204, 0.08);
+            border-right: 1px solid rgba(0, 102, 204, 0.08);
+            vertical-align: top;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .markdown-table td:last-child {
+            border-right: none;
+        }
+
+        .markdown-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .markdown-table tbody tr:last-child td:first-child {
+            border-bottom-left-radius: 15px;
+        }
+
+        .markdown-table tbody tr:last-child td:last-child {
+            border-bottom-right-radius: 15px;
+        }
+
+        /* Special cell content styling */
+        .markdown-table td:first-child {
+            font-weight: 600;
+            color: #004499;
+            background: linear-gradient(90deg, rgba(0, 102, 204, 0.05) 0%, transparent 100%);
+        }
+
+        .markdown-table strong {
+            color: #004499;
+            font-weight: 700;
+        }
+
+        /* Status indicators in tables */
+        .markdown-table td:contains("✅") {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        .markdown-table td:contains("⚠️") {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+
+        .markdown-table td:contains("❌") {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        /* Enhanced table container for better responsive handling */
+        .table-container {
+            overflow-x: auto;
+            margin: 25px 0;
+            border-radius: 15px;
+            box-shadow: 
+                0 15px 35px rgba(0, 102, 204, 0.1),
+                0 5px 15px rgba(0, 0, 0, 0.05);
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            padding: 5px;
+            position: relative;
+        }
+
+        .table-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0, 102, 204, 0.02), rgba(59, 130, 246, 0.02));
+            border-radius: 15px;
+            pointer-events: none;
+        }
+
+        /* Custom scrollbar for table container */
+        .table-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: rgba(0, 102, 204, 0.1);
+            border-radius: 4px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #0066cc, #3b82f6);
+            border-radius: 4px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, #004499, #1e40af);
+        }
+
+        /* Responsive enhancements */
+        @media (max-width: 768px) {
+            .markdown-table {
+                font-size: 0.85em;
+            }
+            
+            .markdown-table th {
+                padding: 12px 10px;
+                font-size: 0.95em;
+            }
+            
+            .markdown-table td {
+                padding: 10px 8px;
+            }
+            
+            .table-container {
+                margin: 15px -10px;
+                border-radius: 10px;
+            }
+        }
+
+        /* Animation for table rows appearing */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .markdown-table tbody tr {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+
+        .markdown-table tbody tr:nth-child(1) { animation-delay: 0.1s; }
+        .markdown-table tbody tr:nth-child(2) { animation-delay: 0.2s; }
+        .markdown-table tbody tr:nth-child(3) { animation-delay: 0.3s; }
+        .markdown-table tbody tr:nth-child(4) { animation-delay: 0.4s; }
+        .markdown-table tbody tr:nth-child(5) { animation-delay: 0.5s; }
+
+        /* Special styling for numeric data */
+        .markdown-table td[data-type="number"] {
+            text-align: right;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-weight: 600;
+            color: #1e40af;
         }
 
         /* Code Section Styling */
@@ -1001,7 +1249,7 @@
             const codeBlocks = [];
             let processedContent = content;
             
-            // Extract and replace code blocks
+            // Extract and replace code blocks first
             processedContent = processedContent.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, language, code) => {
                 const codeId = `code_${Date.now()}_${codeBlocks.length}`;
                 codeBlocks.push({ id: codeId, language: language || 'python', code: code.trim() });
@@ -1014,7 +1262,10 @@
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;');
             
-            // Process markdown syntax (after escaping HTML)
+            // Process markdown tables before other formatting
+            processedContent = processMarkdownTables(processedContent);
+            
+            // Process other markdown syntax (after escaping HTML)
             processedContent = processedContent
                 .replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,102,204,0.2); margin: 15px 0;">')
                 .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" style="color: #0066cc; text-decoration: underline;">$1</a>')
@@ -1055,6 +1306,155 @@
             });
 
             return processedContent;
+        }
+
+        // Process Markdown tables
+        function processMarkdownTables(content) {
+            // Split content into lines for table processing
+            const lines = content.split('\n');
+            const processedLines = [];
+            let inTable = false;
+            let tableLines = [];
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                
+                // Check if this line looks like a table row (contains |)
+                if (line.includes('|') && line.length > 0) {
+                    if (!inTable) {
+                        inTable = true;
+                        tableLines = [];
+                    }
+                    tableLines.push(line);
+                } else {
+                    // If we were in a table, process it now
+                    if (inTable && tableLines.length > 0) {
+                        const tableHtml = convertMarkdownTableToHtml(tableLines);
+                        processedLines.push(tableHtml);
+                        inTable = false;
+                        tableLines = [];
+                    }
+                    // Add the current line
+                    processedLines.push(line);
+                }
+            }
+            
+            // Process any remaining table
+            if (inTable && tableLines.length > 0) {
+                const tableHtml = convertMarkdownTableToHtml(tableLines);
+                processedLines.push(tableHtml);
+            }
+            
+            return processedLines.join('\n');
+        }
+
+        // Convert markdown table to HTML with enhanced styling
+        function convertMarkdownTableToHtml(tableLines) {
+            if (tableLines.length < 2) return tableLines.join('\n');
+            
+            // Filter out separator lines (lines with only |, -, :, and spaces)
+            const dataLines = tableLines.filter(line => 
+                !line.match(/^[\|\-\:\s]+$/)
+            );
+            
+            if (dataLines.length === 0) return '';
+            
+            let html = '<div class="table-container"><table class="markdown-table">';
+            
+            // Process header (first line)
+            const headerCells = parseTableRow(dataLines[0]);
+            if (headerCells.length > 0) {
+                html += '<thead><tr>';
+                headerCells.forEach(cell => {
+                    html += `<th>${formatTableCell(cell)}</th>`;
+                });
+                html += '</tr></thead>';
+            }
+            
+            // Process body rows
+            if (dataLines.length > 1) {
+                html += '<tbody>';
+                for (let i = 1; i < dataLines.length; i++) {
+                    const cells = parseTableRow(dataLines[i]);
+                    if (cells.length > 0) {
+                        html += '<tr>';
+                        cells.forEach((cell, index) => {
+                            const formattedCell = formatTableCell(cell);
+                            const isNumeric = isNumericValue(cell.replace(/[,\s%]/g, ''));
+                            const dataType = isNumeric ? 'data-type="number"' : '';
+                            html += `<td ${dataType}>${formattedCell}</td>`;
+                        });
+                        html += '</tr>';
+                    }
+                }
+                html += '</tbody>';
+            }
+            
+            html += '</table></div>';
+            return html;
+        }
+
+        // Enhanced cell formatting with icons and styling
+        function formatTableCell(cell) {
+            let formatted = cell.trim();
+            
+            // Handle status indicators with better styling
+            formatted = formatted
+                .replace(/✅/g, '<span style="color: #10b981; font-weight: bold; text-shadow: 0 1px 2px rgba(16, 185, 129, 0.3);">✅</span>')
+                .replace(/⚠️/g, '<span style="color: #f59e0b; font-weight: bold; text-shadow: 0 1px 2px rgba(245, 158, 11, 0.3);">⚠️</span>')
+                .replace(/❌/g, '<span style="color: #ef4444; font-weight: bold; text-shadow: 0 1px 2px rgba(239, 68, 68, 0.3);">❌</span>')
+                .replace(/🔄/g, '<span style="color: #6366f1; font-weight: bold;">🔄</span>')
+                .replace(/📊/g, '<span style="color: #8b5cf6; font-weight: bold;">📊</span>')
+                .replace(/📈/g, '<span style="color: #10b981; font-weight: bold;">📈</span>')
+                .replace(/📉/g, '<span style="color: #ef4444; font-weight: bold;">📉</span>');
+            
+            // Enhanced status text styling
+            if (formatted.toLowerCase().includes('complete') || formatted.toLowerCase().includes('success')) {
+                formatted = `<span style="color: #10b981; font-weight: 600;">${formatted}</span>`;
+            } else if (formatted.toLowerCase().includes('warning') || formatted.toLowerCase().includes('review')) {
+                formatted = `<span style="color: #f59e0b; font-weight: 600;">${formatted}</span>`;
+            } else if (formatted.toLowerCase().includes('error') || formatted.toLowerCase().includes('failed')) {
+                formatted = `<span style="color: #ef4444; font-weight: 600;">${formatted}</span>`;
+            } else if (formatted.toLowerCase().includes('pending') || formatted.toLowerCase().includes('processing')) {
+                formatted = `<span style="color: #6366f1; font-weight: 600;">${formatted}</span>`;
+            }
+            
+            // Format percentages with special styling
+            if (formatted.match(/\d+(\.\d+)?%/)) {
+                formatted = formatted.replace(/(\d+(?:\.\d+)?)%/g, 
+                    '<span style="color: #1e40af; font-weight: 700; font-family: monospace;">$1<span style="font-size: 0.85em;">%</span></span>'
+                );
+            }
+            
+            // Format large numbers with thousand separators
+            if (isNumericValue(formatted.replace(/[,\s]/g, ''))) {
+                const num = parseFloat(formatted.replace(/[,\s]/g, ''));
+                if (num >= 1000) {
+                    formatted = `<span style="color: #1e40af; font-weight: 600; font-family: monospace;">${num.toLocaleString()}</span>`;
+                }
+            }
+            
+            // Bold important terms
+            formatted = formatted
+                .replace(/\*\*(.*?)\*\*/g, '<strong style="color: #004499;">$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em style="color: #0066cc;">$1</em>');
+            
+            return formatted;
+        }
+
+        // Check if a value is numeric
+        function isNumericValue(str) {
+            return !isNaN(str) && !isNaN(parseFloat(str)) && str.trim() !== '';
+        }
+
+        // Parse a table row and return array of cells
+        function parseTableRow(line) {
+            // Remove leading/trailing pipes and split by |
+            const cleaned = line.replace(/^\||\|$/g, '');
+            const cells = cleaned.split('|').map(cell => cell.trim());
+            
+            // Filter out empty cells
+            return cells.filter(cell => cell.length > 0);
         }
 
         // Enhanced code formatting with syntax highlighting
