@@ -1,7 +1,7 @@
 **This is a section that talks about how to combine multiple files of the same variables or columns into one**
 ## Method
 
-**This is one method how to combine files**
+**This is one method how to combine files**   
 
 
 ![NMCP lOGO](Concatenate.png)
