@@ -203,7 +203,7 @@
             border-left: 5px solid #0066cc;
         }
 
-        /* Collapsible Sections */
+        /* Hierarchical Section Styling */
         .collapsible-section {
             margin-bottom: 30px;
             border: 2px solid rgba(0, 102, 204, 0.2);
@@ -212,7 +212,8 @@
             box-shadow: 0 4px 15px rgba(0, 102, 204, 0.1);
         }
 
-        .section-toggle {
+        /* Level 2 sections (##) - Main sections */
+        .section-toggle.level-2 {
             background: linear-gradient(135deg, #0066cc, #004499);
             color: white;
             border: none;
@@ -228,10 +229,67 @@
             align-items: center;
         }
 
-        .section-toggle:hover {
+        .section-toggle.level-2:hover {
             background: linear-gradient(135deg, #004499, #0066cc);
         }
 
+        /* Level 3 sections (###) - Subsections */
+        .subsection {
+            border-left: 4px solid #3b82f6;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+        }
+
+        .section-toggle.level-3 {
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-toggle.level-3:hover {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+        }
+
+        /* Level 4 sections (####) - Sub-subsections */
+        .sub-subsection {
+            border-left: 4px solid #10b981;
+            margin: 10px 0 10px 20px;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 1px 6px rgba(16, 185, 129, 0.1);
+        }
+
+        .section-toggle.level-4 {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-toggle.level-4:hover {
+            background: linear-gradient(135deg, #059669, #10b981);
+        }
+
+        /* Common toggle arrow styling */
         .section-toggle::after {
             content: '▼';
             font-size: 1.2em;
@@ -255,6 +313,12 @@
             padding: 20px;
         }
 
+        /* Nested content styling */
+        .section-content.level-3.expanded,
+        .section-content.level-4.expanded {
+            padding: 15px;
+        }
+
         .content-text {
             font-size: 1.1em;
             line-height: 1.6;
@@ -264,6 +328,20 @@
             background: rgba(255, 255, 255, 0.7);
             border-radius: 10px;
             border-left: 4px solid #0066cc;
+        }
+
+        /* Nested content text styling */
+        .content-text.level-3 {
+            border-left-color: #3b82f6;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .content-text.level-4 {
+            border-left-color: #10b981;
+            padding: 12px;
+            margin-bottom: 10px;
+            font-size: 1em;
         }
 
         /* Image styling within content */
@@ -430,13 +508,22 @@
                 padding: 12px 20px;
                 font-size: 1em;
             }
+
+            .section-toggle {
+                font-size: 1.1em !important;
+                padding: 15px !important;
+            }
+
+            .sub-subsection {
+                margin-left: 10px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="header-content">
-            <!-- Logo Section for 4 logos -->
+            <!-- Logo Section for 5 logos -->
             <div class="logo-section">
                 <div class="logo-container">
                     <img src="NMCP.png" alt="NMCP Logo" class="logo-image">
@@ -463,7 +550,6 @@
             <div class="title-section">
                 <h1 class="main-title">MTR Code Repository</h1>
                 <h2 class="subtitle">2021-2024</h2>
-                
             </div>
         </div>
     </div>
@@ -487,7 +573,7 @@
             
             <!-- Code Repository Introduction -->
             <div class="collapsible-section">
-                <button class="section-toggle collapsed" onclick="toggleSection(this)">
+                <button class="section-toggle level-2 collapsed" onclick="toggleSection(this)">
                     💻 Code Repository Overview
                 </button>
                 <div class="section-content">
@@ -754,10 +840,10 @@
                 }
                 
                 const markdown = await response.text();
-                const sections = parseMarkdown(markdown);
+                const sections = parseMarkdownHierarchical(markdown);
                 
-                // Render sections
-                const renderedSections = sections.map((section, idx) => renderSection(section, idx)).join('');
+                // Render sections hierarchically
+                const renderedSections = renderHierarchicalSections(sections);
                 
                 // Update tab content
                 if (tabElement) {
@@ -795,25 +881,34 @@
             }
         }
 
-        // Markdown parsing and rendering functions
-        function parseMarkdown(markdown) {
-            // Split into sections based on ## headers
+        // Enhanced markdown parsing for hierarchical structure
+        function parseMarkdownHierarchical(markdown) {
             const sections = [];
             const lines = markdown.split('\n');
             let currentSection = null;
             let currentContent = [];
 
             for (let line of lines) {
-                if (line.startsWith('## ')) {
+                // Check for headers at different levels
+                const headerMatch = line.match(/^(#{2,4})\s+(.+)$/);
+                
+                if (headerMatch) {
                     // Save previous section if exists
                     if (currentSection) {
-                        sections.push({
-                            title: currentSection,
-                            content: currentContent.join('\n').trim()
-                        });
+                        currentSection.content = currentContent.join('\n').trim();
+                        sections.push(currentSection);
                     }
+                    
                     // Start new section
-                    currentSection = line.substring(3).trim();
+                    const level = headerMatch[1].length;
+                    const title = headerMatch[2].trim();
+                    
+                    currentSection = {
+                        level: level,
+                        title: title,
+                        content: '',
+                        id: `section_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+                    };
                     currentContent = [];
                 } else {
                     currentContent.push(line);
@@ -822,165 +917,117 @@
 
             // Add last section
             if (currentSection) {
-                sections.push({
-                    title: currentSection,
-                    content: currentContent.join('\n').trim()
-                });
+                currentSection.content = currentContent.join('\n').trim();
+                sections.push(currentSection);
             }
 
             return sections;
         }
 
-        function formatCodeBlock(code, language = '') {
-            // Escape HTML entities first
-            let escaped = code
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
+        // Render hierarchical sections
+        function renderHierarchicalSections(sections) {
+            let html = '';
+            let openContainers = [];
             
-            // Apply if-else color highlighting
-            if (language === 'python' || language === 'py' || language === '') {
-                return applyIfElseColors(escaped);
-            }
-            
-            return escaped;
-        }
-
-        function applyIfElseColors(code) {
-            // Split code into lines and apply colors using if-else logic
-            let result = '';
-            const lines = code.split('\n');
-            
-            lines.forEach((line, lineIndex) => {
-                // Check if entire line is a comment first (any line starting with # regardless of spacing)
-                const trimmedLine = line.trim();
-                if (trimmedLine.startsWith('#')) {
-                    // If entire line starts with #, make it bright blue bold
-                    result += `<span style="color: #3399ff; font-weight: bold;">${line}</span>`;
-                } else {
-                    // Process line word by word for other highlighting
-                    const words = line.split(/(\s+)/); // Split but keep whitespace
-                    
-                    words.forEach(word => {
-                        // Skip empty words
-                        if (!word.trim()) {
-                            result += word;
-                            return;
-                        }
-                        
-                        // If-else color logic for each word
-                        if (word.includes('#')) {
-                            // If word contains #, make it gray italic (comments)
-                            result += `<span style="color: #6a9955; font-style: italic;">${word}</span>`;
-                        }
-                        else if (word === 'print') {
-                            // If print statement, make it bright magenta
-                            result += `<span style="color: #d73a49; font-weight: bold;">${word}</span>`;
-                        }
-                        else if (word.includes('.') && !word.startsWith('.') && !word.endsWith('.')) {
-                            // If word contains dot (method calls like df.head, data.shape), split and color
-                            const parts = word.split('.');
-                            let coloredParts = [];
-                            
-                            parts.forEach((part, index) => {
-                                if (index === 0) {
-                                    // First part (object name) - check if it's a DataFrame
-                                    if (part === 'df' || part === 'data' || part === 'dataset' || part === 'dataframe' || part === 'DataFrame' || part === 'Series' || part === 'series' || part === 'matrix' || part === 'array' || part === 'Array' || part === 'ndarray' || part === 'tensor' || part === 'Tensor' || part === 'malaria_data' || part === 'cases_df' || part === 'stats_df' || part === 'results_df' || part === 'clean_data' || part === 'raw_data' || part === 'processed_data' || part === 'filtered_data' || part === 'merged_data' || part === 'grouped_data') {
-                                        coloredParts.push(`<span style="color: #0366d6; font-weight: bold;">${part}</span>`);
-                                    } else if (part === 'pandas' || part === 'pd' || part === 'numpy' || part === 'np' || part === 'matplotlib' || part === 'plt' || part === 'seaborn' || part === 'sns') {
-                                        coloredParts.push(`<span style="color: #e36209; font-weight: bold;">${part}</span>`);
-                                    } else {
-                                        coloredParts.push(part);
-                                    }
-                                } else {
-                                    // Method/attribute names after dot - make them bright purple
-                                    coloredParts.push(`<span style="color: #6f42c1; font-weight: bold;">${part}</span>`);
-                                }
-                            });
-                            
-                            result += coloredParts.join('.');
-                        }
-                        else if (word === 'import' || word === 'from' || word === 'as' || word === 'def' || word === 'class' || word === 'return' || word === 'if' || word === 'else' || word === 'elif' || word === 'for' || word === 'while' || word === 'try' || word === 'except' || word === 'with' || word === 'in' || word === 'and' || word === 'or' || word === 'not' || word === 'is' || word === 'lambda' || word === 'yield' || word === 'break' || word === 'continue' || word === 'pass' || word === 'raise' || word === 'assert' || word === 'del' || word === 'global' || word === 'nonlocal' || word === 'async' || word === 'await') {
-                            // If keyword, make it purple
-                            result += `<span style="color: #c678dd; font-weight: bold;">${word}</span>`;
-                        }
-                        else if (word === 'pandas' || word === 'pd' || word === 'numpy' || word === 'np' || word === 'matplotlib' || word === 'plt' || word === 'seaborn' || word === 'sns' || word === 'tensorflow' || word === 'tf' || word === 'sklearn' || word === 'sk' || word === 'plotly' || word === 'px' || word === 'scipy' || word === 'sp' || word === 'opencv' || word === 'cv2' || word === 'requests' || word === 'flask' || word === 'django' || word === 'fastapi' || word === 'sqlalchemy' || word === 'pytest' || word === 'streamlit' || word === 'dash' || word === 'bokeh' || word === 'altair' || word === 'folium' || word === 'geopandas' || word === 'gpd' || word === 'xgboost' || word === 'lgb' || word === 'catboost' || word === 'statsmodels' || word === 'sm' || word === 'networkx' || word === 'nx' || word === 'beautifulsoup4' || word === 'bs4' || word === 'scrapy' || word === 'selenium' || word === 'pymongo' || word === 'redis' || word === 'psycopg2' || word === 'mysql' || word === 'sqlite3') {
-                            // If package/alias, make it red
-                            result += `<span style="color: #ff6b6b; font-weight: bold;">${word}</span>`;
-                        }
-                        else if (word === 'df' || word === 'data' || word === 'dataset' || word === 'dataframe' || word === 'DataFrame' || word === 'Series' || word === 'series' || word === 'matrix' || word === 'array' || word === 'Array' || word === 'ndarray' || word === 'tensor' || word === 'Tensor' || word === 'malaria_data' || word === 'cases_df' || word === 'stats_df' || word === 'results_df' || word === 'clean_data' || word === 'raw_data' || word === 'processed_data' || word === 'filtered_data' || word === 'merged_data' || word === 'grouped_data') {
-                            // If DataFrame/data structures, make it cyan
-                            result += `<span style="color: #56b6c2; font-weight: bold;">${word}</span>`;
-                        }
-                        else if (word === 'len' || word === 'str' || word === 'int' || word === 'float' || word === 'bool' || word === 'list' || word === 'dict' || word === 'tuple' || word === 'set' || word === 'type' || word === 'range' || word === 'enumerate' || word === 'zip' || word === 'map' || word === 'filter' || word === 'sorted' || word === 'reversed' || word === 'sum' || word === 'min' || word === 'max' || word === 'abs' || word === 'round' || word === 'pow' || word === 'divmod' || word === 'print' || word === 'input' || word === 'open' || word === 'file' || word === 'iter' || word === 'next' || word === 'all' || word === 'any' || word === 'bin' || word === 'hex' || word === 'oct' || word === 'ord' || word === 'chr' || word === 'ascii' || word === 'repr' || word === 'format' || word === 'eval' || word === 'exec' || word === 'compile' || word === 'callable' || word === 'isinstance' || word === 'issubclass' || word === 'hasattr' || word === 'getattr' || word === 'setattr' || word === 'delattr' || word === 'dir' || word === 'vars' || word === 'locals' || word === 'globals' || word === 'id' || word === 'hash' || word === 'object' || word === 'super' || word === 'property' || word === 'staticmethod' || word === 'classmethod' || word === 'slice' || word === 'memoryview' || word === 'bytearray' || word === 'bytes' || word === 'complex' || word === 'frozenset') {
-                            // If built-in functions, make it yellow
-                            result += `<span style="color: #e5c07b; font-weight: bold;">${word}</span>`;
-                        }
-                        else if (word === 'True' || word === 'False' || word === 'None' || word === 'self' || word === 'cls') {
-                            // If built-in constants, make it orange
-                            result += `<span style="color: #e06c75; font-weight: bold;">${word}</span>`;
-                        }
-                        else if (word.startsWith('&quot;') || word.startsWith('&#39;') || (word.startsWith('&quot;') && word.endsWith('&quot;')) || (word.startsWith('&#39;') && word.endsWith('&#39;'))) {
-                            // If string, make it green
-                            result += `<span style="color: #98c379;">${word}</span>`;
-                        }
-                        else if (/^\d+(\.\d+)?$/.test(word)) {
-                            // If number, make it light blue
-                            result += `<span style="color: #61afef; font-weight: bold;">${word}</span>`;
-                        }
-                        else if (word === '=' || word === '+' || word === '-' || word === '*' || word === '/' || word === '%' || word === '==' || word === '!=' || word === '&lt;' || word === '&gt;' || word === '&lt;=' || word === '&gt;=') {
-                            // If operator, make it pink
-                            result += `<span style="color: #ff79c6; font-weight: bold;">${word}</span>`;
-                        }
-                        else {
-                            // Else, keep it white/default
-                            result += word;
-                        }
-                    });
+            for (let i = 0; i < sections.length; i++) {
+                const section = sections[i];
+                const nextSection = sections[i + 1];
+                
+                // Close containers if next section is at same or higher level
+                if (nextSection && nextSection.level <= section.level) {
+                    while (openContainers.length > 0 && openContainers[openContainers.length - 1].level >= nextSection.level) {
+                        const container = openContainers.pop();
+                        html += '</div></div>'; // Close section-content and collapsible-section
+                    }
                 }
                 
-                // Add line break except for last line
-                if (lineIndex < lines.length - 1) {
-                    result += '\n';
+                // Determine container class and styling based on level
+                let containerClass = 'collapsible-section';
+                let toggleClass = `section-toggle level-${section.level} collapsed`;
+                let contentClass = `section-content level-${section.level}`;
+                let textClass = `content-text level-${section.level}`;
+                
+                if (section.level === 3) {
+                    containerClass += ' subsection';
+                } else if (section.level === 4) {
+                    containerClass += ' sub-subsection';
                 }
-            });
+                
+                // Process the content
+                const processedContent = renderSectionContent(section.content, section.level);
+                
+                // Generate section HTML
+                html += `
+                    <div class="${containerClass}">
+                        <button class="${toggleClass}" onclick="toggleSection(this)">
+                            ${getSectionIcon(section.level)} ${section.title}
+                        </button>
+                        <div class="${contentClass}">
+                            <div class="${textClass}">
+                                ${processedContent}
+                            </div>
+                `;
+                
+                // Track open containers
+                openContainers.push({
+                    level: section.level,
+                    id: section.id
+                });
+                
+                // If this is the last section or next section is at higher level, close containers
+                if (!nextSection || nextSection.level <= section.level) {
+                    while (openContainers.length > 0) {
+                        openContainers.pop();
+                        html += '</div></div>'; // Close section-content and collapsible-section
+                    }
+                }
+            }
             
-            return result;
+            return html;
         }
 
-        function renderSection(section, index) {
-            const sectionId = `section_${Date.now()}_${index}`;
+        // Get appropriate icon for section level
+        function getSectionIcon(level) {
+            const icons = {
+                2: '📁',
+                3: '📂',
+                4: '📄'
+            };
+            return icons[level] || '📋';
+        }
+
+        // Render section content with markdown processing
+        function renderSectionContent(content, level) {
             const codeBlocks = [];
-            let content = section.content;
+            let processedContent = content;
             
             // Extract and replace code blocks
-            content = content.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, language, code) => {
+            processedContent = processedContent.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, language, code) => {
                 const codeId = `code_${Date.now()}_${codeBlocks.length}`;
                 codeBlocks.push({ id: codeId, language: language || 'python', code: code.trim() });
                 return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
             });
 
             // Process other markdown - escape HTML entities in regular content first
-            content = content
+            processedContent = processedContent
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;');
             
             // Process markdown syntax (after escaping HTML)
-            content = content
+            processedContent = processedContent
                 .replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,102,204,0.2); margin: 15px 0;">')
                 .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" style="color: #0066cc; text-decoration: underline;">$1</a>')
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                 .replace(/\*(.*?)\*/g, '<em>$1</em>')
                 .replace(/`(.*?)`/g, '<code style="background: rgba(0,102,204,0.1); padding: 2px 4px; border-radius: 3px;">$1</code>')
                 .replace(/^\- (.+)$/gm, '<li>$1</li>')
+                .replace(/^\d+\.\s(.+)$/gm, '<li>$1</li>')
                 .replace(/\n\n/g, '</p><p>')
                 .replace(/^(.+)$/gm, '<p>$1</p>');
 
             // Wrap lists
-            content = content.replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+            processedContent = processedContent.replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
                 .replace(/<\/p><p><ul>/g, '<ul>')
                 .replace(/<\/ul><\/p><p>/g, '</ul>');
 
@@ -1004,21 +1051,146 @@
                         </div>
                     </div>
                 `;
-                content = content.replace(`__CODE_BLOCK_${idx}__`, codeHtml);
+                processedContent = processedContent.replace(`__CODE_BLOCK_${idx}__`, codeHtml);
             });
 
-            return `
-                <div class="collapsible-section">
-                    <button class="section-toggle collapsed" onclick="toggleSection(this)">
-                           ${section.title}
-                    </button>
-                    <div class="section-content">
-                        <div class="content-text">
-                            ${content}
-                        </div>
-                    </div>
-                </div>
-            `;
+            return processedContent;
+        }
+
+        // Enhanced code formatting with syntax highlighting
+        function formatCodeBlock(code, language = '') {
+            // Escape HTML entities first
+            let escaped = code
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            
+            // Apply syntax highlighting for Python or general code
+            if (language === 'python' || language === 'py' || language === '') {
+                return applySyntaxHighlighting(escaped);
+            }
+            
+            return escaped;
+        }
+
+        // Enhanced syntax highlighting with better color scheme
+        function applySyntaxHighlighting(code) {
+            let result = '';
+            const lines = code.split('\n');
+            
+            lines.forEach((line, lineIndex) => {
+                const trimmedLine = line.trim();
+                
+                // Full line comments (lines starting with #)
+                if (trimmedLine.startsWith('#')) {
+                    result += `<span style="color: #6a9955; font-style: italic; font-weight: 500;">${line}</span>`;
+                } else {
+                    // Process line word by word for syntax highlighting
+                    const words = line.split(/(\s+)/);
+                    
+                    words.forEach(word => {
+                        if (!word.trim()) {
+                            result += word;
+                            return;
+                        }
+                        
+                        // Comments within lines
+                        if (word.includes('#')) {
+                            result += `<span style="color: #6a9955; font-style: italic;">${word}</span>`;
+                        }
+                        // Print and other output functions
+                        else if (['print', 'input', 'display', 'show'].includes(word)) {
+                            result += `<span style="color: #d73a49; font-weight: bold;">${word}</span>`;
+                        }
+                        // Method calls and attribute access
+                        else if (word.includes('.') && !word.startsWith('.') && !word.endsWith('.')) {
+                            const parts = word.split('.');
+                            let coloredParts = [];
+                            
+                            parts.forEach((part, index) => {
+                                if (index === 0) {
+                                    // Object names - DataFrames and common data structures
+                                    if (['df', 'data', 'dataset', 'dataframe', 'DataFrame', 'Series', 'series', 
+                                         'matrix', 'array', 'Array', 'ndarray', 'tensor', 'Tensor',
+                                         'malaria_data', 'cases_df', 'stats_df', 'results_df',
+                                         'clean_data', 'raw_data', 'processed_data', 'filtered_data',
+                                         'merged_data', 'grouped_data', 'analysis_df'].includes(part)) {
+                                        coloredParts.push(`<span style="color: #0366d6; font-weight: bold;">${part}</span>`);
+                                    }
+                                    // Library/module names
+                                    else if (['pandas', 'pd', 'numpy', 'np', 'matplotlib', 'plt', 
+                                             'seaborn', 'sns', 'plotly', 'px', 'sklearn', 'tf'].includes(part)) {
+                                        coloredParts.push(`<span style="color: #e36209; font-weight: bold;">${part}</span>`);
+                                    } else {
+                                        coloredParts.push(part);
+                                    }
+                                } else {
+                                    // Methods and attributes
+                                    coloredParts.push(`<span style="color: #6f42c1; font-weight: bold;">${part}</span>`);
+                                }
+                            });
+                            
+                            result += coloredParts.join('.');
+                        }
+                        // Python keywords
+                        else if (['import', 'from', 'as', 'def', 'class', 'return', 'if', 'else', 'elif',
+                                 'for', 'while', 'try', 'except', 'finally', 'with', 'in', 'and', 'or', 'not',
+                                 'is', 'lambda', 'yield', 'break', 'continue', 'pass', 'raise', 'assert',
+                                 'del', 'global', 'nonlocal', 'async', 'await'].includes(word)) {
+                            result += `<span style="color: #c678dd; font-weight: bold;">${word}</span>`;
+                        }
+                        // Libraries and packages
+                        else if (['pandas', 'pd', 'numpy', 'np', 'matplotlib', 'plt', 'seaborn', 'sns',
+                                 'plotly', 'px', 'scipy', 'sp', 'sklearn', 'tensorflow', 'tf',
+                                 'requests', 'json', 'csv', 'os', 'sys', 'datetime', 'time'].includes(word)) {
+                            result += `<span style="color: #e36209; font-weight: bold;">${word}</span>`;
+                        }
+                        // Data structures and variables
+                        else if (['df', 'data', 'dataset', 'dataframe', 'DataFrame', 'Series', 'series',
+                                 'matrix', 'array', 'Array', 'ndarray', 'tensor', 'Tensor',
+                                 'malaria_data', 'cases_df', 'stats_df', 'results_df',
+                                 'clean_data', 'raw_data', 'processed_data'].includes(word)) {
+                            result += `<span style="color: #0366d6; font-weight: bold;">${word}</span>`;
+                        }
+                        // Built-in functions
+                        else if (['len', 'str', 'int', 'float', 'bool', 'list', 'dict', 'tuple', 'set',
+                                 'type', 'range', 'enumerate', 'zip', 'map', 'filter', 'sorted', 'reversed',
+                                 'sum', 'min', 'max', 'abs', 'round', 'open', 'file'].includes(word)) {
+                            result += `<span style="color: #e5c07b; font-weight: bold;">${word}</span>`;
+                        }
+                        // Constants and special values
+                        else if (['True', 'False', 'None', 'self', 'cls'].includes(word)) {
+                            result += `<span style="color: #e06c75; font-weight: bold;">${word}</span>`;
+                        }
+                        // String literals (basic detection)
+                        else if ((word.startsWith('&quot;') && word.endsWith('&quot;')) || 
+                                (word.startsWith('&#39;') && word.endsWith('&#39;'))) {
+                            result += `<span style="color: #98c379;">${word}</span>`;
+                        }
+                        // Numbers
+                        else if (/^\d+(\.\d+)?$/.test(word)) {
+                            result += `<span style="color: #61afef; font-weight: bold;">${word}</span>`;
+                        }
+                        // Operators
+                        else if (['=', '==', '!=', '&lt;', '&gt;', '&lt;=', '&gt;=', '+', '-', '*', '/', '//', '%', '**'].includes(word)) {
+                            result += `<span style="color: #ff79c6; font-weight: bold;">${word}</span>`;
+                        }
+                        // Default case
+                        else {
+                            result += word;
+                        }
+                    });
+                }
+                
+                // Add line break except for last line
+                if (lineIndex < lines.length - 1) {
+                    result += '\n';
+                }
+            });
+            
+            return result;
         }
 
         // Initialize the page with dynamic configuration
@@ -1047,31 +1219,20 @@
                 if (button) button.classList.add('collapsed');
             });
 
-            // Apply syntax highlighting to ALL existing code content
+            // Apply syntax highlighting to existing code content
             applyGlobalSyntaxHighlighting();
         });
 
         function applyGlobalSyntaxHighlighting() {
-            // Apply if-else color highlighting to all code elements
             const allCodeElements = document.querySelectorAll('.code-content');
             
             allCodeElements.forEach(element => {
-                // Only apply if not already colored
                 if (!element.innerHTML.includes('style="color:')) {
                     const originalCode = element.textContent;
                     const coloredCode = formatCodeBlock(originalCode, 'python');
                     element.innerHTML = coloredCode;
                 }
             });
-        }
-
-        // Enhanced function to apply highlighting to newly created code blocks
-        function applySyntaxHighlightingToElement(element) {
-            if (!element || element.querySelector('span')) return;
-            
-            const originalCode = element.textContent;
-            const highlightedCode = formatCodeBlock(originalCode, 'python');
-            element.innerHTML = highlightedCode;
         }
     </script>
 </body>
