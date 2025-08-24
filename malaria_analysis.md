@@ -1,34 +1,14 @@
+This is a section that talks about how to combine mulgtiples files of the same variables or columns into one.
 ## Method
 
-**This is one method how to combine files.**
+**This is one method how to combine files**
 
 
 ![NMCP lOGO](Concatenate.png)
 
 
-## Step
 
-
-```python
-import pandas as pd
-
-# Direct raw CSV link from GitHub
-url = "https://raw.githubusercontent.com/mohamedsillahkanu/Code-Repository/main/CHIRPS_Mean_2015_11.csv"
-
-# Read the CSV
-df = pd.read_csv(url)
-
-# Show first 10 rows in HTML format
-html_table = df.head(10).to_html(index=False)
-
-# Save to an HTML file
-with open("output.html", "w", encoding="utf-8") as f:
-    f.write(html_table)
-
-print("HTML table saved as 'output.html'")
-```
-
-### Step 2
+## Code : 
 
 ```python
 import pandas as pd
@@ -48,3 +28,5 @@ with open("output.html", "w", encoding="utf-8") as f:
 
 print("HTML table saved as 'output.html'")
 ```
+## Output
+
